@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">Logo dell\'intestazione</string>
   <string name="morphe_header_logo_entry_1">Predefinito</string>
   <string name="morphe_header_logo_entry_3">Personalizzato</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">Riproduci le tracce audio dell\'album</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">Riproduci la versione solo audio delle canzoni dell\'album invece di un video musicale. Richiede \'Simula i flussi video\'</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">Scarica video musicali, podcast o canzoni con app di download di terze parti</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x: il crossfade funziona solo su 9.x e versioni successive"</str
   <string name="morphe_music_hide_action_bar_title">Nascondi la barra azione</string>
   <string name="morphe_music_hide_like_dislike_button_title">Nascondi Mi Piace e Non Mi Piace</string>
   <string name="morphe_music_hide_comments_button_title">Nascondi il pulsante Commenti</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">Nascondi il pulsante \"Riproduci chat live\"</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">Nascondi il pulsante Testi</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x: il crossfade funziona solo su 9.x e versioni successive"</str
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">Nascondi il pulsante Download</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">Nascondi il pulsante Avvia radio</string>
+  <string name="morphe_music_hide_radio_button_title">Nascondi il pulsante \'Avvia radio\'</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">Menù a comparsa</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">Scegli quali componenti mostrare nei menù del lettore e della coda</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x: il crossfade funziona solo su 9.x e versioni successive"</str
   <string name="morphe_music_scrobbling_custom_regex_summary">Inserisci un\'espressione regolare personalizzata per rimuovere testo aggiuntivo dai titoli delle canzoni, degli artisti o degli album. Esempio: (?i)\\s*\\((clean|explicit)\\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">Analizza artista e titolo dalla canzone</string>
   <string name="morphe_music_scrobbling_parse_title_summary">Estrai il nome dell\'artista e il titolo del brano dal titolo del video utilizzando il separatore \" - \". Utile per i contenuti ricaricati dove il nome del canale potrebbe essere utilizzato come artista.</string>
+  <string name="morphe_music_scrobbling_guess_album_title">Compila l\'album mancante</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">Quando la musica non include un album, cercalo su Last.fm così il tuo scrobble è completo</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">Informazioni sullo scrobbling</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,32 +308,24 @@ Per garantire che lo scrobbling sia sincronizzato durante la riproduzione in bac
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">Usa testi di terze parti</string>
   <string name="morphe_music_lyrics_enabled_summary">Mostra testi da un servizio di terze parti, con fallback ai testi integrati se non vengono trovati</string>
-  <string name="morphe_music_lyrics_source_title">Servizio testi</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB, quindi KuGou</string>
+  <string name="morphe_music_lyrics_section_service_title">Servizio di testi</string>
+  <string name="morphe_music_lyrics_section_about_title">A proposito di</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">Tocca una riga per cercare</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">Toccando una riga si salta a quel momento della canzone</string>
   <string name="morphe_music_lyrics_show_copy_button_title">Mostra il pulsante di copia</string>
   <string name="morphe_music_lyrics_show_translate_button_title">Mostra il pulsante Traduci</string>
+  <string name="morphe_music_lyrics_saved">Salvato</string>
   <string name="morphe_music_lyrics_text_size_title">Dimensione del testo</string>
   <string name="morphe_music_lyrics_text_size_summary">Dimensione del testo dei brani</string>
   <string name="morphe_music_lyrics_offset_ms_title">Offset temporale</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">Sposta i testi sincronizzati in avanti o indietro. Usa un valore positivo se il testo è in anticipo rispetto alla canzone</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">Fonte: %s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">Traduci</string>
-  <string name="morphe_music_lyrics_translate_hide">Mostra originale</string>
   <string name="morphe_music_lyrics_translating">Traduzione in corso…</string>
   <string name="morphe_music_lyrics_translate_failed">Impossibile tradurre il testo</string>
-  <string name="morphe_music_lyrics_copy">Copia</string>
   <string name="morphe_music_lyrics_copied">Copiato negli appunti</string>
-  <string name="morphe_music_lyrics_about_title">Informazioni sui testi di terze parti</string>
-  <string name="morphe_music_lyrics_about_summary">"I testi vengono ricercati per titolo del brano e artista, quindi un brano con metadati insoliti potrebbe non trovare nulla o trovare la versione sbagliata
-
-I testi sincronizzati seguono la riproduzione. Se si discostano, regola l'offset temporale
-
-Quando non vengono trovati testi di terze parti, vengono visualizzati i testi integrati"</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - Disabilita icone in grassetto</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 - Ripristina le schede Successivo, Testi e Correlati del lettore</string>

@@ -33,6 +33,12 @@ Second \"item\" text"</string>
   <!-- misc.backgroundplayback.backgroundPlaybackPatch -->
   <string name="morphe_remove_background_playback_restrictions_title">Poista taustatoiston rajoitukset</string>
   <string name="morphe_shorts_disable_background_playback_title">Poista Shortsien taustatoisto käytöstä</string>
+  <string name="morphe_auto_pause_on_screen_lock_title">Automaattinen tauko, kun laite on lukittu</string>
+  <string name="morphe_auto_pause_on_screen_lock_off">Pois</string>
+  <string name="morphe_auto_pause_on_screen_lock_always">Tauota aina, kun laite on lukittu</string>
+  <string name="morphe_auto_pause_on_screen_lock_except_wireless">Tauota, ellei langatonta ääntä ole yhdistetty</string>
+  <!-- layout.disableScrollSpeedLimitPatch -->
+  <string name="morphe_disable_scrolling_speed_limit_title">Poista vieritysnopeuden rajoitus</string>
   <!-- layout.disableLayoutUpdatesPatch -->
   <string name="morphe_disable_layout_updates_title">Poista asettelupäivitykset käytöstä</string>
   <string name="morphe_disable_layout_updates_summary">Estää palvelinta päivittämästä sovelluksen asettelua</string>
@@ -84,10 +90,13 @@ Muutoksia ovat muun muassa:
   <string name="morphe_hide_latest_videos_button_summary">Piilottaa sinisen \"Uusimmat videot\" -bannerin, joka näkyy Aloitusnäytön yläreunassa</string>
   <string name="morphe_hide_mix_playlists_title">Piilota mix-soittolistat</string>
   <string name="morphe_hide_movies_section_title">Piilota elokuvat-osio</string>
+  <!-- 'Notifications' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_notifications_menu_header_title">Piilota Ilmoitukset-valikon otsikko</string>
+  <string name="morphe_hide_notifications_menu_header_summary">Piilottaa Ilmoitukset-valikon otsikon, kun kello-painiketta napsautetaan</string>
   <!-- 'Notify me' should be translated using the same localized wording YouTube displays for the button.
-          This button usually appears in the Subscriptions feed for future livestreams or unreleased videos. -->
+          This button usually appears in the Subscriptions feed for future live streams or unreleased videos. -->
   <string name="morphe_hide_notify_me_button_title">Piilota \"Ilmoita minulle\" -painike</string>
-  <string name="morphe_hide_notify_me_button_summary">Piilottaa muistutuspainikkeen aikataulutetuille suoratoistoille ja ensi-illoille</string>
+  <string name="morphe_hide_notify_me_button_summary">Piilottaa muistutusnapin suunnitelluissa suorissa lähetyksissä ja ensiesityksissä</string>
   <string name="morphe_hide_playables_title">Piilota Pelattavat</string>
   <string name="morphe_hide_playables_summary">Piilottaa ominaisuuden, jonka avulla voit pelata pelejä</string>
   <string name="morphe_hide_search_term_thumbnails_title">Piilota hakutermin pienoiskuvat</string>
@@ -155,6 +164,7 @@ Muutoksia ovat muun muassa:
   <string name="morphe_hide_ask_section_title">Piilota Kysy-osio</string>
   <string name="morphe_hide_attributes_section_title">Piilota Ominaisuudet-osio</string>
   <string name="morphe_hide_attributes_section_summary">Piilottaa Esitellyt paikat, Pelit, Musiikki ja Mainitut ihmiset -osiot</string>
+  <string name="morphe_hide_channel_links_section_title">Piilota kanavan linkit -osio</string>
   <string name="morphe_hide_chapters_section_title">Piilota Luvut-osio</string>
   <string name="morphe_hide_corrections_section_title">Piilota Korjaukset-osio</string>
   <string name="morphe_hide_course_progress_section_title">Piilota \"Kurssin edistyminen\" -osio</string>
@@ -164,16 +174,13 @@ Muutoksia ovat muun muassa:
   <string name="morphe_hide_explore_podcast_section_title">Piilota \"Tutustu podcastiin\" -osio</string>
   <string name="morphe_hide_featured_channels_section_title">Piilota esiteltyjen kanavien osio</string>
   <string name="morphe_hide_featured_links_section_title">Piilota Tietoja-linkit -osio</string>
-  <string name="morphe_hide_featured_places_section_title">Piilota \"Esitellyt paikat\" -osio</string>
   <string name="morphe_hide_featured_playlists_section_title">Piilota suositellut soittolistat -osio</string>
   <string name="morphe_hide_featured_videos_section_title">Piilota Esitellyt videot -osio</string>
-  <string name="morphe_hide_gaming_section_title">Piilota Pelaaminen-osio</string>
   <string name="morphe_hide_hashtag_section_title">Piilota Hashtag-osio</string>
-  <string name="morphe_hide_how_this_was_made_section_title">Piilota \"Miten tämä sisältö on luotu\" -osio</string>
+  <string name="morphe_hide_how_this_was_made_section_title">Piilota \'Tämän tekeminen\' -osio</string>
   <string name="morphe_hide_hype_points_title">Piilota Hype-pisteet</string>
   <string name="morphe_hide_info_cards_section_title">Piilota Info-kortit -osio</string>
   <string name="morphe_hide_key_concepts_section_title">Piilota \"Keskeiset käsitteet\" -osio</string>
-  <string name="morphe_hide_music_section_title">Piilota Musiikki-osio</string>
   <string name="morphe_hide_quizzes_section_title">Piilota Tietokilpailut-osio</string>
   <string name="morphe_hide_search_inside_this_video_section_title">Piilota \'Hae videosta\' -osion</string>
   <string name="morphe_hide_subscribe_button_title">Piilota Tilaa-painike</string>
@@ -181,6 +188,7 @@ Muutoksia ovat muun muassa:
   <string name="morphe_hide_video_details_section_title">Piilota \"Videotiedot\" -osio</string>
   <string name="morphe_hide_filter_bar_screen_title">Suodatinpalkki</string>
   <string name="morphe_hide_filter_bar_screen_summary">Valitse, missä piilotetaan vierityspalkin suodatin</string>
+  <string name="morphe_hide_filter_bar_in_channel_page_title">Piilota kanavasivulla</string>
   <string name="morphe_hide_filter_bar_in_comments_title">Piilota kommenteissa</string>
   <string name="morphe_hide_filter_bar_in_feed_title">Piilota syötteissä</string>
   <string name="morphe_hide_filter_bar_in_related_videos_title">Piilota liittyvissä videoissa</string>
@@ -197,6 +205,8 @@ Muutoksia ovat muun muassa:
   <string name="morphe_hide_join_button_title">Piilota Liity-painike</string>
   <string name="morphe_hide_links_preview_title">Piilota linkkien esikatselu</string>
   <string name="morphe_hide_links_preview_summary">Piilottaa klikattavat web-linkit kanavan otsikossa</string>
+  <string name="morphe_hide_members_only_chip_title">Piilota \'Vain jäsenille\' -merkki</string>
+  <string name="morphe_hide_members_only_chip_summary">Piilottaa \'Vain jäsenille\' -merkin kanavan suodatinpalkissa</string>
   <string name="morphe_hide_members_shelf_title">Piilota jäsenet-hylly</string>
   <string name="morphe_hide_members_shelf_summary">Piilottaa kanavan jäsenten luettelon</string>
   <string name="morphe_hide_posts_shelf_title">Piilota julkaisujen tiski</string>
@@ -251,18 +261,21 @@ Muutoksia ovat muun muassa:
   <string name="morphe_hide_comments_gift_button_title">Piilota lahjapainike</string>
   <string name="morphe_hide_comments_info_button_title">Piilota Tietoja-painike</string>
   <string name="morphe_hide_comments_live_chat_donators_bar_title">Piilota lahjoittajien palkki suorassa chatissa</string>
+  <string name="morphe_hide_comments_live_chat_tooltips_title">Piilota live-chatin vihjeet</string>
+  <string name="morphe_hide_comments_live_chat_tooltips_summary">Piilottaa chat-syöttöpalkin lähellä näytettävät työkaluvihjeet, kuten vain tilaajille suunnatun chat-huomautuksen</string>
   <string name="morphe_hide_comments_preview_comment_title">Piilota kommentin esikatselu</string>
   <string name="morphe_hide_comments_preview_comment_summary">Piilottaa kommenttien esikatselun videon alapuolella ennen koko kommenttiosion avaamista</string>
   <string name="morphe_hide_comments_thanks_button_title">Piilota Kiitos-painike</string>
   <string name="morphe_hide_comments_timestamp_button_title">Piilota aikaleima-painike</string>
+  <string name="morphe_hide_comments_top_fans_button_title">Piilota \'Top-fanit\' -painike</string>
   <string name="morphe_sanitize_comments_highlighted_search_links_title">Puhdistaa korostettujen hakulinkkien koodin</string>
   <string name="morphe_sanitize_comments_highlighted_search_links_summary">Puhdistaa korostettujen hakulinkkien koodin jättäen jäljelle vain alkuperäisen tekstin</string>
   <string name="morphe_hide_keyword_content_screen_title">Avainsanasuodatin</string>
   <string name="morphe_hide_keyword_content_screen_summary">Valitse tietyt videot piilotettavaksi syötteissä ja hauissa käyttämällä avainsanoja</string>
+  <string name="morphe_hide_keyword_content_comments_title">Piilota kommentit avainsanojen perusteella</string>
   <string name="morphe_hide_keyword_content_home_title">Piilota Koti-videoita avainsanojen mukaan</string>
   <string name="morphe_hide_keyword_content_search_title">Piilota hakutuloksia avainsanojen mukaan</string>
   <string name="morphe_hide_keyword_content_subscriptions_title">Piilota Tilaukset-videoita avainsanojen mukaan</string>
-  <string name="morphe_hide_keyword_content_comments_title">Piilota kommentit avainsanojen perusteella</string>
   <string name="morphe_hide_keyword_content_phrases_title">Piilotettavat avainsanat</string>
   <!-- For localization, it is preferred, but not required, if 'LeBlanc' is replaced with a localized name or a familiar word that has upper case letters in the middle of the word.
          This is because keywords can be in any language, and showing an example in the localized script helps convey this. -->
@@ -318,7 +331,37 @@ Rajoitukset:
   <string name="morphe_hide_aislist_attribution_summary">"Tiedot tarjoaa AiSList
 
 Napauta tästä avataksesi AiSlopList.com ja nähdäksesi lataukset muille alustoille"</string>
+  <string name="morphe_aislist_submit_category_title">Ilmoita AI-kanavat</string>
+  <string name="morphe_aislist_submit_flyout_menu_title">Lisää raporttikirjaus videovalikkoon</string>
+  <string name="morphe_aislist_submit_flyout_menu_summary">Lisää videovalikkoon kirjaus, joka raportoi videon kanavan AiSListille</string>
+  <string name="morphe_aislist_submit_username_title">Lähettäjän nimi</string>
+  <string name="morphe_aislist_submit_username_summary">Nimi, joka näytetään raporttiesi vieressä julkisella AiSList-tulostaululla. Raportointi ei ole käytettävissä, kun tämä on tyhjä.</string>
+  <string name="morphe_aislist_submit_title">Ilmoita AI-kanava</string>
+  <string name="morphe_aislist_submit_dialog_message">"Lähetä %s AiSListille käyttäen tätä videota todisteena?
+
+Ilmoita vain kanavista, jotka:
+• Käyttävät tekoälyääniä, -visuaaleja, -käsikirjoituksia tai -musiikkia pääasiallisena sisältönään
+• Tuottavat sisältöä massatuotantona tekoälytyökaluilla ja vähäisellä ihmistyöllä
+
+Älä ilmoita kanavista, jotka vain käsittelevät tekoälyä tai käyttävät tekoälyä joissakin videoissaan.
+
+Raportit ovat julkisia ja ne tarkistetaan ennen kuin kanava lisätään listaan. Poistaminen on mahdollista vain pyynnöstä GitHubissa."</string>
+  <string name="morphe_aislist_submit_already_blocklisted">Tämä kanava on jo AiSListin estolistalla.</string>
+  <string name="morphe_aislist_submit_already_warnlisted">Tämä kanava on jo AiSListin varoituslistalla.</string>
+  <string name="morphe_aislist_submit_dialog_confirm">Ilmoita</string>
+  <string name="morphe_aislist_submit_no_username">Aseta lähettäjän nimi AI-kanavien suodatinasetuksissa ilmoittaaksesi kanavista.</string>
+  <string name="morphe_aislist_submit_resolving">Haetaan kanavaa…</string>
+  <string name="morphe_aislist_submit_failed_channel">Tämän videon kanavaa ei löydy.</string>
+  <string name="morphe_aislist_submit_success">Kanava ilmoitettu ja odottaa tarkistusta.</string>
+  <string name="morphe_aislist_submit_failed_conflict">AiSList ei voinut tallentaa raporttia. Yritä myöhemmin uudelleen.</string>
+  <string name="morphe_aislist_submit_failed_rate_limit">Liian monta raporttia lähetettiin. Yritä myöhemmin uudelleen.</string>
+  <string name="morphe_aislist_submit_failed_rejected">AiSList hylkäsi raportin.</string>
+  <string name="morphe_aislist_submit_failed">Raportin lähetys epäonnistui. Tarkista yhteys.</string>
   <!-- ad.hideAdsPatch -->
+  <string name="morphe_ads_channel_whitelist_title">Kanavien mainossallintalista</string>
+  <string name="morphe_ads_channel_whitelist_summary">Sallittujen kanavien videoissa näytetään mainoksia, joten niiden tekijät saavat palkkaa. Mainokset pysyvät estettyinä kaikilla muilla kanavilla.</string>
+  <string name="morphe_ads_channel_whitelist_flyout_add">Lisää kanava mainossallintalistaan</string>
+  <string name="morphe_ads_channel_whitelist_flyout_remove">Poista kanava mainossallintalistalta</string>
   <string name="morphe_hide_creator_store_shelf_title">Piilota sisällöntuottajan kauppahylly</string>
   <string name="morphe_hide_end_screen_store_banner_title">Piilota loppunäytön kauppabanneri</string>
   <string name="morphe_hide_general_ads_title">Piilota yleiset mainokset</string>
@@ -329,7 +372,21 @@ Napauta tästä avataksesi AiSlopList.com ja nähdäksesi lataukset muille alust
   <string name="morphe_hide_shopping_links_title">Piilota ostoslinkit</string>
   <string name="morphe_hide_video_ads_title">Piilota videomainokset</string>
   <string name="morphe_hide_youtube_premium_promotions_title">Piilota YouTube Premium -mainokset</string>
+  <!-- Channel whitelist dialog, shared by ad.hideAdsPatch and layout.sponsorblock.sponsorBlockPatch -->
+  <string name="morphe_channel_whitelist_current_channel">Nykyinen kanava:</string>
+  <string name="morphe_channel_whitelist_add">Lisää valkolistalle</string>
+  <string name="morphe_channel_whitelist_remove">Poista</string>
+  <string name="morphe_channel_whitelist_channels_header">Valkolistatut kanavat</string>
+  <string name="morphe_channel_whitelist_empty">Kanavia ei ole valkolistattu</string>
+  <string name="morphe_channel_whitelist_channel_added">Kanava lisätty valkolistalle</string>
+  <string name="morphe_channel_whitelist_channel_removed">Kanava poistettu valkolistalta</string>
   <!-- interaction.doubletap.doubleTapLengthPatch -->
+  <!-- interaction.channelsearch.channelSearchPatch -->
+  <string name="morphe_channel_search_title">Hae kanavasta</string>
+  <string name="morphe_channel_search_summary">Kun kanava on avoinna, haku kohdistuu vain kyseiseen kanavaan.</string>
+  <string name="morphe_channel_search_results_title">Haku: %s</string>
+  <string name="morphe_channel_search_no_results">Tältä kanavalta ei löytynyt mitään</string>
+  <string name="morphe_channel_search_failed">Tätä kanavaa ei voitu hakea</string>
   <!-- interaction.copyvideolink.copyVideoLinkButtonPatch -->
   <string name="morphe_share_copy_link_button_success">Linkki kopioitu leikepöydälle</string>
   <string name="morphe_share_copy_link_with_timestamp_button_success">Linkki aikaleimalla kopioitu leikepöydälle</string>
@@ -354,6 +411,7 @@ Napauta tästä avataksesi AiSlopList.com ja nähdäksesi lataukset muille alust
   <string name="morphe_vot_screen_title">Ääniratateksti</string>
   <string name="morphe_vot_screen_summary">Lue videon tekstitykset ääneen laitteen tekstistä puheeksi -toiminnolla, synkronoitu toiston kanssa</string>
   <string name="morphe_vot_enabled_title">Ääniratateksti</string>
+  <string name="morphe_vot_enabled_summary">Näyttää päällekkäispainikkeen videosoittimessa. Napauta kytkeäksesi käännöksen päälle tai pois. Napauta ja pidä painettuna avataksesi pika-asetukset. 2.0.0-beta.1</string>
   <string name="morphe_vot_caption_language_title">Kieli</string>
   <string name="morphe_vot_translation_service_title">Käännöspalvelun tarjoaja</string>
   <string name="morphe_vot_original_audio_volume_title">Alkuperäisen äänenvoimakkuus</string>
@@ -444,20 +502,29 @@ Tieto: Ei välttämättä toimi suoratoistoissa"</string>
   <string name="morphe_reload_video_button_title">Näytä Tallenna katsottavaksi myöhemmin -painike</string>
   <string name="morphe_dismiss_player_not_available_toast">Videon tunnus ei ole käytettävissä. Lataa video manuaalisesti</string>
   <!-- interaction.savetowatchlater.saveToWatchLaterPatch -->
-  <string name="morphe_save_to_watch_later_button_title">Avaa kanavasivu käytössä olevana tai suoratoisto poissa käytöstä olevana</string>
-  <string name="morphe_save_to_watch_later_button_summary">Napauta tallentaaksesi katsottavaksi myöhemmin, napauta ja pidä saadaksesi jonotusvaihtoehdot</string>
+  <string name="morphe_save_to_watch_later_button_title">Näytä Tallenna myöhemmin katsottavaksi -painike</string>
+  <string name="morphe_save_to_watch_later_button_summary">Napauta tallentaaksesi myöhemmin katsottavaksi, pidä painettuna jonon vaihtoehtoja varten</string>
   <string name="morphe_save_to_watch_later_success_toast">Video tallennettiin onnistuneesti katsoaksesi myöhemmin -soittolistalle</string>
   <string name="morphe_save_to_watch_later_already_exists_toast">Tämä video on jo tallennettu katsoaksesi myöhemmin -soittolistalle</string>
   <string name="morphe_save_to_watch_later_error_toast">Tätä videota ei voi tallentaa katsoaksesi myöhemmin -soittolistalle</string>
+  <string name="morphe_save_to_watch_later_flyout_title">Tallenna myöhemmin katsottavaksi</string>
+  <string name="morphe_save_to_watch_later_kids_flyout_button_title">Näytä Tallenna myöhemmin katsottavaksi -painike lasten tilassa</string>
+  <string name="morphe_save_to_watch_later_kids_flyout_button_summary">Sallii lasten videoiden tallentamisen Katso myöhemmin -valikkoon</string>
   <string name="morphe_queue_flyout_title">Lisää Morphe-jonoon</string>
   <string name="morphe_queue_restore_title">Pidä jono käytössä istuntojen välillä</string>
   <string name="morphe_queue_restore_summary">Jono säilyy sovelluksen uudelleenkäynnistyksen jälkeen</string>
   <string name="morphe_swap_save_and_queue_actions_title">Vaihda Tallenna- ja Jonotoiminnot</string>
-  <string name="morphe_swap_save_and_queue_actions_summary">Napauta jonkovaihtoehtoja varten, napauta ja pidä saadaksesi tallennettua myöhempää katselua varten</string>
+  <string name="morphe_swap_save_and_queue_actions_summary">Napauta jonon asetuksia varten, napauta ja pidä painettuna tallentaaksesi Katso myöhemmin -listalle</string>
   <string name="morphe_queue_override_flyout_menu_title">Korvaa syötteen pikavalikkojonon painike</string>
   <string name="morphe_queue_override_flyout_menu_summary">Avaa Morphe-jono YouTuben jonon sijaan</string>
   <string name="morphe_queue_add_flyout_menu_title">Lisää valikkokohta syötejonon ponnahdusvalikkoon</string>
   <string name="morphe_queue_add_flyout_menu_summary">Lisää lisäponnahdusvalikkokohdan. Ota tämä käyttöön, jos \"Lisää jonoon\" ei näy.</string>
+  <string name="morphe_ads_channel_whitelist_flyout_menu_title">Mainosten sallittujen luettelo ponnahdusvalikossa</string>
+  <string name="morphe_ads_channel_whitelist_flyout_menu_summary">Lisää ponnahdusvalikkoon kohde, joka sallii mainosten toiston kyseisen videon kanavalla</string>
+  <!-- "Spoof video streams" must use the same translation as morphe_spoof_video_streams_screen_title -->
+  <string name="morphe_ads_channel_whitelist_flyout_user_dialog_message">Tämä ominaisuus saattaa vaatia PotHelperin käyttöä tai \"Huijaa videovirtoja\" -asetuksen vaihtamista TV- tai Android VR -kirjautumistavaksi.</string>
+  <string name="morphe_playback_speed_channel_whitelist_flyout_menu_title">Toistonopeuden sallittujen luettelo ponnahdusvalikossa</string>
+  <string name="morphe_playback_speed_channel_whitelist_flyout_menu_summary">Lisää ponnahdusvalikkoon kohde, joka toistaa aina kyseisen videon kanavaa nopeudella 1.0x</string>
   <string name="morphe_queue_manager_check_failed_auth">Kirjauduttu ulos</string>
   <string name="morphe_queue_manager_check_failed_playlist_id">Ei soittolistan tunnistetta</string>
   <string name="morphe_queue_manager_check_failed_queue">Jono on tyhjä</string>
@@ -487,23 +554,23 @@ Tieto: Ei välttämättä toimi suoratoistoissa"</string>
   <!-- interaction.seekbar.disablePreciseSeekingGesturePatch -->
   <string name="morphe_disable_precise_seeking_gesture_title">Poista tarkka etsintäele käytöstä</string>
   <string name="morphe_disable_precise_seeking_gesture_summary">Poistaa käytöstä tarkan hakutoiminnon, joka aktivoituu, kun vedät hakupalkkia ylöspäin</string>
-  <!-- interaction.seekbar.livestreamDVRPatch -->
-  <string name="morphe_livestream_dvr_title">Ota suoratoistinauhoitus käyttöön</string>
-  <string name="morphe_livestream_dvr_summary">Mahdollistaa etsimisen kaikista suoralähetyksistä, myös niistä, jotka yleensä rajoittavat sitä</string>
+  <!-- interaction.seekbar.liveStreamDVRPatch -->
+  <string name="morphe_live_stream_dvr_title">Ota suoran lähetyksen DVR käyttöön</string>
+  <string name="morphe_live_stream_dvr_summary">Sallii kelauksen kaikissa suorissa lähetyksissä, myös niissä, jotka normaalisti rajoittavat sitä</string>
   <!-- interaction.seekbar.seekbarThumbnailPreviewPatch -->
   <string name="morphe_seekbar_thumbnail_preview_title">Ota etenemispalkin pikkukuvien esikatselu käyttöön</string>
   <string name="morphe_seekbar_thumbnail_preview_summary">Näyttää videon pikkukuvan vedettäessä hakupalkkia</string>
   <string name="morphe_seekbar_thumbnail_heatmap_peak_point">Eniten toistettu</string>
   <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
-  <string name="morphe_livestream_dvr_not_available">"'Ota käyttöön livestream-DVR' ei välttämättä ole käytettävissä
+  <string name="morphe_live_stream_dvr_not_available">"'Ota suoran lähetyksen DVR käyttöön' ei ehkä ole saatavilla
 
-Voit korjata tämän ottamalla käyttöön 'Huijaa videovirtoja' ja vaihtamalla 'Oletusasiakas' -kohdan arvoksi 'TV' tai 'visionOS'"</string>
-  <string name="morphe_expand_livestream_dvr_duration_title">Laajenna suoran lähetyksen DVR:n kestoa</string>
-  <string name="morphe_expand_livestream_dvr_duration_summary">Mahdollistaa suorien lähetysten kelaamisen jopa 7 päivää taaksepäin</string>
+Korjaa tämä ottamalla käyttöön 'Väärennä videovirrat' ja vaihtamalla 'Oletusasiakas' arvoon 'TV Simply' tai 'visionOS'."</string>
+  <string name="morphe_expand_live_stream_dvr_duration_title">Laajenna suoran lähetyksen DVR-kestoa</string>
+  <string name="morphe_expand_live_stream_dvr_duration_summary">Sallii kelata suoria lähetyksiä jopa 7 päivää taaksepäin</string>
   <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
-  <string name="morphe_expand_livestream_dvr_duration_not_available">"'Laajenna livestream-DVR:n kestoa' ei välttämättä ole käytettävissä
+  <string name="morphe_expand_live_stream_dvr_duration_not_available">"'Laajenna suoran lähetyksen DVR-kestoa' ei ehkä ole saatavilla
 
-Voit korjata tämän ottamalla käyttöön 'Huijaa videovirtoja' ja vaihtamalla 'Oletusasiakas' -kohdan arvoksi 'TV' tai 'visionOS'"</string>
+Korjaa tämä ottamalla käyttöön 'Väärennä videovirrat' ja vaihtamalla 'Oletusasiakas' arvoon 'TV Simply' tai 'visionOS'."</string>
   <!-- interaction.seekbar.enableSlideToSeekPatch -->
   <string name="morphe_slide_to_seek_title">Ota kelaus liu\'uttamalla käyttöön</string>
   <string name="morphe_slide_to_seek_summary">Ottaa käyttöön pyyhkäisyn hakua varten sen sijaan, että toisto nopeutuisi 2x nopeudella, kun videotoistinta painetaan ja pidetään painettuna</string>
@@ -511,15 +578,18 @@ Voit korjata tämän ottamalla käyttöön 'Huijaa videovirtoja' ja vaihtamalla 
   <string name="morphe_tap_to_seek_title">Ota etsintä napauttamalla käyttöön</string>
   <string name="morphe_tap_to_seek_summary">Napauta hakupalkkia hypätäksesi kyseiseen kohtaan vetämättä sitä</string>
   <!-- interaction.swipecontrols.swipeControlsPatch -->
-  <string name="morphe_swipe_brightness_title">Ota kirkkausele käyttöön</string>
-  <string name="morphe_swipe_brightness_summary">Vaatii painamista ja pitämistä ennen kuin pyyhkäisyele tunnistetaan</string>
-  <string name="morphe_swipe_volume_title">Ota äänenvoimakkuusele käyttöön</string>
-  <string name="morphe_swipe_volume_summary">Muistaa kirkkaustason siirryttäessä sisään ja ulos koko näytön tilasta</string>
-  <string name="morphe_swipe_zone_width_title">Kirkkauden/äänenvoimakkuuden vyöhykkeen leveys</string>
-  <string name="morphe_swipe_zone_width_summary">Kuinka paljon näyttöä varataan kirkkauden ja äänenvoimakkuuden eleille (5–50)</string>
+  <string name="morphe_swipe_left_zone_title">Vasen pyyhkäisy</string>
+  <string name="morphe_swipe_right_zone_title">Oikea pyyhkäisy</string>
+  <string name="morphe_swipe_top_zone_title">Yläpyyhkäisy</string>
+  <string name="morphe_swipe_zone_width_title">Vasemman/oikean vyöhykkeen leveys</string>
+  <string name="morphe_swipe_zone_width_summary">Prosenttiosuus kummastakin näytön reunasta varattu vasemmalle ja oikealle pyyhkäisylle (5-50)</string>
   <string name="morphe_swipe_zone_label_brightness">Kirkkaus</string>
   <string name="morphe_swipe_zone_label_volume">Äänenvoimakkuus</string>
   <string name="morphe_swipe_zone_label_native">Natiivi</string>
+  <string name="morphe_swipe_zone_label_off">Pois</string>
+  <string name="morphe_swipe_ignore_when_locked_title">Ohita pyyhkäisyt lukittuna</string>
+  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the player menu item. -->
+  <string name="morphe_swipe_ignore_when_locked_summary">Pyyhkäisyeleet jätetään huomioimatta, kun soitin on lukittu \'Lukitse näyttö\' -toiminnolla</string>
   <string name="morphe_swipe_press_to_engage_title">Ota pyyhkäise painamalla -ele käyttöön</string>
   <string name="morphe_swipe_press_to_engage_summary">Vaatii painamisen ja pitämisen ennen pyyhkäisyeleen tunnistamista</string>
   <string name="morphe_swipe_haptic_feedback_title">Ota haptinen palaute käyttöön</string>
@@ -532,7 +602,6 @@ Voit korjata tämän ottamalla käyttöön 'Huijaa videovirtoja' ja vaihtamalla 
   <string name="morphe_swipe_overlay_timeout_summary">Kuinka monta millisekuntia ikkuna on näkyvissä</string>
   <string name="morphe_swipe_overlay_background_opacity_title">Pyyhkäisyn peittokuvan taustan läpinäkymättömyys</string>
   <string name="morphe_swipe_overlay_background_opacity_summary">Aseta äänenvoimakkuuden edistymispalkin väri</string>
-  <string name="morphe_swipe_overlay_background_opacity_invalid_toast">Pyyhkäisyn läpinäkymättömyys oltava välillä 0-100</string>
   <string name="morphe_swipe_overlay_progress_brightness_color_title">Kirkkauspyyhkäisyn peittokuvan väri</string>
   <string name="morphe_swipe_overlay_progress_brightness_color_summary">Säädä näytön tekstin kokoa (1-30)</string>
   <string name="morphe_swipe_overlay_progress_volume_color_title">Äänenvoimakkuuspyyhkäisyn peittokuvan väri</string>
@@ -541,19 +610,17 @@ Voit korjata tämän ottamalla käyttöön 'Huijaa videovirtoja' ja vaihtamalla 
   <string name="morphe_swipe_overlay_progress_speed_color_summary">Aseta toistonopeuden säätöjen edistymispalkin väri</string>
   <string name="morphe_swipe_text_overlay_size_title">Pyyhkäisyn peittokuvan tekstin koko</string>
   <string name="morphe_swipe_text_overlay_size_summary">Säädä, kuinka äänenvoimakkuus muuttuu pyyhkäisyn aikana</string>
-  <string name="morphe_swipe_text_overlay_size_invalid_toast">Tekstin koon tulee olla välillä 1-30</string>
   <string name="morphe_swipe_threshold_title">Pyyhkäisyn kynnysraja</string>
   <string name="morphe_swipe_threshold_summary">Pyyhkäise koko näytön tilassa siirtyäksesi seuraavaan tai edelliseen videoon</string>
-  <string name="morphe_swipe_volume_sensitivity_title">Äänenvoimakkuuspyyhkäisyn herkkyys</string>
-  <string name="morphe_swipe_volume_sensitivity_summary">Suuremmat arvot lisäävät äänenvoimakkuuden muutosta pyyhkäisyä kohden</string>
+  <string name="morphe_swipe_volume_distance_title">Äänenvoimakkuuspyyhkäisyn herkkyys</string>
+  <string name="morphe_swipe_volume_distance_summary">Suuremmat arvot vaativat enemmän pyyhkäisyjä äänenvoimakkuusaskelta kohti</string>
+  <string name="morphe_swipe_volume_steps_title">Äänenvoimakkuuden portaat</string>
+  <string name="morphe_swipe_volume_steps_entry_default">Laitteen oletus</string>
   <string name="morphe_swipe_brightness_sensitivity_title">Kirkkauden pyyhkäisyn herkkyys</string>
   <string name="morphe_swipe_brightness_sensitivity_summary">Suuremmat arvot vaativat enemmän pyyhkäisyjä kirkkausaskelta kohden</string>
-  <string name="morphe_swipe_speed_title">Ota nopeusele käyttöön</string>
-  <string name="morphe_swipe_speed_summary">Pyyhkäise vaakasuunnassa täyden näytön tilan yläosassa muuttaaksesi toistonopeutta</string>
   <string name="morphe_swipe_speed_sensitivity_title">Nopeuden pyyhkäisyn herkkyys</string>
   <string name="morphe_swipe_speed_sensitivity_summary">Suuremmat arvot vaativat enemmän pyyhkäisyjä nopeusaskelta kohden</string>
   <string name="morphe_swipe_speed_step_title">Nopeuden vaihe</string>
-  <string name="morphe_swipe_speed_step_summary">Määrä, jolla toistonopeus muuttuu jokaisen askeleen myötä</string>
   <string name="morphe_swipe_speed_zone_height_title">Nopeusalueen korkeus</string>
   <string name="morphe_swipe_speed_zone_height_summary">Nopeuseleelle varatun alueen korkeus prosentteina soittimen korkeudesta (5-75)</string>
   <string name="morphe_swipe_zone_label_speed">Nopeus</string>
@@ -681,15 +748,8 @@ Saadaksesi asetukset, ota Asetukset-painike käyttöön kohdasta Yleiset → Ty�
   <string name="morphe_navigation_bar_animations_summary">Animoi siirtymät välilehtien välillä</string>
   <string name="morphe_disable_auto_hide_navigation_bar_title">Poista automaattisen piilottamisen käytöstä navigointipalkissa</string>
   <string name="morphe_disable_auto_hide_navigation_bar_summary">Pitää navigointipalkin näkyvillä vieritettäessä</string>
-  <string name="morphe_disable_translucent_status_bar_title">Poista läpikuultava tilapalkki käytöstä</string>
-  <string name="morphe_disable_translucent_status_bar_summary">Tekee tilapalkin täysin peittäväksi</string>
-  <string name="morphe_disable_translucent_status_bar_user_dialog_message">"Rajoitukset:
-• Video-soittimessa saattaa esiintyä musta juova yläosassa.
-• Järjestelmän navigointipalkki saattaa muuttua läpinäkyväksi, ja ei ole mahdollista kommentoida videoita."</string>
-  <string name="morphe_disable_translucent_navigation_bar_light_title">Poista vaalea läpikuultava palkki käytöstä</string>
-  <string name="morphe_disable_translucent_navigation_bar_light_summary">Tekee navigointipalkista täysin peittävän vaaleassa tilassa</string>
-  <string name="morphe_disable_translucent_navigation_bar_dark_title">Poista tumma läpikuultava palkki käytöstä</string>
-  <string name="morphe_disable_translucent_navigation_bar_dark_summary">Tekee navigaatiopalkista täysin läpinäkymättömän tummassa tilassa</string>
+  <string name="morphe_disable_translucent_navigation_title">Poista läpikuultava navigointipalkki käytöstä</string>
+  <string name="morphe_disable_translucent_navigation_summary">Tekee navigointi- ja tilapalkin täysin peittäväksi</string>
   <string name="morphe_toolbar_screen_title">Työkalupalkki</string>
   <string name="morphe_toolbar_screen_summary">Valitse, mitkä komponentit näkyvät työkalupalkissa</string>
   <string name="morphe_hide_toolbar_cast_button_title">Piilota Cast-painike</string>
@@ -705,42 +765,44 @@ Saadaksesi asetukset, ota Asetukset-painike käyttöön kohdasta Yleiset → Ty�
   <!-- layout.hide.player.flyoutmenupanel.hidePlayerFlyoutMenuPatch -->
   <string name="morphe_hide_player_flyout_title">Ponnahdusvalikko</string>
   <string name="morphe_hide_player_flyout_summary">Valitse, mitkä komponentit näkyvät avattavassa valikossa</string>
+  <!-- 'Additional settings / More' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_additional_settings_title">Piilota \"Lisäasetukset / Lisää\"-valikko</string>
+  <!-- 'Ambient mode' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_ambient_mode_title">Piilota \"Elokuvatila\"-valikko</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title'.
+         'Android Studio' and 'Android VR Downgraded' must be kept untranslated. -->
+  <string name="morphe_hide_player_flyout_audio_track_not_available">"Ääniraitavalikko on piilotettu
+
+Jos haluat näyttää ääniraitavalikon, vaihda \"Naamioi videovirrat\" -asetukseksi mihin tahansa asiakassovellukseen paitsi \"Android Studio\" ja \"Android VR Downgraded\"."</string>
   <!-- 'Audio Track' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_audio_track_title">Piilota \"Ääniraita\"-valikko</string>
-  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title'.
-          'Android Studio' must be kept untranslated. -->
-  <string name="morphe_hide_player_flyout_audio_track_not_available">"'Ääniraitavalikko' on piilotettu
-
-Näyttääksesi 'Ääniraitavalikon', vaihda 'Väärennä videostriimejä' -asetukseksi mikä tahansa muu kuin 'Android Studio'"</string>
   <string name="morphe_hide_player_flyout_audio_track_footer_title">Piilota \'Ääniraita\'-valikon alatunniste</string>
   <!-- 'Captions' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_captions_title">Piilota Tekstitykset-valikko</string>
   <string name="morphe_hide_player_flyout_captions_footer_title">Piilota Tekstitykset-valikon alatunniste</string>
   <string name="morphe_hide_player_flyout_captions_header_title">Piilota Tekstitykset-valikon yläotsikko</string>
-  <!-- 'Additional settings / More' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_additional_settings_title">Piilota \"Lisäasetukset / Lisää\"-valikko</string>
-  <!-- 'Sleep timer' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_sleep_timer_title">Piilota \"Uniajastin\"-valikko</string>
-  <!-- 'Loop video' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_loop_video_title">Piilota \"Toista videota jatkuvasti\"-valikko</string>
-  <!-- 'Ambient mode' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_ambient_mode_title">Piilota \"Elokuvatila\"-valikko</string>
-  <!-- 'Stable volume' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_stable_volume_title">Piilota \"Tasainen äänenvoimakkuus\"-valikko</string>
   <!-- 'Help & feedback' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_help_title">Piilota \"Ohjeet ja palaute\"-valikko</string>
-  <!-- 'Playback speed' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_speed_title">Piilota \"Toistonopeus\"-valikko</string>
-  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_lock_screen_title">Piilota \"Näytön lukitus\"-valikko</string>
   <!-- 'Listen with YouTube Music' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_listen_with_youtube_music_title">Piilota \"Kuuntele YouTube Musicissa\"-valikko</string>
-  <!-- 'Watch in VR' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_watch_in_vr_title">Piilota \"Katso VR-tilassa\"-valikko</string>
+  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_lock_screen_title">Piilota \"Näytön lukitus\"-valikko</string>
+  <!-- 'Loop video' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_loop_video_title">Piilota \"Toista videota jatkuvasti\"-valikko</string>
+  <!-- 'On-the-go' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_on_the_go_title">Piilota \'Matkalla\'-valikko</string>
   <!-- 'Quality' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_quality_title">Piilota Laatu-valikko</string>
   <string name="morphe_hide_player_flyout_quality_footer_title">Piilota Laatu-valikon alatunniste</string>
   <string name="morphe_hide_player_flyout_quality_header_title">Piilota Laatu-valikon yläosa</string>
+  <!-- 'Sleep timer' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_sleep_timer_title">Piilota \"Uniajastin\"-valikko</string>
+  <!-- 'Playback speed' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_speed_title">Piilota \"Toistonopeus\"-valikko</string>
+  <!-- 'Stable volume' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_stable_volume_title">Piilota \"Tasainen äänenvoimakkuus\"-valikko</string>
+  <!-- 'Watch in VR' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_watch_in_vr_title">Piilota \"Katso VR-tilassa\"-valikko</string>
   <!-- layout.hide.autoplaypreview.hideAutoplayPreviewPatch -->
   <string name="morphe_hide_autoplay_preview_title">Piilota automaattinen esikatselu</string>
   <string name="morphe_hide_autoplay_preview_summary">Piilottaa seuraavan videon esikatselun koko näytössä automaattisen toiston alkaessa</string>
@@ -755,6 +817,8 @@ Näyttääksesi 'Ääniraitavalikon', vaihda 'Väärennä videostriimejä' -aset
   <string name="morphe_hide_fullscreen_button_title">Piilota kokoruutupainike</string>
   <string name="morphe_hide_player_control_buttons_background_title">Piilota soittimen ohjainten tausta</string>
   <string name="morphe_hide_player_control_buttons_background_summary">Piilottaa tumman varjostuksen videotoiston säätimien ympäriltä</string>
+  <string name="morphe_player_control_buttons_background_opacity_title">Säätöpainikkeiden taustan läpinäkyvyys</string>
+  <string name="morphe_player_control_buttons_background_opacity_summary">Säädä soittimen ohjauspainikkeiden ja aikapalkin takana olevan taustan peittävyyttä (0 on näkymätön, 100 on peittävä)</string>
   <string name="morphe_hide_player_previous_next_buttons_title">Piilota Edellinen ja Seuraava -painikkeeet</string>
   <string name="morphe_hide_settings_button_title">Piilota Asetukset-painike</string>
   <!-- layout.hide.endscreencards.hideEndScreenCardsPatch -->
@@ -777,8 +841,6 @@ Näyttääksesi 'Ääniraitavalikon', vaihda 'Väärennä videostriimejä' -aset
   <string name="morphe_hide_seekbar_thumbnail_summary">Piilottaa videoiden pikkukuvissa näkyvän katselupalkin, jos olet jo katsonut ne</string>
   <string name="morphe_fullscreen_large_seekbar_title">Ota käyttöön kokoruututilan suuri etenemispalkki</string>
   <!-- layout.hide.shorts.hideShortsComponentsPatch -->
-  <string name="morphe_shorts_player_screen_title">Shorts-soitin</string>
-  <string name="morphe_shorts_player_screen_summary">Valitse Shorts-soittimen näkyvät osat</string>
   <string name="morphe_hide_shorts_category_title">Piilota Shorts</string>
   <string name="morphe_hide_shorts_channel_title">Piilotetaan kanavasivulla</string>
   <!-- 'Home' should be translated using the same localized wording YouTube displays for the tab. -->
@@ -788,45 +850,48 @@ Näyttääksesi 'Ääniraitavalikon', vaihda 'Väärennä videostriimejä' -aset
   <string name="morphe_hide_shorts_subscriptions_title">Piilotetaan Tilausten syötteessä</string>
   <string name="morphe_hide_shorts_video_description_title">Piilotetaan videon kuvauksesta</string>
   <string name="morphe_hide_shorts_history_title">Piilota katseluhistoriassa</string>
+  <string name="morphe_shorts_player_screen_title">Shorts-soitin</string>
+  <string name="morphe_shorts_player_screen_summary">Valitse Shorts-soittimen näkyvät osat</string>
+  <string name="morphe_disable_shorts_double_tap_to_like_title">Poista kaksoisnapautus tykkäämiseksi käytöstä</string>
   <string name="morphe_hide_shorts_ai_button_title">Piilota AI-painike</string>
   <string name="morphe_hide_shorts_auto_dubbed_label_title">Piilota \"Automaattisesti jälkiäänitetty\" -merkintä</string>
-  <string name="morphe_hide_shorts_super_thanks_button_title">Piilota \"Osta Superkiitos\" -painike</string>
+  <string name="morphe_hide_shorts_channel_bar_title">Piilota kanavapalkki</string>
+  <string name="morphe_hide_shorts_comments_button_title">Piilota Kommentit-painike</string>
   <string name="morphe_hide_shorts_effect_button_title">Piilota Tehoste-painike</string>
+  <string name="morphe_hide_shorts_full_video_link_label_title">Piilota videolinkin tunniste</string>
+  <string name="morphe_hide_shorts_gesture_hints_title">Piilota eleiden vihjeet</string>
   <string name="morphe_hide_shorts_green_screen_button_title">Piilota \'Vihertävä tausta\' -nappi</string>
   <string name="morphe_hide_shorts_hashtag_button_title">Piilota Hashtag-painike</string>
+  <string name="morphe_hide_shorts_info_panel_title">Piilota tietopaneeli</string>
   <!-- 'Join' should be translated using the same localized wording YouTube displays for the button. -->
   <string name="morphe_hide_shorts_join_button_title">Piilota Liity-painike</string>
+  <string name="morphe_hide_shorts_like_button_title">Piilota Tykkää-painike</string>
+  <!-- YouTube may no longer use this feature and this setting may be obsolete. -->
+  <string name="morphe_hide_shorts_like_fountain_title">Piilota Tykkää-painikkeen suihkulähdeanimaatio</string>
   <string name="morphe_hide_shorts_live_preview_title">Piilota linkkien esikatselu</string>
   <string name="morphe_hide_shorts_location_label_title">Piilota sijaintitieto</string>
+  <string name="morphe_hide_shorts_navigation_bar_title">Piilota navigointipalkki</string>
   <string name="morphe_hide_shorts_new_posts_button_title">Piilota \'Uudet postaukset\' -nappi</string>
   <string name="morphe_hide_shorts_paused_overlay_buttons_title">Piilota pysäytysruudun painikkeet</string>
   <string name="morphe_hide_shorts_preview_comment_title">Piilota kommentin esikatselu</string>
+  <!-- 'Remix' should be translated using the same localized wording YouTube displays for the button. -->
+  <string name="morphe_hide_shorts_remix_button_title">Piilota Remix-painike</string>
+  <!-- 'Save' should be translated using the same localized wording YouTube displays for the button. -->
+  <string name="morphe_hide_shorts_save_button_title">Piilota Tallenna-painike</string>
   <string name="morphe_hide_shorts_save_sound_button_title">Piilota \'Tallenna musiikki\' -nappi</string>
   <string name="morphe_hide_shorts_search_suggestions_title">Piilota hakuehdotukset</string>
+  <!-- 'Share' should be translated using the same localized wording YouTube displays for the button. -->
+  <string name="morphe_hide_shorts_share_button_title">Piilota Jaa-painike</string>
   <string name="morphe_hide_shorts_shop_button_title">Piilota Kauppa-painike</string>
+  <string name="morphe_hide_shorts_sound_button_title">Piilota äänipainike</string>
+  <string name="morphe_hide_shorts_sound_metadata_label_title">Piilota äänen metadata-tunniste</string>
   <string name="morphe_hide_shorts_subscribe_button_title">Piilota Tilaa-painike</string>
+  <string name="morphe_hide_shorts_super_thanks_button_title">Piilota \"Osta Superkiitos\" -painike</string>
   <string name="morphe_hide_shorts_tagged_products_title">Piilota tagatut tuotteet</string>
   <string name="morphe_hide_shorts_upcoming_button_title">Piilota Tulossa-painike</string>
   <string name="morphe_hide_shorts_use_sound_button_title">Piilota \'Käytä tätä ääntä\' -nappi</string>
   <string name="morphe_hide_shorts_use_template_button_title">Piilota \'Käytä tätä mallia\' -nappi</string>
-  <!-- YouTube may no longer use this feature and this setting may be obsolete. -->
-  <string name="morphe_hide_shorts_like_fountain_title">Piilota Tykkää-painikkeen suihkulähdeanimaatio</string>
-  <string name="morphe_hide_shorts_like_button_title">Piilota Tykkää-painike</string>
-  <string name="morphe_hide_shorts_comments_button_title">Piilota Kommentit-painike</string>
-  <!-- 'Save' should be translated using the same localized wording YouTube displays for the button. -->
-  <string name="morphe_hide_shorts_save_button_title">Piilota Tallenna-painike</string>
-  <!-- 'Share' should be translated using the same localized wording YouTube displays for the button. -->
-  <string name="morphe_hide_shorts_share_button_title">Piilota Jaa-painike</string>
-  <!-- 'Remix' should be translated using the same localized wording YouTube displays for the button. -->
-  <string name="morphe_hide_shorts_remix_button_title">Piilota Remix-painike</string>
-  <string name="morphe_hide_shorts_sound_button_title">Piilota äänipainike</string>
-  <string name="morphe_hide_shorts_info_panel_title">Piilota tietopaneeli</string>
-  <string name="morphe_hide_shorts_channel_bar_title">Piilota kanavapalkki</string>
   <string name="morphe_hide_shorts_video_title_title">Piilota videon otsikko</string>
-  <string name="morphe_hide_shorts_sound_metadata_label_title">Piilota äänen metadata-tunniste</string>
-  <string name="morphe_hide_shorts_full_video_link_label_title">Piilota videolinkin tunniste</string>
-  <string name="morphe_disable_shorts_double_tap_to_like_title">Poista kaksoisnapautus tykkäämiseksi käytöstä</string>
-  <string name="morphe_hide_shorts_navigation_bar_title">Piilota navigointipalkki</string>
   <!-- layout.hide.endscreensuggestedvideo.hideEndScreenSuggestedVideoPatch -->
   <string name="morphe_hide_end_screen_suggested_video_title">Piilota loppunäytön ehdotettu video</string>
   <string name="morphe_hide_end_screen_suggested_video_summary">"Piilottaa ehdotetun videon päällyksen, joka ilmestyy videon päätyttyä
@@ -843,6 +908,9 @@ Asetukset → Toisto (tai Automaattinen toisto) → Toista seuraava video"</stri
   <!-- layout.panels.popup.disablePlayerPopupPanelsPatch -->
   <string name="morphe_disable_player_popup_panels_title">Poista soittimen ponnahdusikkunat mainokset</string>
   <string name="morphe_disable_player_popup_panels_summary">Poistaa automaattisesti avautuvien soittolistan ja live-chatin paneelien käytön</string>
+  <!-- layout.playlistautoplay.disablePlaylistAutoplayPatch -->
+  <string name="morphe_disable_playlist_autoplay_title">Poista soittolistan automaattinen toisto käytöstä</string>
+  <string name="morphe_disable_playlist_autoplay_summary">Estää soittolistoja siirtymästä automaattisesti seuraavaan videoon</string>
   <!-- layout.player.fullscreen.exitFullscreenPatch -->
   <string name="morphe_exit_fullscreen_title">Poistuu koko näytön tilasta videon lopussa</string>
   <string name="morphe_exit_fullscreen_entry_1">Pois käytöstä</string>
@@ -851,21 +919,36 @@ Asetukset → Toisto (tai Automaattinen toisto) → Toista seuraava video"</stri
   <string name="morphe_exit_fullscreen_entry_4">Pysty ja vaaka</string>
   <!-- layout.player.fullscreen.disableFullscreenGesturesPatch -->
   <string name="morphe_disable_fullscreen_gestures_title">Koko näytön eleet</string>
-  <string name="morphe_disable_fullscreen_gestures_summary">Soittimen eleet siirtyä koko näytön tilaan tai poistua siitä</string>
+  <string name="morphe_disable_fullscreen_gestures_summary">Soittimen eleet koko näytön tilassa</string>
   <string name="morphe_disable_fullscreen_pulled_up_gesture_title">Poista käytöstä pystysuuntainen ylöspäin pyyhkäisy ele</string>
   <string name="morphe_disable_fullscreen_sliding_down_gesture_title">Poista muotokuvasuuntaisen sivunäppäilyele</string>
   <string name="morphe_disable_fullscreen_dragged_down_gesture_title">Poista maisemakuvauksen sivunäppäilyele</string>
+  <string name="morphe_disable_fullscreen_zoom_gesture_title">Poista nipistyszoomin ele käytöstä</string>
+  <string name="morphe_restore_pinch_to_zoom_title">Palauta nipistyszoomaus</string>
   <!-- layout.player.fullscreen.openVideosFullscreenPatch -->
   <string name="morphe_open_videos_fullscreen_title">Avaa videot koko näytön tilassa</string>
   <string name="morphe_open_videos_fullscreen_entry_1">Pois käytöstä</string>
   <string name="morphe_open_videos_fullscreen_entry_2">Pysty</string>
   <string name="morphe_open_videos_fullscreen_entry_3">Vaaka</string>
+  <!-- layout.player.fullscreen.stretchVideoPatch -->
+  <string name="morphe_fullscreen_video_scale_title">Koko näytön videon skaalaus</string>
+  <string name="morphe_fullscreen_video_scale_entry_default">Oletus</string>
+  <string name="morphe_fullscreen_video_scale_entry_stretch">Venytä (täytä näyttö)</string>
+  <string name="morphe_fullscreen_video_scale_entry_zoom">Zoomaa (rajaa täyttöön)</string>
+  <string name="morphe_fullscreen_video_scale_button_title">Näytä videon skaalauspainike</string>
+  <string name="morphe_fullscreen_video_scale_button_summary">Napauta vaihtaaksesi oletuksen, venytyksen ja zoomin välillä</string>
+  <string name="morphe_fullscreen_video_scale_button_fullscreen_only_title">Näytä vain koko näytössä</string>
+  <string name="morphe_fullscreen_video_scale_button_fullscreen_only_summary">Piilota videoskaalauspainike pystyasennon soittimessa</string>
+  <!-- layout.player.buttons.muteVideoButtonPatch -->
+  <string name="morphe_mute_video_button_title">Näytä mykistyspainike</string>
   <!-- layout.player.overlay.customPlayerOverlayOpacityPatch -->
   <string name="morphe_player_overlay_opacity_title">Soittimen peittokuvan läpinäkymättömyys</string>
   <string name="morphe_player_overlay_opacity_summary">Säädä läpinäkyvyys (0 on täysin läpinäkyvä, 100 on peittävä)</string>
-  <string name="morphe_player_overlay_opacity_invalid_toast">Soittimen peittokuvan läpinäkymättömyyden tulee olla 0–100 välillä</string>
   <!-- layout.searchbar.wideSearchbarPatch -->
-  <string name="morphe_wide_searchbar_title">Ota leveä hakupalkki käyttöön</string>
+  <string name="morphe_searchbar_type_title">Hakupalkki</string>
+  <string name="morphe_searchbar_type_entry_disabled">Pois käytöstä</string>
+  <string name="morphe_searchbar_type_entry_wide">Leveä</string>
+  <string name="morphe_searchbar_type_entry_extra_wide">Erittäin leveä</string>
   <!-- layout.sponsorblock.sponsorBlockPatch -->
   <!-- layout.formfactor.changeFormFactorPatch -->
   <string name="morphe_change_form_factor_title">Laitteen asettelu</string>
@@ -875,24 +958,27 @@ Asetukset → Toisto (tai Automaattinen toisto) → Toista seuraava video"</stri
   <string name="morphe_change_form_factor_entry_4">Ajoneuvo</string>
   <string name="morphe_change_form_factor_user_dialog_message">"Muutokset sisältävät:
 
-Tablettinäkymä
-• Yhteisöjulkaisut on piilotettu
-• Toiston syötteissä -asetus ei ole käytettävissä
-• Remix-painike ja Ääni-painike eivät ole käytettävissä Shortseissa
-• Vanha videotoimintopalkki ei ole kokoonpainettu
+Tabletin asettelu
+• Yhteisön julkaisut ovat piilotettuja
+• Toisto syötteissä -asetus ei ole käytettävissä
+• Remix-painike ja äänipainike eivät ole käytettävissä Shortseissa
+• 'Lisää videoita' -peittokuva ei ehkä ole käytettävissä
+• Vanha, tiivistämätön video-toimintapalkki on näkyvissä
 
-Autonäyttö
+Auton asettelu
 • Syöte on järjestetty aiheiden ja kanavien mukaan
-• Toiston syötteissä -asetus ei ole käytettävissä
-• Remix-painike ja Ääni-painike eivät ole käytettävissä Shortseissa
-• Shorts-videot avautuvat tavallisessa soittimessa
-• Vanha videotoimintopalkki ei ole kokoonpainettu"</string>
+• Toisto syötteissä -asetus ei ole käytettävissä
+• Remix-painike ja äänipainike eivät ole käytettävissä Shortseissa
+• 'Lisää videoita' -peittokuva ei ehkä ole käytettävissä
+• Shorts avautuvat tavallisessa soittimessa
+• Vanha, tiivistämätön video-toimintapalkki on näkyvissä"</string>
   <string name="morphe_tablet_layout_in_player_title">Ota tablettiasettelun käyttöön soittimessa</string>
   <!-- "Restore old video action bar" must be translated the same as morphe_restore_old_video_action_bar_title -->
   <string name="morphe_tablet_layout_in_player_summary">"Palauttaa vanhan soittimen asettelun
 
 Rajoitus: Jos \"Palauta vanha videotoimintopalkki\" on poissa käytöstä, \"Lisää videoita\" -peittokuvio ei välttämättä ole käytettävissä"</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
+  <string name="morphe_spoof_app_version_target_entry_21_11">21.11.48 - Palauta vanha tekstitysten käyttäytyminen</string>
   <string name="morphe_spoof_app_version_target_entry_20_39">20.39.41 - Palauta vanhat tallenteet soittimeen</string>
   <string name="morphe_spoof_app_version_target_entry_20_28">20.28.41 - Poista liian suuri ikoni</string>
   <string name="morphe_spoof_app_version_target_entry_20_13">20.13.41 - Palauttaa kanavan nimen videotoistimen alle</string>
@@ -902,8 +988,8 @@ Rajoitus: Jos \"Palauta vanha videotoimintopalkki\" on poissa käytöstä, \"Lis
   <!-- layout.music.overrideYouTubeMusicButtonsPatch -->
   <string name="morphe_override_youtube_music_buttons_title">Ohita YouTube Musicin painikkeet</string>
   <string name="morphe_override_youtube_music_buttons_summary">Avaa haluamasi musiikkisovelluksen oletus-YouTube-Musiikki-sovelluksen sijaan.</string>
-  <string name="morphe_music_package_name_title">Musiikkisovelluksen paketin nimi</string>
-  <string name="morphe_music_package_name_summary">Asennetun musiikkisovelluksesi paketin nimi</string>
+  <string name="morphe_custom_music_package_name_title">Musiikkisovelluksen paketin nimi</string>
+  <string name="morphe_custom_music_package_name_summary">Asentamasi musiikkisovelluksen paketin nimi</string>
   <!-- layout.startpage.changeStartPagePatch -->
   <string name="morphe_change_start_page_title">Aloitussivu</string>
   <string name="morphe_change_start_page_entry_default">Oletus</string>
@@ -953,16 +1039,16 @@ Rajoitus: Jos \"Palauta vanha videotoimintopalkki\" on poissa käytöstä, \"Lis
   <string name="morphe_miniplayer_disable_resuming_summary">Poistaa käytöstä ’Jatka katselua’ -minisoittimen, YouTube Premium -ominaisuuden, joka ilmestyy sovelluksen käynnistyessä</string>
   <string name="morphe_miniplayer_screen_title">Minisoitin</string>
   <string name="morphe_miniplayer_screen_summary">Muokkaa pienennetyn videotoistimen ulkoasua ja toimintaa</string>
-  <string name="morphe_miniplayer_not_available_summary">YouTube poisti kaikki lisäminisoittimet. Muuttaaksesi minisoittimen tyyppiä, paikkaa YouTube 21.28.207 tai vanhempi versio</string>
   <string name="morphe_miniplayer_type_title">Minisoittimen tyyppi</string>
   <string name="morphe_miniplayer_type_entry_0">Pois käytöstä</string>
   <string name="morphe_miniplayer_type_entry_1">Oletus</string>
   <string name="morphe_miniplayer_type_entry_2">Minimaalinen</string>
-  <string name="morphe_miniplayer_type_entry_3">Tabletti</string>
-  <string name="morphe_miniplayer_type_entry_4">Moderni 1</string>
-  <string name="morphe_miniplayer_type_entry_5">Moderni 2</string>
-  <string name="morphe_miniplayer_type_entry_6">Moderni 3</string>
-  <string name="morphe_miniplayer_type_entry_7">Moderni 4</string>
+  <string name="morphe_miniplayer_type_entry_3">Minimaalinen 2</string>
+  <string name="morphe_miniplayer_type_entry_4">Tabletti</string>
+  <string name="morphe_miniplayer_type_entry_5">Moderni 1</string>
+  <string name="morphe_miniplayer_type_entry_6">Moderni 2</string>
+  <string name="morphe_miniplayer_type_entry_7">Moderni 3</string>
+  <string name="morphe_miniplayer_type_entry_8">Moderni 4</string>
   <string name="morphe_miniplayer_disable_rounded_corners_title">Poista pyöristetyt kulmat käytöstä</string>
   <string name="morphe_miniplayer_disable_drag_and_drop_title">Poista vedä ja pudota käytöstä</string>
   <string name="morphe_miniplayer_disable_drag_and_drop_summary">Estää pienennetyn soittimen vetämisen näytön eri kulmiin</string>
@@ -978,8 +1064,23 @@ Rajoitus: Jos \"Palauta vanha videotoimintopalkki\" on poissa käytöstä, \"Lis
   <string name="morphe_miniplayer_width_dip_invalid_toast">Pikselikoon tulee olla %1$s ja %2$s välillä</string>
   <string name="morphe_miniplayer_opacity_title">Peittokuvan läpinäkymättömyys</string>
   <string name="morphe_miniplayer_opacity_summary">Säädä läpinäkyvyys (0 on täysin läpinäkyvä, 100 on peittävä)</string>
-  <string name="morphe_miniplayer_opacity_invalid_toast">Minisoittimen peittokuvan läpinäkymättömyyden tulee olla 0–100 välillä</string>
+  <!-- misc.fix.fixBackToExitGesturePatch -->
+  <string name="morphe_back_button_always_exits_feed_title">Takaisin-painike sulkee syötteen</string>
+  <string name="morphe_back_button_always_exits_feed_summary">Takaisin-painikkeen painaminen sulkee aina sovelluksen sen sijaan, että se vierittäisi syötteen alkuun</string>
   <!-- layout.theme.themePatch -->
+  <string name="morphe_theme_color_light_title">Vaalean teeman tausta</string>
+  <string name="morphe_theme_color_light_entry_2">Valkoinen</string>
+  <string name="morphe_theme_color_light_entry_3">Material You (Valkoinen)()</string>
+  <string name="morphe_theme_color_light_entry_9">Vaalea pinkki</string>
+  <string name="morphe_theme_color_light_entry_10">Vaaleansininen</string>
+  <string name="morphe_theme_color_light_entry_11">Vaalea vihreä</string>
+  <string name="morphe_theme_color_light_entry_12">Vaaleankeltainen</string>
+  <string name="morphe_theme_color_light_entry_13">Vaalea oranssi</string>
+  <string name="morphe_theme_color_light_entry_14">Vaalea punainen</string>
+  <string name="morphe_theme_color_light_custom_title">Mukautettu vaalea tausta</string>
+  <string name="morphe_theme_color_light_custom_summary">Aseta vaalean teeman taustaväri</string>
+  <string name="morphe_theme_color_change_foreground_title">Vaihda etualan väriä</string>
+  <string name="morphe_theme_color_change_foreground_summary">Käytä teeman väriä tekstiin ja kuvakkeisiin</string>
   <string name="morphe_gradient_loading_screen_title">Ota liukuvärillinen latausruutu käyttöön</string>
   <string name="morphe_gradient_loading_screen_summary">Näyttää gradienttitaustan latausnäytössä yksivärisen sijaan</string>
   <string name="morphe_splash_screen_animation_style_title">Aloitussivun tyyli</string>
@@ -997,7 +1098,7 @@ Rajoitus: Jos \"Palauta vanha videotoimintopalkki\" on poissa käytöstä, \"Lis
   <string name="morphe_header_logo_title">Ylätunnisteen logo</string>
   <string name="morphe_header_logo_entry_1">Oletus</string>
   <string name="morphe_header_logo_entry_2">Tavallinen</string>
-  <!-- Translations should match the language used in 'morphe_custom_branding_icon_entry_3'. -->
+  <!-- Translations should match the language used in 'morphe_custom_branding_icon_entry_7'. -->
   <string name="morphe_header_logo_entry_5">Mukautettu</string>
   <!-- layout.thumbnails.bypassImageRegionRestrictionsPatch -->
   <string name="morphe_bypass_image_region_restrictions_title">Ohita kuvien alueelliset rajoitukset</string>
@@ -1069,12 +1170,6 @@ Napauta tästä saadaksesi lisätietoja DeArrowista"</string>
   <!-- video.quality.rememberVideoQualityPatch -->
   <!-- Translations should match the language used in 'morphe_custom_playback_speeds_auto'. -->
   <string name="morphe_video_quality_default_entry_1">Automaattinen</string>
-  <string name="morphe_override_initial_video_quality_title">Ohita alkuperäinen videon laatu</string>
-  <!-- 'Force AVC (H.264) codec' should be the same translation used for 'morphe_force_avc_codec_title'. -->
-  <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
-  <string name="morphe_override_initial_video_quality_summary">"Korjaa ongelma, jossa oletusvideon laatua ei käytetä heti videon käynnistyksen jälkeen
-
-Rajoitus: Toisto ei ehkä toimi joissakin laitteissa, jos 'Väärennä videostriimejä' on asetettu 'Android VR' -tilaan ja 'Pakota AVC (H.264) -koodekki' on käytössä."</string>
   <string name="morphe_remember_video_quality_last_selected_title">Muista videon laatu</string>
   <string name="morphe_remember_video_quality_last_selected_summary">Käyttää manuaalista laatuvalintaasi kaikkiin tuleviin videoihin</string>
   <string name="morphe_remember_video_quality_last_selected_toast_title">Laadun muutosilmoitukset</string>
@@ -1114,8 +1209,29 @@ Rajoitus: Toisto ei ehkä toimi joissakin laitteissa, jos 'Väärennä videostri
   <string name="morphe_remember_playback_speed_toast">Oletusarvoinen toistonopeus muutettu: %s</string>
   <string name="morphe_disable_playback_speed_music_title">Käytä normaalinopeutta musiikille</string>
   <string name="morphe_disable_playback_speed_music_summary">Toista musiikkivideot aina 1.0x nopeudella</string>
+  <string name="morphe_playback_speed_channel_whitelist_title">Toistonopeuden sallittujen kanavien luettelo</string>
+  <string name="morphe_playback_speed_channel_whitelist_summary">Sallittujen kanavien videot toistetaan aina nopeudella 1.0x</string>
+  <string name="morphe_playback_speed_channel_whitelist_flyout_add">Lisää kanava toistonopeuden sallittujen luetteloon</string>
+  <string name="morphe_playback_speed_channel_whitelist_flyout_remove">Poista kanava toistonopeuden sallittujen luettelosta</string>
+  <string name="morphe_enable_playback_audio_pitch_controls_title">Ota käyttöön äänenkorkeuden säätimet</string>
+  <string name="morphe_playback_audio_pitch_default_title">Toiston oletusäänenkorkeus</string>
+  <string name="morphe_remember_playback_audio_pitch_toast">Toiston oletusäänenkorkeus muutettiin: %s</string>
+  <string name="morphe_playback_audio_time_stretching_title">Äänen aikavenytys</string>
+  <string name="morphe_playback_audio_time_stretching_summary">Mahdollistaa nopeuden ja äänenkorkeuden säätämisen toisistaan riippumatta, saattaa aiheuttaa äänihäiriöitä</string>
+  <!-- video.livestream.rememberLiveStreamPositionPatch -->
+  <string name="morphe_remember_live_stream_position_title">Muista suoran lähetyksen toistopaikka</string>
+  <string name="morphe_remember_live_stream_position_summary">Muistaa ja jatkaa toistopaikasta käynnissä olevissa suorissa lähetyksissä sen sijaan, että siirtyisi nykyiseen live-kohtaan</string>
+  <string name="morphe_remember_live_stream_position_user_dialog_message">Tämä ominaisuus ei toimi 24/7-suorissa lähetyksissä eikä muissa lähetyksissä, jotka ovat \'aina päällä\'</string>
   <!-- video.codecs.disableVideoCodecsPatch -->
   <string name="morphe_disable_hdr_video_title">Poista HDR-video käytöstä</string>
+  <string name="morphe_force_hdr_video_title">Pakota HDR-video</string>
+  <string name="morphe_force_hdr_video_summary">Pakottaa sovelluksen tunnistamaan tämän laitteen HDR-yhteensopivaksi</string>
+  <string name="morphe_force_hdr_video_user_dialog_message">"Käytä tätä, jos HDR-dekoodaus toimii, mutta YouTube ei tarjoa HDR:ää, kuten jotkin HyperOS-laitteet, jotka piilottavat HLG:n.
+
+Rajoitukset:
+• Värit voivat näyttää vääriltä, jos näyttö ei oikeasti pysty näyttämään HDR:ää
+• Toisto voi epäonnistua, jos dekooderi ei pysty käsittelemään HDR:ää
+• HDR riippuu edelleen videovirtoja huijaavasta asiakasohjelmasta"</string>
   <string name="morphe_force_avc_codec_title">Pakota AVC (H.264) -koodekki</string>
   <string name="morphe_force_avc_codec_user_dialog_message">"Hyödyt:
 • Voi parantaa akunkestoa
@@ -1151,6 +1267,7 @@ AV1-videon toisto saattaa pätkiä."</string>
   <string name="morphe_spoof_video_streams_about_js">• Jos deobfuskointi epäonnistuu, toistaminen saattaa epäonnistua</string>
   <!-- "Force original audio" should match the language used in 'morphe_force_original_audio_title'. -->
   <string name="morphe_spoof_video_streams_about_no_force_original_audio">• Pakota alkuperäinen ääni ei ole käytettävissä</string>
+  <string name="morphe_spoof_video_streams_about_sign_in_to_vr_required">• Kirjautuminen Android VR -tilaan on pakollista</string>
   <!-- Quality refers to video quality -->
   <string name="morphe_spoof_video_streams_about_720p_max">• Laatu saattaa rajoittua 720p:hen</string>
   <string name="morphe_spoof_video_streams_player_js_variant_title">Pelaajan JavaScript-versio</string>

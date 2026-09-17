@@ -12,6 +12,8 @@ import androidx.annotation.Nullable;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import app.morphe.extension.music.patches.lyrics.LyricsManager;
+import app.morphe.extension.music.patches.lyrics.LyricsPanelInstaller;
 import app.morphe.extension.music.settings.Settings;
 import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.patches.TreeNodeElementPatch.LithoGetBufferContainerInterface;
@@ -38,6 +40,7 @@ public final class MusicActionButtonsFilter extends Filter {
         LIKE_DISLIKE(Settings.HIDE_LIKE_DISLIKE_BUTTON),
         DOWNLOAD(Settings.HIDE_DOWNLOAD_BUTTON),
         COMMENTS(Settings.HIDE_COMMENTS_BUTTON),
+        LIVE_CHAT_REPLAY(Settings.HIDE_LIVE_CHAT_REPLAY_BUTTON),
         LYRICS(Settings.HIDE_LYRICS_BUTTON),
         SHARE(Settings.HIDE_SHARE_BUTTON),
         RADIO(Settings.HIDE_RADIO_BUTTON),
@@ -66,6 +69,7 @@ public final class MusicActionButtonsFilter extends Filter {
     // (`offlinelist`) is the only download-specific string that survives into the buffer.
     private static final String DOWNLOAD_PROTO_MARKER = "offlinelist";
     private static final String COMMENTS_MARKER = "music-comment-panel";
+    private static final String LIVE_CHAT_REPLAY_MARKER = "live-chat-item-section";
     private static final String LYRICS_MARKER = "music_watch_lyrics_panel";
     private static final String SHARE_MARKER = "timestamp_share_switch_button_entity_key";
     private static final String RADIO_MARKER = "RDAMVM";
@@ -75,6 +79,7 @@ public final class MusicActionButtonsFilter extends Filter {
     // icon as data, and the icon lives in the first ~500 bytes of the buffer, well before
     // the shared icon catalogue that trails at the end.
     private static final String COMMENTS_ICON = "_text_bubble_";
+    private static final String LIVE_CHAT_REPLAY_ICON = "_bubble_stack_";
     private static final String LYRICS_ICON = "_quote_";
     private static final String THUMB_UP_ICON = "_thumb_up_";
     private static final String THUMB_DOWN_ICON = "_thumb_down_";
@@ -145,6 +150,9 @@ public final class MusicActionButtonsFilter extends Filter {
             if (strings.contains(COMMENTS_MARKER)) {
                 return Settings.HIDE_COMMENTS_BUTTON.get();
             }
+            if (strings.contains(LIVE_CHAT_REPLAY_MARKER)) {
+                return Settings.HIDE_LIVE_CHAT_REPLAY_BUTTON.get();
+            }
             if (strings.contains(LYRICS_MARKER)) {
                 return Settings.HIDE_LYRICS_BUTTON.get();
             }
@@ -174,6 +182,9 @@ public final class MusicActionButtonsFilter extends Filter {
         try {
             if (!identifier.startsWith(VIDEO_ACTION_BAR_PREFIX)) {
                 return;
+            }
+            if (LyricsManager.getInstance().hasLyrics()) {
+                LyricsPanelInstaller.enableLyricsButton();
             }
             if (Settings.HIDE_ACTION_BAR.get()) {
                 treeNodeResultList.clear();
@@ -224,6 +235,7 @@ public final class MusicActionButtonsFilter extends Filter {
             return ActionButton.DOWNLOAD;
         }
         if (contents.contains(COMMENTS_MARKER)) return ActionButton.COMMENTS;
+        if (contents.contains(LIVE_CHAT_REPLAY_MARKER)) return ActionButton.LIVE_CHAT_REPLAY;
         if (contents.contains(LYRICS_MARKER)) return ActionButton.LYRICS;
         if (contents.contains(SHARE_MARKER)) return ActionButton.SHARE;
         if (contents.contains(RADIO_MARKER)) return ActionButton.RADIO;
@@ -236,6 +248,7 @@ public final class MusicActionButtonsFilter extends Filter {
             return ActionButton.LIKE_DISLIKE;
         }
         if (head.contains(COMMENTS_ICON)) return ActionButton.COMMENTS;
+        if (head.contains(LIVE_CHAT_REPLAY_ICON)) return ActionButton.LIVE_CHAT_REPLAY;
         if (head.contains(LYRICS_ICON)) return ActionButton.LYRICS;
         // Save button has no unique endpoint marker of its own; it's the fall-through.
         return ActionButton.SAVE;

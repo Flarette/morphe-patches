@@ -20,8 +20,9 @@ import app.morphe.patcher.methodCall
 import app.morphe.patcher.newInstance
 import app.morphe.patcher.opcode
 import app.morphe.patcher.string
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
+import app.morphe.patches.shared.FormatStreamModelToStringFingerprint
 import app.morphe.patches.youtube.shared.SeekbarFingerprint
 import app.morphe.patches.youtube.shared.VideoStreamingDataToStringFingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
@@ -134,7 +135,7 @@ internal object SlideToSeekFingerprint : Fingerprint(
 
 internal object FullscreenLargeSeekbarFeatureFlagFingerprint : Fingerprint(
     filters = listOf(
-        literal(45691569)
+        literal(45691569) // 20.28 - 21.35
     )
 )
 
@@ -156,17 +157,10 @@ internal object VideoStreamingDataAllowSeekingFingerprint : Fingerprint(
     )
 )
 
-private object FormatStreamModelClassFingerprint : Fingerprint(
-    returnType = "Ljava/lang/String;",
-    filters = listOf(
-        string("FormatStream(itag=")
-    )
-)
-
 // DVR window duration in seconds; 0 for non-DVR streams.
 // Caller multiplies result by 1e6 with 4-hour fallback when <= 0, logs "windowMaxMediaTimeUs".
 internal object FormatStreamModelMaxDVRDurationFingerprint : Fingerprint(
-    classFingerprint = FormatStreamModelClassFingerprint,
+    classFingerprint = FormatStreamModelToStringFingerprint,
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
     returnType = "D",
     parameters = listOf(),

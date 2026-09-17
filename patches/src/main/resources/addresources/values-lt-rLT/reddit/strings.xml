@@ -16,7 +16,6 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="morphe_screen_ads_title">Reklamos</string>
   <string name="morphe_hide_post_ads_title">Paslėpti vaizdo reklamas</string>
   <string name="morphe_hide_comment_ads_title">Paslėpti komentaro reklamas</string>
@@ -57,4 +56,7 @@ Second \"item\" text"</string>
   <string name="morphe_open_links_directly_summary">Apeina peradresavimo URL adresus, kai atidaroma išorinės nuorodos</string>
   <string name="morphe_open_links_externally_title">Atverti nuorodas išorėje</string>
   <string name="morphe_open_links_externally_summary">Atidaryti nuorodoas jūsų naršyklėje, o ne programoje integruotoje naršyklėje</string>
+  <string name="morphe_app_icon_title">Programėlės piktograma</string>
+  <string name="morphe_app_icon_default">Numatytasis</string>
+  <string name="morphe_app_icon_unknown">Nežinoma</string>
 </resources>

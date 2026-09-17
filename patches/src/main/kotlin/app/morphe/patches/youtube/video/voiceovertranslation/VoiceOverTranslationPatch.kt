@@ -26,6 +26,7 @@ import app.morphe.patches.youtube.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.morphe.patches.youtube.video.information.videoInformationPatch
 import app.morphe.patches.youtube.video.information.videoTimeHook
 import app.morphe.patches.youtube.video.videoid.hookVideoId
+import app.morphe.patches.youtube.video.volume.playerVolumeHookPatch
 import app.morphe.util.ResourceGroup
 import app.morphe.util.copyResources
 
@@ -64,7 +65,7 @@ val voiceOverTranslationPatch = bytecodePatch(
         playerOverlayButtonsHookPatch,
         legacyPlayerControlsPatch,
         voiceOverTranslationResourcePatch,
-        votOriginalVolumeBytecodePatch
+        playerVolumeHookPatch
     )
 
     compatibleWith(COMPATIBILITY_YOUTUBE)
@@ -75,7 +76,7 @@ val voiceOverTranslationPatch = bytecodePatch(
                 key = "morphe_vot_screen",
                 sorting = PreferenceScreenPreference.Sorting.UNSORTED,
                 preferences = setOf(
-                    SwitchPreference("morphe_vot_enabled"),
+                    SwitchPreference("morphe_vot_enabled", summary = true),
                     ListPreference("morphe_vot_caption_language"),
                     NonInteractivePreference("morphe_vot_max_speech_rate",
                         tag = "app.morphe.extension.shared.settings.preference.SeekBarPreference",

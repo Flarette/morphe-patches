@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">标题logo</string>
   <string name="morphe_header_logo_entry_1">默认</string>
   <string name="morphe_header_logo_entry_3">自定义</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">播放专辑音频曲目</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">Play the album audio only version of songs instead of a music video. Requires \'Spoof video streams\' and more.</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">使用第三方下载应用下载音乐视频、播客或歌曲</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x —— 交叉淡入仅在 9.x 及更高版本上运行"</strin
   <string name="morphe_music_hide_action_bar_title">隐藏操作栏</string>
   <string name="morphe_music_hide_like_dislike_button_title">隐藏「赞」和「踩」按钮</string>
   <string name="morphe_music_hide_comments_button_title">隐藏评论按钮</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">隐藏\'直播聊天回放\'按钮</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">隐藏歌词按钮</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x —— 交叉淡入仅在 9.x 及更高版本上运行"</strin
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">隐藏下载按钮</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">隐藏开始电台按钮</string>
+  <string name="morphe_music_hide_radio_button_title">隐藏\'开始电台\'按钮</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">弹出菜单</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">选择在播放器和队列的弹出菜单中显示哪些组件</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x —— 交叉淡入仅在 9.x 及更高版本上运行"</strin
   <string name="morphe_music_scrobbling_custom_regex_summary">输入自定义正则表达式以移除歌曲标题、艺术家或专辑中的额外文本。例如：(?i)\\s*\\((clean|explicit)\\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">解析标题中的艺术家和曲目</string>
   <string name="morphe_music_scrobbling_parse_title_summary">使用 \" - \" 分隔符从视频标题中提取艺术家和曲目名称。对于重新上传的内容，当频道名称可用作艺术家时，此功能很有用。</string>
+  <string name="morphe_music_scrobbling_guess_album_title">补全缺失的专辑</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">当音乐不包含专辑时，请在 Last.fm 上查询，以便你的 scrobble 完整。</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">关于播放记录</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,32 +308,23 @@ YouTube Music 8.x —— 交叉淡入仅在 9.x 及更高版本上运行"</strin
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">使用第三方歌词</string>
   <string name="morphe_music_lyrics_enabled_summary">从第三方服务获取歌词，如果找不到则回退到内置歌词</string>
-  <string name="morphe_music_lyrics_source_title">歌词服务</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB，然后是酷狗</string>
+  <string name="morphe_music_lyrics_section_about_title">关于</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">点击歌词行以跳转</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">点击一行将跳到歌曲的该时刻</string>
   <string name="morphe_music_lyrics_show_copy_button_title">显示复制按钮</string>
   <string name="morphe_music_lyrics_show_translate_button_title">显示翻译按钮</string>
+  <string name="morphe_music_lyrics_saved">已保存</string>
   <string name="morphe_music_lyrics_text_size_title">文本大小</string>
   <string name="morphe_music_lyrics_text_size_summary">歌词文本的大小</string>
   <string name="morphe_music_lyrics_offset_ms_title">时间偏移</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">将同步歌词向前或向后移动。如果歌词超前于歌曲，请使用正值</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">来源：%s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">翻译</string>
-  <string name="morphe_music_lyrics_translate_hide">显示原始歌词</string>
   <string name="morphe_music_lyrics_translating">正在翻译…</string>
   <string name="morphe_music_lyrics_translate_failed">无法翻译歌词</string>
-  <string name="morphe_music_lyrics_copy">复制</string>
   <string name="morphe_music_lyrics_copied">复制到剪贴板</string>
-  <string name="morphe_music_lyrics_about_title">关于第三方歌词</string>
-  <string name="morphe_music_lyrics_about_summary">"歌词通过曲目标题和艺术家查找，因此元数据不寻常的曲目可能找不到任何内容，或者找到错误的版本
-
-同步歌词跟随播放。如果它们漂移，请调整时间偏移
-
-如果没有找到第三方歌词，则会显示内置歌词"</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - 禁用粗体图标</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 - 恢复播放器的「接下来播放」「歌词」和「相关」标签页</string>

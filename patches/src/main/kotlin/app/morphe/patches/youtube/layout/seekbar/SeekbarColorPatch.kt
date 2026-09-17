@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Morphe.
+ * https://github.com/MorpheApp/morphe-patches
+ *
+ * Original hard forked code:
+ * https://github.com/ReVanced/revanced-patches/commit/724e6d61b2ecd868c1a9a37d465a688e83a74799
+ *
+ * See the included NOTICE file for GPLv3 Section 7 terms that apply to Morphe contributions.
+ */
+
 package app.morphe.patches.youtube.layout.seekbar
 
 import app.morphe.patcher.Fingerprint
@@ -8,7 +18,6 @@ import app.morphe.patcher.methodCall
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
-import app.morphe.patches.all.misc.resources.resourceMappingPatch
 import app.morphe.patches.shared.layout.theme.lithoColorHookPatch
 import app.morphe.patches.shared.layout.theme.lithoColorOverrideHook
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
@@ -35,7 +44,6 @@ val seekbarColorPatch = bytecodePatch(
     dependsOn(
         sharedExtensionPatch,
         versionCheckPatch,
-        resourceMappingPatch,
         lithoColorHookPatch({ is_21_30_or_greater })
     )
 
@@ -123,6 +131,14 @@ val seekbarColorPatch = bytecodePatch(
         }
 
         // region apply seekbar custom color to splash screen animation.
+
+        // Force newer Lottie animation.
+        LottieSplashScreenFeatureFlagFingerprint.matchAll().forEach {
+            it.method.insertLiteralOverride(
+                it.instructionMatches.first().index,
+                "$EXTENSION_CLASS->useLotteLaunchSplashScreen(Z)Z"
+            )
+        }
 
         // Hook the splash animation to set the seekbar color.
         YouTubeActivityOnCreateFingerprint.method.apply {

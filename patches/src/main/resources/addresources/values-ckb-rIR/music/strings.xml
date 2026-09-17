@@ -21,6 +21,8 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">لۆگۆی سەرەوە</string>
   <string name="morphe_header_logo_entry_1">بنەڕەت</string>
   <string name="morphe_header_logo_entry_3">باو</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
   <!-- interaction.downloads.downloadsPatch -->
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- misc.settings.settingsPatch -->
@@ -82,6 +84,8 @@ Second \"item\" text"</string>
   <!-- layout.hide.actionbuttons.hideActionButtonsPatch -->
   <string name="morphe_music_hide_action_bar_title">شاردنەوەی باری کردار</string>
   <string name="morphe_music_hide_comments_button_title">شاردنەوەی دوگمەی کۆمێنتە</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">دوگم کردن دوگمەی \"دووبارە بینەوەی چاتە زیندییەکە\"</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_share_button_title">جفيء دسته بتونه</string>
@@ -143,9 +147,10 @@ Second \"item\" text"</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <!-- 'scrobbling' must be kept untranslated -->
   <!-- layout.lyrics.lyricsPatch -->
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
+  <string name="morphe_music_lyrics_section_about_title">دربارە</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_copy">وێنەلەمەر</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
 </resources>

@@ -128,7 +128,7 @@
     <string-array name="morphe_spoof_video_streams_client_type_entries">
         <item>Android Music Reel</item>
         <item>Android Music No SDK</item>
-        <item>Android VR</item>
+        <item>Android VR Downgraded</item>
         <item>TV</item>
         <item>TV Simply</item>
         <item>visionOS</item>
@@ -136,7 +136,7 @@
     <string-array name="morphe_spoof_video_streams_client_type_entry_values">
         <item>ANDROID_MUSIC_REEL</item>
         <item>ANDROID_MUSIC_NO_SDK</item>
-        <item>ANDROID_VR</item>
+        <item>ANDROID_VR_DASH</item>
         <item>TV_SABR</item>
         <item>TV_SIMPLY</item>
         <item>VISIONOS_1_02</item>
@@ -152,14 +152,4 @@
         <item>9.13.51</item>
     </string-array>
 
-    <string-array name="morphe_music_lyrics_source_entries">
-        <item>@string/morphe_music_lyrics_source_entry_lrclib_then_kugou</item>
-        <item>@string/morphe_music_lyrics_source_entry_lrclib</item>
-        <item>@string/morphe_music_lyrics_source_entry_kugou</item>
-    </string-array>
-    <string-array name="morphe_music_lyrics_source_entry_values">
-        <item>LRCLIB_THEN_KUGOU</item>
-        <item>LRCLIB</item>
-        <item>KUGOU</item>
-    </string-array>
 </resources>

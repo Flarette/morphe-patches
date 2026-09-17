@@ -1,14 +1,33 @@
+/*
+ * Copyright 2026 Morphe.
+ * https://github.com/MorpheApp/morphe-patches
+ *
+ * See the included NOTICE file for GPLv3 Section 7 terms that apply to this code.
+ */
+
 package app.morphe.extension.youtube.patches;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableWrapper;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import androidx.annotation.Nullable;
+
+import java.lang.ref.WeakReference;
+import java.util.function.Consumer;
+
 import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.ResourceType;
 import app.morphe.extension.shared.ResourceUtils;
 import app.morphe.extension.shared.Utils;
+import app.morphe.extension.shared.settings.preference.SeekBarPreference;
 import app.morphe.extension.youtube.settings.Settings;
 
 @SuppressWarnings("unused")
@@ -18,6 +37,14 @@ public final class HidePlayerOverlayButtonsPatch {
 
     private static final boolean HIDE_AUTOPLAY_BUTTON_ENABLED = Settings.HIDE_AUTOPLAY_BUTTON.get();
     private static final Boolean HIDE_FULLSCREEN_BUTTON_ENABLED = Settings.HIDE_FULLSCREEN_BUTTON.get();
+
+    private static final int CONTROL_BUTTONS_BACKGROUND_OPACITY =
+            SeekBarPreference.clampToRange(Settings.PLAYER_CONTROL_BUTTONS_BACKGROUND_OPACITY);
+
+    /** At the app default the drawables are left untouched, so the stock look stays exact. */
+    private static final boolean CONTROL_BUTTONS_BACKGROUND_OPACITY_CHANGED =
+            CONTROL_BUTTONS_BACKGROUND_OPACITY
+                    != Settings.PLAYER_CONTROL_BUTTONS_BACKGROUND_OPACITY.defaultValue;
 
     /**
      * Injection point.
@@ -30,13 +57,28 @@ public final class HidePlayerOverlayButtonsPatch {
      * Injection point.
      */
     public static int hideCastButton(int original) {
-        return Settings.HIDE_CAST_BUTTON.get() ? View.GONE : original;
+        if (Settings.HIDE_CAST_BUTTON.get()) {
+            return View.GONE;
+        }
+
+        return original;
     }
 
     /**
      * Injection point.
      */
-    public static boolean getCastButtonOverride(boolean original) {
+    public static void hideCastButton(View parentView) {
+        if (!Settings.HIDE_CAST_BUTTON.get()) {
+            return;
+        }
+
+        hideView(parentView, "media_route_button");
+    }
+
+    /**
+     * Injection point.
+     */
+    public static boolean hideCastButton(boolean original) {
         if (Settings.HIDE_CAST_BUTTON.get()) {
             return false;
         }
@@ -91,12 +133,6 @@ public final class HidePlayerOverlayButtonsPatch {
     private static final boolean HIDE_PLAYER_PREVIOUS_NEXT_BUTTONS_ENABLED
             = Settings.HIDE_PLAYER_PREVIOUS_NEXT_BUTTONS.get();
 
-    private static final int PLAYER_CONTROL_PREVIOUS_BUTTON_TOUCH_AREA_ID = ResourceUtils.getIdentifierOrThrow(
-            ResourceType.ID, "player_control_previous_button_touch_area");
-
-    private static final int PLAYER_CONTROL_NEXT_BUTTON_TOUCH_AREA_ID = ResourceUtils.getIdentifierOrThrow(
-            ResourceType.ID, "player_control_next_button_touch_area");
-
     /**
      * Injection point.
      */
@@ -105,17 +141,11 @@ public final class HidePlayerOverlayButtonsPatch {
             return;
         }
 
-        // Must use a deferred call to main thread to hide the button.
-        // Otherwise, the layout crashes if set to hidden now.
-        Utils.runOnMainThread(() -> {
-            hideView(parentView, PLAYER_CONTROL_PREVIOUS_BUTTON_TOUCH_AREA_ID);
-            hideView(parentView, PLAYER_CONTROL_NEXT_BUTTON_TOUCH_AREA_ID);
-        });
+        hideView(parentView, "player_control_previous_button_touch_area");
+        hideView(parentView, "player_control_next_button_touch_area");
     }
 
 
-    private static final int PLAYER_OVERFLOW_BUTTON_ID = ResourceUtils.getIdentifierOrThrow(
-            ResourceType.ID, "player_overflow_button");
     /**
      * Injection point.
      */
@@ -124,7 +154,7 @@ public final class HidePlayerOverlayButtonsPatch {
             return;
         }
 
-        Utils.runOnMainThread(() -> hideView(parentView, PLAYER_OVERFLOW_BUTTON_ID));
+        hideView(parentView, "player_overflow_button");
     }
 
     /**
@@ -150,41 +180,190 @@ public final class HidePlayerOverlayButtonsPatch {
     /**
      * Injection point.
      */
-    public static View hidePlayerControlButtonsBackground(View rootView) {
+    public static View styleControlButtonsBackground(View rootView) {
         try {
-            if (!Settings.HIDE_PLAYER_CONTROL_BUTTONS_BACKGROUND.get()) {
-                return rootView;
-            }
-
             // Each button is an ImageView with a background set to another drawable.
-            removeImageViewsBackgroundRecursive(rootView);
+            if (Settings.HIDE_PLAYER_CONTROL_BUTTONS_BACKGROUND.get()) {
+                forEachImageViewRecursive(rootView, imageView -> imageView.setBackground(null));
+            } else if (CONTROL_BUTTONS_BACKGROUND_OPACITY_CHANGED) {
+                forEachImageViewRecursive(rootView, imageView -> {
+                    Drawable background = imageView.getBackground();
+                    if (background != null) {
+                        imageView.setBackground(applyControlButtonsBackgroundOpacity(background));
+                    }
+                });
+
+                stylePillBackgrounds(rootView);
+            }
         } catch (Exception ex) {
-            Logger.printException(() -> "removePlayerControlButtonsBackground failure", ex);
+            Logger.printException(() -> "styleControlButtonsBackground failure", ex);
         }
 
         return rootView;
     }
 
-    private static void hideView(View parentView, int resourceId) {
-        View nextPreviousButton = parentView.findViewById(resourceId);
+    /**
+     * Bottom overlay views that carry the same background as the control buttons,
+     * but drawn as a pill instead of a circle.
+     */
+    private static final String[] PILL_BACKGROUND_RESOURCE_NAMES = {
+            "timestamps_container", // Current time and duration.
+            "time_bar_chapter_title",
+            "time_bar_timeline_title",
+    };
 
-        if (nextPreviousButton == null) {
-            Logger.printException(() -> "Could not find player previous/next button");
+    private static class PillBackground {
+        private final int id;
+        private WeakReference<View> viewRef = new WeakReference<>(null);
+        /** ConstantState of the background the opacity was last applied to. */
+        @Nullable
+        private Drawable.ConstantState backgroundSnapshot;
+
+        PillBackground(String resourceName) {
+            id = ResourceUtils.getIdentifier(ResourceType.ID, resourceName);
+        }
+
+        /**
+         * The timestamps pill is a container nested inside the one carrying the id,
+         * and older app targets leave that inner container unnamed.
+         */
+        private static View pillOf(View view) {
+            if (view instanceof ViewGroup group && group.getChildCount() > 0) {
+                View first = group.getChildAt(0);
+                if (first instanceof ViewGroup inner) {
+                    return inner;
+                }
+            }
+            return view;
+        }
+
+        void update(View rootView) {
+            if (id == 0) return;
+
+            View pill = viewRef.get();
+            if (pill == null || !pill.isAttachedToWindow()) {
+                View container = rootView.findViewById(id);
+                if (container == null) return;
+
+                pill = pillOf(container);
+                viewRef = new WeakReference<>(pill);
+                backgroundSnapshot = null;
+            }
+
+            Drawable background = pill.getBackground();
+            if (background == null) return;
+
+            // A null state cannot be tracked, so fall through and rely on mutate() being idempotent.
+            Drawable.ConstantState state = background.getConstantState();
+            if (state != null && state == backgroundSnapshot) return;
+
+            Drawable styled = applyControlButtonsBackgroundOpacity(background);
+            if (styled != background) {
+                pill.setBackground(styled);
+            }
+            backgroundSnapshot = styled.getConstantState();
+        }
+    }
+
+    /**
+     * The pills live in the bottom overlay container, which is inflated from a stub of its own
+     * and can appear after the control buttons, so they are resolved on a draw pass instead.
+     */
+    private static void stylePillBackgrounds(View controlsView) {
+        // The buttons and the bottom overlay are inflated into the same controls layout,
+        // so the pills are searched for from the shared parent and not from the buttons.
+        if (!(controlsView.getParent() instanceof ViewGroup controlsLayout)) {
+            Logger.printDebug(() -> "Unknown control buttons parent: " + controlsView.getParent());
             return;
         }
 
-        Logger.printDebug(() -> "Hiding previous/next button");
-        Utils.hideViewByRemovingFromParentUnderCondition(true, nextPreviousButton);
+        PillBackground[] pills = new PillBackground[PILL_BACKGROUND_RESOURCE_NAMES.length];
+        for (int i = 0, length = pills.length; i < length; i++) {
+            pills[i] = new PillBackground(PILL_BACKGROUND_RESOURCE_NAMES[i]);
+        }
+
+        controlsView.getViewTreeObserver().addOnPreDrawListener(() -> {
+            try {
+                for (PillBackground pill : pills) {
+                    pill.update(controlsLayout);
+                }
+            } catch (Exception ex) {
+                Logger.printDebug(() -> "Could not style player overlay pill background", ex);
+            }
+            return true;
+        });
     }
 
-    private static void removeImageViewsBackgroundRecursive(View currentView) {
+    /**
+     * Also used for the bottom overlay buttons, which copy their background from the
+     * fullscreen button instead of declaring one in a layout.
+     *
+     * @return the drawable to use, unchanged if the opacity is left at the app default.
+     */
+    public static Drawable applyControlButtonsBackgroundOpacity(Drawable background) {
+        if (CONTROL_BUTTONS_BACKGROUND_OPACITY_CHANGED
+                && !Settings.HIDE_PLAYER_CONTROL_BUTTONS_BACKGROUND.get()) {
+            // Mutate so the color does not leak into the same drawable used elsewhere.
+            background = background.mutate();
+            setSolidColorOpacityRecursive(background);
+        }
+
+        return background;
+    }
+
+    /**
+     * The circle's transparency is baked into its solid color, so the color is replaced.
+     * setAlpha() only scales what is already there and can never exceed the app default.
+     */
+    private static void setSolidColorOpacityRecursive(Drawable drawable) {
+        if (drawable instanceof GradientDrawable gradient) {
+            ColorStateList color = gradient.getColor();
+            if (color != null) {
+                final int rgb = color.getDefaultColor();
+                // Replacing the alpha rather than scaling it keeps this safe to apply twice.
+                gradient.setColor(Color.argb(
+                        CONTROL_BUTTONS_BACKGROUND_OPACITY * 255 / 100,
+                        Color.red(rgb),
+                        Color.green(rgb),
+                        Color.blue(rgb)));
+            }
+        } else if (drawable instanceof LayerDrawable layers) {
+            for (int i = 0, count = layers.getNumberOfLayers(); i < count; i++) {
+                setSolidColorOpacityRecursive(layers.getDrawable(i));
+            }
+        } else if (drawable instanceof DrawableWrapper wrapper) {
+            // The bottom buttons get the circle wrapped in an InsetDrawable, which is not a
+            // LayerDrawable and would otherwise be skipped.
+            setSolidColorOpacityRecursive(wrapper.getDrawable());
+        }
+    }
+
+    private static void hideView(View parentView, String name) {
+        int resourceId = ResourceUtils.getIdentifierOrThrow(ResourceType.ID, name);
+
+        // Must use a deferred call to main thread to hide the button.
+        // Otherwise, the layout crashes if set to hidden now.
+        Utils.runOnMainThread(() -> {
+            View targetView = parentView.findViewById(resourceId);
+
+            if (targetView == null) {
+                Logger.printException(() -> "Could not find player button: R.id." + name);
+                return;
+            }
+
+            Logger.printDebug(() -> "Hiding player button: R.id." + name);
+            Utils.hideViewByRemovingFromParentUnderCondition(true, targetView);
+        });
+    }
+
+    private static void forEachImageViewRecursive(View currentView, Consumer<ImageView> action) {
         if (currentView instanceof ImageView imageView) {
-            imageView.setBackground(null);
+            action.accept(imageView);
         }
 
         if (currentView instanceof ViewGroup viewGroup) {
             for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                removeImageViewsBackgroundRecursive(viewGroup.getChildAt(i));
+                forEachImageViewRecursive(viewGroup.getChildAt(i), action);
             }
         }
     }

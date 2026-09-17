@@ -16,8 +16,8 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="reddit_privacy_policy">Политика приватности Редита</string>
+  <string name="morphe_google_signin_not_available_toast">Гугл пријава није доступна. Користите имејл за пријаву</string>
   <string name="morphe_screen_ads_title">Огласи</string>
   <string name="morphe_hide_post_ads_title">Сакриј рекламе у фиду</string>
   <string name="morphe_hide_comment_ads_title">Сакриј рекламе у коментарима</string>
@@ -68,4 +68,8 @@ Second \"item\" text"</string>
   <string name="morphe_open_links_directly_summary">Заобилази URL адресе за преусмеравање при отварању екстерних линкова</string>
   <string name="morphe_open_links_externally_title">Отвори линкове спољашње</string>
   <string name="morphe_open_links_externally_summary">Отвара линкове у вашем прегледачу уместо у уграђеном прегледачу</string>
+  <string name="morphe_app_icon_title">Иконица апликације</string>
+  <string name="morphe_app_icon_choose_title">Изаберите икону апликације</string>
+  <string name="morphe_app_icon_default">Подразумеван</string>
+  <string name="morphe_app_icon_unknown">Непознато</string>
 </resources>

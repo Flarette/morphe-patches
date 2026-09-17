@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">Forsíðarlógó</string>
   <string name="morphe_header_logo_entry_1">Sjálfgefið</string>
   <string name="morphe_header_logo_entry_3">Sérsniðið</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">Spila hljóðlög úr albúmi</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">Spila eingöngu hljóðlög úr albúmi í stað tónlistarmyndbands. Krefst \'Blekkja myndbandastreymi\'</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">Sæktu niður tónlistarmyndbönd, þætti eða lög með þriðja aðila niðurhal forrit</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x — crossfade virkar bara á 9.x og nýrri útgáfum"</string>
   <string name="morphe_music_hide_action_bar_title">Fela aðalstiku</string>
   <string name="morphe_music_hide_like_dislike_button_title">Fela Líkast og Ólíkast takka</string>
   <string name="morphe_music_hide_comments_button_title">Fela Athugasemda takka</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">Fela \'Endursýning lifandi spjalls\' hnappinn</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">Fela texta takka</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x — crossfade virkar bara á 9.x og nýrri útgáfum"</string>
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">Fela niðurhala hnappinn</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">Fela spila útvarps hnappinn</string>
+  <string name="morphe_music_hide_radio_button_title">Fela \'Byrja útvarp\' hnappinn</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">Fljótandi valmynd</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">Veldu hvaða þættir birtast í valmyndum spilarans og biðraðarins</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x — crossfade virkar bara á 9.x og nýrri útgáfum"</string>
   <string name="morphe_music_scrobbling_custom_regex_summary">Sláðu inn sérstakt reglugerðarfyrirbæri til að fjarlægja auka texta úr lagtitlum, listamönnum eða albúmum. Dæmi: (?i)\\s*\\((clean|explicit)\\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">Greina listamann og lag úr titli</string>
   <string name="morphe_music_scrobbling_parse_title_summary">Þrækja út listamanns- og lagheiti úr vídeótitli með \" - \" skiljanum.  Nýtt fyrir endurhleypta efnis þar sem nafn rásarinnar getur verið notað sem listamaður.</string>
+  <string name="morphe_music_scrobbling_guess_album_title">Fylltu inn albúm sem vantar.</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">Þegar tónlistin inniheldur ekki albúm skaltu fletta því upp á Last.fm svo að scrobble þitt sé fullgert.</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">Um spilun</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,9 +308,10 @@ Til þess að tryggja að scrobbling sé samstilla á meðan spilað er í bakgr
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">Nota lög frá þriðja aðila</string>
   <string name="morphe_music_lyrics_enabled_summary">Sýnir lög frá þriðja aðila, með fallbak til innbyggðra laga þegar engin eru fundin</string>
-  <string name="morphe_music_lyrics_source_title">Lögþjónusta</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB, þá KuGou</string>
+  <string name="morphe_music_lyrics_section_service_title">Textaþjónusta</string>
+  <string name="morphe_music_lyrics_section_about_title">Um</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">Tap á línu til að flýta</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">Að tap á línu fer í þann tíma í laginu.</string>
   <string name="morphe_music_lyrics_show_copy_button_title">Sýna afritunarhnapp</string>
@@ -310,22 +319,12 @@ Til þess að tryggja að scrobbling sé samstilla á meðan spilað er í bakgr
   <string name="morphe_music_lyrics_text_size_title">Leturstærð</string>
   <string name="morphe_music_lyrics_text_size_summary">Stærð textans.</string>
   <string name="morphe_music_lyrics_offset_ms_title">Tímaleiðrétting</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">Færðu samstilltan texta áfram eða afturábak. Notaðu jákvæða tölu ef textinn er á undan laginu.</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">Uppspretta: %s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">Þýða</string>
-  <string name="morphe_music_lyrics_translate_hide">Sýna upprunalegan texta</string>
   <string name="morphe_music_lyrics_translating">Þýðing á ferð…</string>
   <string name="morphe_music_lyrics_translate_failed">Gat ekki þýtt textann</string>
-  <string name="morphe_music_lyrics_copy">Afrita</string>
   <string name="morphe_music_lyrics_copied">Afritað í klemmuskrá</string>
-  <string name="morphe_music_lyrics_about_title">Um þriðja aðila texta</string>
-  <string name="morphe_music_lyrics_about_summary">"Textar eru skoðaðir eftir lagtitli og flytjanda, svo lag með óvenjulegar upplýsingar finna kann að finna engan texta, eða finna ranga útgáfu.
-
-Samstilltir textar fylgja spilun. Ef þeir detta úr gildi, stilltu tímaleiðréttingu.
-
-Þegar enginn texti frá þriðja aðila er fundinn, eru innbyggðir textar sýndir í staðinn."</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - Slökkva á feitletruðum táknum</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 - Endurheimta næst, texta og tengda flipa</string>

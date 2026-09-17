@@ -12,7 +12,6 @@ package app.morphe.extension.youtube.patches.components;
 
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -45,41 +44,48 @@ import app.morphe.extension.youtube.shared.NavigationBar.NavigationButton;
 
 @SuppressWarnings("unused")
 public final class LayoutComponentsFilter extends Filter {
-    private static final ByteArrayFilterGroup mixPlaylistsBuffersExceptions = new ByteArrayFilterGroup(
-            null,
-            "cell_description_body",
-            "channel_profile"
-    );
     private static final ByteArrayFilterGroup mixPlaylistUrlBuffer = new ByteArrayFilterGroup(
             null,
             "?list=RD",
             "&list=RD"
+    );
+    private static final ByteArrayFilterGroup mixPlaylistsBuffersExceptions = new ByteArrayFilterGroup(
+            null,
+            "cell_description_body",
+            "channel_profile"
     );
 
     private static final List<String> channelTabFilterStrings = Utils.getFilterStrings(Settings.HIDE_CHANNEL_TAB_FILTER_STRINGS);
     private static final List<String> flyoutMenuFilterStrings = Utils.getFilterStrings(Settings.HIDE_FEED_FLYOUT_MENU_FILTER_STRINGS);
 
     private final StringTrieSearch exceptions = new StringTrieSearch();
+
+    private final StringFilterGroup channelProfile;
+    private final StringFilterGroupList channelProfileGroupList = new StringFilterGroupList();
+    private final StringFilterGroup channelFilterBar;
+    private final StringFilterGroup channelMembersOnlyChipId;
+    private final StringFilterGroup chipBar;
     private final StringFilterGroup communityPosts;
-    private final StringFilterGroup surveys;
+    private final StringFilterGroup compactChannelBarInner;
+    private final StringFilterGroup compactChannelBarInnerButton;
+    private final ByteArrayFilterGroup joinMembershipButton;
+    private final StringFilterGroup expandableMetadata;
+    private final ByteArrayFilterGroup summaryCardBuffer;
+    private final StringFilterGroup exploreTopicsShelf;
+    private final StringFilterGroup getPremiumButton;
+    private final ByteArrayFilterGroup getPremiumButtonBuffer;
+    private final StringFilterGroup inviteToMessageCard;
+    private final ByteArrayFilterGroup inviteToMessageCardBuffer;
+    private final StringFilterGroup notificationsMenuHeader;
+    private final ByteArrayFilterGroup notificationsMenuHeaderBuffer;
     private final StringFilterGroup notifyMe;
     private final StringFilterGroup searchFriction;
     private final StringFilterGroup singleItemInformationPanel;
     private static final AtomicInteger singleItemInformationPanelIndex = new AtomicInteger(-1);
-    private final StringFilterGroup expandableMetadata;
-    private final ByteArrayFilterGroup summaryCardBuffer;
-    private final StringFilterGroup compactChannelBarInner;
-    private final StringFilterGroup compactChannelBarInnerButton;
-    private final ByteArrayFilterGroup joinMembershipButton;
-    private final StringFilterGroup chipBar;
-    private final StringFilterGroup inviteToMessageCard;
-    private final ByteArrayFilterGroup inviteToMessageCardBuffer;
-    private final StringFilterGroup channelProfile;
-    private final StringFilterGroupList channelProfileGroupList = new StringFilterGroupList();
-    private final StringFilterGroup getPremiumButton;
-    private final ByteArrayFilterGroup getPremiumButtonBuffer;
+    private final StringFilterGroup surveys;
     private final StringFilterGroup videoLabels;
     private final ByteArrayFilterGroupList videoLabelsGroupList = new ByteArrayFilterGroupList();
+    private final StringFilterGroup videoRecommendationLabels;
 
     public enum ExpandableCardStyle {
         SHOW_ALL,
@@ -103,7 +109,7 @@ public final class LayoutComponentsFilter extends Filter {
                 "cell_divider"
         );
 
-        final var exploreTopicsShelf = new StringFilterGroup(
+        exploreTopicsShelf = new StringFilterGroup(
                 Settings.HIDE_HORIZONTAL_SHELVES,
                 "chips_shelf"
         );
@@ -162,6 +168,16 @@ public final class LayoutComponentsFilter extends Filter {
         final var audioTrackButton = new StringFilterGroup(
                 null,
                 "multi_feed_icon_button"
+        );
+
+        channelFilterBar = new StringFilterGroup(
+                null,
+                "channels_chip_bar.e"
+        );
+
+        channelMembersOnlyChipId = new StringFilterGroup(
+                null,
+                "id.chip.EhAKDgoD6gEACgcaBQoDggEA"
         );
 
         final var channelLinksPreview = new StringFilterGroup(
@@ -236,6 +252,7 @@ public final class LayoutComponentsFilter extends Filter {
 
         communityPosts = new StringFilterGroup(
                 Settings.HIDE_COMMUNITY_POSTS,
+                "images_post_responsive_root.e",
                 "images_post_root.e",
                 "images_post_root_slim.e",
                 "images_post_slim.e", // may be obsolete and no longer needed.
@@ -303,6 +320,16 @@ public final class LayoutComponentsFilter extends Filter {
         final var medicalPanel = new StringFilterGroup(
                 Settings.HIDE_MEDICAL_PANELS,
                 "medical_panel"
+        );
+
+        notificationsMenuHeader = new StringFilterGroup(
+                Settings.HIDE_NOTIFICATIONS_MENU_HEADER,
+                "|ContainerType|ContainerType|"
+        );
+
+        notificationsMenuHeaderBuffer = new ByteArrayFilterGroup(
+                null,
+                "/youtube/answer/" // https://support.google.com/youtube/answer/
         );
 
         notifyMe = new StringFilterGroup(
@@ -386,7 +413,7 @@ public final class LayoutComponentsFilter extends Filter {
                 "player_overlay_video_heading.e"
         );
 
-        final var videoRecommendationLabels = new StringFilterGroup(
+        videoRecommendationLabels = new StringFilterGroup(
                 Settings.HIDE_VIDEO_RECOMMENDATION_LABELS,
                 "endorsement_header_footer.e"
         );
@@ -400,6 +427,7 @@ public final class LayoutComponentsFilter extends Filter {
         addPathCallbacks(
                 artistCard,
                 audioTrackButton,
+                channelFilterBar,
                 channelLinksPreview,
                 channelMembersShelf,
                 channelProfile,
@@ -417,6 +445,7 @@ public final class LayoutComponentsFilter extends Filter {
                 imageShelf,
                 infoPanel,
                 medicalPanel,
+                notificationsMenuHeader,
                 notifyMe,
                 playables,
                 postsShelf,
@@ -445,6 +474,10 @@ public final class LayoutComponentsFilter extends Filter {
                               StringFilterGroup matchedGroup,
                               FilterContentType contentType,
                               int contentIndex) {
+        if (matchedGroup == exploreTopicsShelf) {
+            return NavigationButton.getSelectedNavigationButton() != NavigationButton.LIBRARY;
+        }
+
         // The groups are excluded from the filter due to the exceptions list below.
         // Filter them separately here.
         if (matchedGroup == notifyMe || matchedGroup == surveys) {
@@ -456,26 +489,36 @@ public final class LayoutComponentsFilter extends Filter {
             return false;
         }
 
-        // This identifier is used not only in players but also in search results:
-        // Until 2024, medical information panels such as Covid-19 also used this identifier and were shown in the search results.
-        // From 2025, the medical information panel is no longer shown in the search results.
-        // Therefore, this identifier does not filter when the search bar is activated.
-        if (matchedGroup == searchFriction) {
-            singleItemInformationPanelIndex.set(0);
-            return false;
-        }
-        if (matchedGroup == singleItemInformationPanel) {
-            int currentIndex = singleItemInformationPanelIndex.get();
-            if (currentIndex >= 0) {
-                if (currentIndex < 9) {
-                    singleItemInformationPanelIndex.incrementAndGet();
-                } else {
-                    singleItemInformationPanelIndex.set(-1);
-                }
-                return false;
-            } else {
+        if (matchedGroup == channelFilterBar) {
+            if (Settings.HIDE_FILTER_BAR_IN_CHANNEL_PAGE.get()) {
                 return true;
             }
+
+            if (Settings.HIDE_MEMBERS_ONLY_CHIP.get()) {
+                return channelMembersOnlyChipId.check(accessibility).isFiltered();
+            }
+
+            return false;
+        }
+
+        if (matchedGroup == channelProfile) {
+            return channelProfileGroupList.check(accessibility).isFiltered();
+        }
+
+        if (matchedGroup == chipBar) {
+            return contentIndex == 0 &&
+                    NavigationButton.getSelectedNavigationButton() == NavigationBar.NavigationButton.LIBRARY;
+        }
+
+        if (matchedGroup == communityPosts) {
+            return contextInterface.isHomeFeedOrRelatedVideo() || contextInterface.isSubscriptionOrLibrary();
+        }
+
+        if (matchedGroup == compactChannelBarInner) {
+            return compactChannelBarInnerButton.check(path).isFiltered()
+                    // The filter may be broad, but in the context of a compactChannelBarInnerButton,
+                    // it's safe to assume that the button is the only thing that should be hidden.
+                    && joinMembershipButton.check(buffer).isFiltered();
         }
 
         if (matchedGroup == expandableMetadata) {
@@ -493,24 +536,8 @@ public final class LayoutComponentsFilter extends Filter {
             }
         }
 
-        if (matchedGroup == channelProfile) {
-            return channelProfileGroupList.check(accessibility).isFiltered();
-        }
-
-        if (matchedGroup == communityPosts) {
-            return contextInterface.isHomeFeedOrRelatedVideo() || contextInterface.isSubscriptionOrLibrary();
-        }
-
-        if (matchedGroup == compactChannelBarInner) {
-            return compactChannelBarInnerButton.check(path).isFiltered()
-                    // The filter may be broad, but in the context of a compactChannelBarInnerButton,
-                    // it's safe to assume that the button is the only thing that should be hidden.
-                    && joinMembershipButton.check(buffer).isFiltered();
-        }
-
-        if (matchedGroup == chipBar) {
-            return contentIndex == 0 && NavigationBar.NavigationButton.getSelectedNavigationButton()
-                    == NavigationBar.NavigationButton.LIBRARY;
+        if (matchedGroup == getPremiumButton) {
+            return path.startsWith("page_header.e") && getPremiumButtonBuffer.check(buffer).isFiltered();
         }
 
         if (matchedGroup == inviteToMessageCard) {
@@ -527,15 +554,54 @@ public final class LayoutComponentsFilter extends Filter {
             return NavigationButton.getSelectedNavigationButton() == NavigationButton.NOTIFICATIONS;
         }
 
-        if (matchedGroup == getPremiumButton) {
-            return path.startsWith("page_header.e") && getPremiumButtonBuffer.check(buffer).isFiltered();
+        if (matchedGroup == notificationsMenuHeader) {
+            return path.startsWith("subscribe_menu_notifications.e")
+                    && notificationsMenuHeaderBuffer.check(buffer).isFiltered();
+        }
+
+        // This identifier is used not only in players but also in search results:
+        // Until 2024, medical information panels such as Covid-19 also used this identifier and were shown in the search results.
+        // From 2025, the medical information panel is no longer shown in the search results.
+        // Therefore, this identifier does not filter when the search bar is activated.
+        if (matchedGroup == searchFriction) {
+            singleItemInformationPanelIndex.set(0);
+            return false;
+        }
+
+        if (matchedGroup == singleItemInformationPanel) {
+            int currentIndex = singleItemInformationPanelIndex.get();
+
+            if (currentIndex < 0) {
+                return true;
+            }
+
+            if (currentIndex < 9) {
+                singleItemInformationPanelIndex.incrementAndGet();
+            } else {
+                singleItemInformationPanelIndex.set(-1);
+            }
+            return false;
         }
 
         if (matchedGroup == videoLabels) {
             return videoLabelsGroupList.check(buffer).isFiltered();
         }
 
+        if (matchedGroup == videoRecommendationLabels) {
+            return NavigationBar.isSearchBarActive();
+        }
+
         return true;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static boolean disableUIPaddingFeatureFlags(boolean original) {
+        if (Settings.HIDE_COMPACT_BANNER.get()) {
+            return false;
+        }
+        return original;
     }
 
     /**
@@ -618,20 +684,19 @@ public final class LayoutComponentsFilter extends Filter {
                 : height;
     }
 
-    private static final boolean HIDE_FILTER_BAR_IN_RELATED_VIDEOS_ENABLED
-            = Settings.HIDE_FILTER_BAR_IN_RELATED_VIDEOS.get();
+    /**
+     * Injection point.
+     */
+    public static boolean hideInRelatedVideos(boolean original) {
+        return !Settings.HIDE_FILTER_BAR_IN_RELATED_VIDEOS.get() && original;
+    }
 
     /**
      * Injection point.
      */
-    public static void hideInRelatedVideos(@Nullable RecyclerView chipRecyclerView) {
-        if (chipRecyclerView == null) {
-            return;
-        }
-
-        if (HIDE_FILTER_BAR_IN_RELATED_VIDEOS_ENABLED) {
-            chipRecyclerView.setVisibility(RecyclerView.GONE);
-        }
+    public static void hideInRelatedVideos(@Nullable View view) {
+        if (view == null) return;
+        Utils.hideViewUnderCondition(Settings.HIDE_FILTER_BAR_IN_RELATED_VIDEOS.get(), view);
     }
 
     private static final boolean HIDE_YOUTUBE_DOODLES_ENABLED = Settings.HIDE_YOUTUBE_DOODLES.get();

@@ -19,6 +19,8 @@ Second \"item\" text"</string>
   <!-- layout.branding.customBrandingPatch -->
   <!-- layout.branding.header.changeHeaderPatch -->
   <string name="morphe_header_logo_entry_3">ផ្ទាល់ខ្លួន</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
   <!-- interaction.downloads.downloadsPatch -->
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- misc.settings.settingsPatch -->
@@ -42,6 +44,7 @@ Second \"item\" text"</string>
   <!-- interaction.dislikeredirection.disableDislikeRedirectionPatch -->
   <!-- layout.buttons.hideButtonsPatch -->
   <!-- layout.hide.actionbuttons.hideActionButtonsPatch -->
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
   <!-- 'Save' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -75,9 +78,10 @@ Second \"item\" text"</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <!-- 'scrobbling' must be kept untranslated -->
   <!-- layout.lyrics.lyricsPatch -->
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
+  <string name="morphe_music_lyrics_section_about_title">អំពីកម្មវិធីនេះ</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_copy">ចម្លង</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
 </resources>

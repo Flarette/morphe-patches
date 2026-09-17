@@ -16,8 +16,8 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="reddit_privacy_policy">Reddit गोपनीयता नीति</string>
+  <string name="morphe_google_signin_not_available_toast">Google लॉगिन उपलब्ध नहीं है। ईमेल से लॉगिन करें</string>
   <string name="morphe_screen_ads_title">विज्ञापन</string>
   <string name="morphe_hide_post_ads_title">फ़ीड विज्ञापन छिपाएं</string>
   <string name="morphe_hide_comment_ads_title">टिप्पणी विज्ञापन छिपाएं</string>
@@ -68,4 +68,8 @@ Second \"item\" text"</string>
   <string name="morphe_open_links_directly_summary">बाहरी लिंक खोलने पर रीडायरेक्ट URL को बायपास करता है</string>
   <string name="morphe_open_links_externally_title">बाहरी लिंक खोलें</string>
   <string name="morphe_open_links_externally_summary">इन-ऐप ब्राउज़र के बजाय आपके ब्राउज़र में लिंक खोलता है</string>
+  <string name="morphe_app_icon_title">ऐप आइकन</string>
+  <string name="morphe_app_icon_choose_title">ऐप आइकन चुनें</string>
+  <string name="morphe_app_icon_default">डिफ़ॉल्ट</string>
+  <string name="morphe_app_icon_unknown">अज्ञात</string>
 </resources>

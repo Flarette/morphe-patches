@@ -7,6 +7,8 @@
 
 package app.morphe.extension.reddit.settings;
 
+import static app.morphe.extension.shared.StringRef.str;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -32,7 +34,9 @@ import app.morphe.extension.reddit.ui.MorpheSettingsIconVectorDrawable;
 import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.ResourceUtils;
 import app.morphe.extension.shared.Utils;
+import app.morphe.extension.shared.theme.ThemeUtils;
 import app.morphe.extension.shared.ui.Dim;
+import kotlin.jvm.functions.Function0;
 
 @SuppressWarnings({"deprecation", "unused"})
 public class RedditActivityHook {
@@ -55,6 +59,22 @@ public class RedditActivityHook {
      */
     public static String getSettingLabel() {
         return MORPHE_LABEL;
+    }
+
+    /**
+     * Injection point.
+     */
+    public static Function0<Object> getGoogleSignInFunction() {
+        // Must use anonymous declaration.
+        // Using a lambda creates a different bytecode that doesn't work.
+        // noinspection Convert2Lambda
+        return new Function0<>() {
+            @Override
+            public Object invoke() {
+                Utils.showToastLong(str("morphe_google_signin_not_available_toast"));
+                return null;
+            }
+        };
     }
 
     /**
@@ -133,8 +153,8 @@ public class RedditActivityHook {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             Activity activity = getActivity();
-            final int appForegroundColor = Utils.getAppForegroundColor();
-            final int appBackgroundColor = Utils.getAppBackgroundColor();
+            final int appForegroundColor = ThemeUtils.getAppForegroundColor();
+            final int appBackgroundColor = ThemeUtils.getAppBackgroundColor();
 
             // Ensure the dialog window fills the screen and shows the status bar.
             Dialog dialog = getDialog();

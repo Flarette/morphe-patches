@@ -11,12 +11,10 @@
 package app.morphe.patches.youtube.misc.backgroundplayback
 
 import app.morphe.patcher.Fingerprint
-import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
 import app.morphe.patcher.OpcodesFilter
 import app.morphe.patcher.literal
-import app.morphe.patcher.opcode
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
@@ -58,14 +56,20 @@ internal object BackgroundPlaybackSettingsFingerprint : Fingerprint(
     returnType = "Ljava/lang/String;",
     parameters = listOf(),
     filters = listOf(
-        opcode(Opcode.INVOKE_VIRTUAL),
-        opcode(Opcode.MOVE_RESULT, location = MatchAfterImmediately()),
-        opcode(Opcode.INVOKE_VIRTUAL, location = MatchAfterImmediately()),
-        opcode(Opcode.MOVE_RESULT, location = MatchAfterImmediately()),
-        opcode(Opcode.IF_EQZ, location = MatchAfterImmediately()),
-        opcode(Opcode.IF_NEZ, location = MatchAfterImmediately()),
-        opcode(Opcode.GOTO, location = MatchAfterImmediately()),
-        resourceLiteral(ResourceType.STRING, "pref_background_and_offline_category")
+        resourceLiteral(ResourceType.STRING, "pref_background_and_offline_category"),
+        resourceLiteral(ResourceType.STRING, "pref_background_category")
+    )
+)
+
+internal object AutomaticForegroundPlaybackResumeFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45770945L)
+    )
+)
+
+internal object AutomaticPlaybackPausedInFlyoutFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45741823L)
     )
 )
 
@@ -107,8 +111,3 @@ internal object NewPlayerTypeEnumFeatureFlagFingerprint : Fingerprint(
     )
 )
 
-internal object NewPlayerOverlaysFeatureFlagFingerprint : Fingerprint(
-    filters = listOf(
-        literal(45752335L)
-    )
-)

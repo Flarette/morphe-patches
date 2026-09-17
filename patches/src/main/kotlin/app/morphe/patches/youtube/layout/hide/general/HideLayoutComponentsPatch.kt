@@ -20,7 +20,6 @@ import app.morphe.patcher.methodCall
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
 import app.morphe.patcher.util.smali.ExternalLabel
-import app.morphe.patches.all.misc.resources.resourceMappingPatch
 import app.morphe.patches.shared.misc.fix.proto.fixProtoLibraryPatch
 import app.morphe.patches.shared.misc.litho.filter.addLithoFilter
 import app.morphe.patches.shared.misc.litho.node.hookTreeNodeResult
@@ -28,11 +27,11 @@ import app.morphe.patches.shared.misc.proto.hookElement
 import app.morphe.patches.shared.misc.settings.preference.InputType
 import app.morphe.patches.shared.misc.settings.preference.ListPreference
 import app.morphe.patches.shared.misc.settings.preference.NonInteractivePreference
+import app.morphe.patches.shared.misc.settings.preference.PreferenceCategory
 import app.morphe.patches.shared.misc.settings.preference.PreferenceScreenPreference
 import app.morphe.patches.shared.misc.settings.preference.PreferenceScreenPreference.Sorting
 import app.morphe.patches.shared.misc.settings.preference.SwitchPreference
 import app.morphe.patches.shared.misc.settings.preference.TextPreference
-import app.morphe.patches.shared.misc.settings.preference.PreferenceCategory
 import app.morphe.patches.shared.misc.settings.preference.noTitleUnsortedPreferenceCategory
 import app.morphe.patches.shared.misc.spans.addSpanFilter
 import app.morphe.patches.shared.misc.spans.inclusiveSpanPatch
@@ -42,17 +41,20 @@ import app.morphe.patches.youtube.misc.engagement.engagementPanelHookPatch
 import app.morphe.patches.youtube.misc.litho.filter.lithoFilterPatch
 import app.morphe.patches.youtube.misc.litho.node.treeNodeElementHookPatch
 import app.morphe.patches.youtube.misc.navigation.navigationBarHookPatch
-import app.morphe.patches.youtube.misc.playservice.is_20_21_or_greater
 import app.morphe.patches.youtube.misc.playservice.is_20_26_or_greater
 import app.morphe.patches.youtube.misc.playservice.is_20_31_or_greater
+import app.morphe.patches.youtube.misc.playservice.is_21_07_or_greater
 import app.morphe.patches.youtube.misc.playservice.is_21_11_or_greater
 import app.morphe.patches.youtube.misc.playservice.is_21_20_or_greater
 import app.morphe.patches.youtube.misc.playservice.is_21_25_or_greater
+import app.morphe.patches.youtube.misc.playservice.is_21_36_or_greater
 import app.morphe.patches.youtube.misc.playservice.versionCheckPatch
 import app.morphe.patches.youtube.misc.proto.elementProtoParserHookPatch
 import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.misc.settings.settingsPatch
 import app.morphe.patches.youtube.shared.Constants.COMPATIBILITY_YOUTUBE
+import app.morphe.patches.youtube.shared.ModernRelateVideoOverlayFingerprint
+import app.morphe.patches.youtube.shared.RelateVideoOverlayLayoutParamFingerprint
 import app.morphe.util.addInstructionsAtControlFlowLabel
 import app.morphe.util.findFreeRegister
 import app.morphe.util.findInstructionIndicesReversedOrThrow
@@ -60,6 +62,8 @@ import app.morphe.util.getReference
 import app.morphe.util.indexOfFirstInstructionOrThrow
 import app.morphe.util.indexOfFirstInstructionReversedOrThrow
 import app.morphe.util.injectHideViewCall
+import app.morphe.util.insertLiteralOverride
+import app.morphe.util.registersUsed
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
@@ -102,7 +106,6 @@ val hideLayoutComponentsPatch = bytecodePatch(
         engagementPanelHookPatch,
         navigationBarHookPatch,
         versionCheckPatch,
-        resourceMappingPatch,
         hideHorizontalShelvesPatch,
         hideUpdateScreenPatch,
         elementProtoParserHookPatch,
@@ -121,6 +124,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
                     SwitchPreference("morphe_hide_ai_generated_video_summary_section"),
                     SwitchPreference("morphe_hide_ask_section"),
                     SwitchPreference("morphe_hide_attributes_section", summary = true),
+                    SwitchPreference("morphe_hide_channel_links_section"),
                     SwitchPreference("morphe_hide_chapters_section"),
                     SwitchPreference("morphe_hide_corrections_section"),
                     SwitchPreference("morphe_hide_course_progress_section"),
@@ -129,16 +133,13 @@ val hideLayoutComponentsPatch = bytecodePatch(
                     SwitchPreference("morphe_hide_explore_podcast_section"),
                     SwitchPreference("morphe_hide_featured_channels_section"),
                     SwitchPreference("morphe_hide_featured_links_section"),
-                    SwitchPreference("morphe_hide_featured_places_section"),
                     SwitchPreference("morphe_hide_featured_playlists_section"),
                     SwitchPreference("morphe_hide_featured_videos_section"),
-                    SwitchPreference("morphe_hide_gaming_section"),
                     SwitchPreference("morphe_hide_hashtag_section"),
                     SwitchPreference("morphe_hide_how_this_was_made_section"),
                     SwitchPreference("morphe_hide_hype_points"),
                     SwitchPreference("morphe_hide_info_cards_section"),
                     SwitchPreference("morphe_hide_key_concepts_section"),
-                    SwitchPreference("morphe_hide_music_section"),
                     SwitchPreference("morphe_hide_quizzes_section"),
                     SwitchPreference("morphe_hide_search_inside_this_video_section"),
                     SwitchPreference("morphe_hide_subscribe_button"),
@@ -174,9 +175,11 @@ val hideLayoutComponentsPatch = bytecodePatch(
                     SwitchPreference("morphe_hide_comments_gift_button"),
                     SwitchPreference("morphe_hide_comments_info_button"),
                     SwitchPreference("morphe_hide_comments_live_chat_donators_bar"),
+                    SwitchPreference("morphe_hide_comments_live_chat_tooltips", summary = true),
                     SwitchPreference("morphe_hide_comments_preview_comment", summary = true),
                     SwitchPreference("morphe_hide_comments_thanks_button"),
                     SwitchPreference("morphe_hide_comments_timestamp_button"),
+                    SwitchPreference("morphe_hide_comments_top_fans_button"),
                     SwitchPreference("morphe_sanitize_comments_highlighted_search_links", summary = true)
                 ),
                 sorting = Sorting.UNSORTED
@@ -237,10 +240,10 @@ val hideLayoutComponentsPatch = bytecodePatch(
                 key = "morphe_hide_keyword_content_screen",
                 sorting = Sorting.UNSORTED,
                 preferences = setOf(
-                    SwitchPreference("morphe_hide_keyword_content_home"),
-                    SwitchPreference("morphe_hide_keyword_content_subscriptions"),
-                    SwitchPreference("morphe_hide_keyword_content_search"),
                     SwitchPreference("morphe_hide_keyword_content_comments"),
+                    SwitchPreference("morphe_hide_keyword_content_home"),
+                    SwitchPreference("morphe_hide_keyword_content_search"),
+                    SwitchPreference("morphe_hide_keyword_content_subscriptions"),
                     TextPreference("morphe_hide_keyword_content_phrases", inputType = InputType.TEXT_MULTI_LINE),
                     PreferenceCategory(
                         key = "morphe_hide_keyword_content_stats_category",
@@ -301,6 +304,17 @@ val hideLayoutComponentsPatch = bytecodePatch(
                         )
                     ),
                     PreferenceCategory(
+                        key = "morphe_aislist_submit_category",
+                        sorting = Sorting.UNSORTED,
+                        preferences = setOf(
+                            SwitchPreference("morphe_aislist_submit_flyout_menu", summary = true),
+                            TextPreference(
+                                key = "morphe_aislist_submit_username",
+                                inputType = InputType.TEXT
+                            )
+                        )
+                    ),
+                    PreferenceCategory(
                         key = "morphe_hide_aislist_stats_category",
                         titleKey = "morphe_hide_stats_category_title",
                         sorting = Sorting.UNSORTED,
@@ -329,6 +343,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
             PreferenceScreenPreference(
                 key = "morphe_hide_filter_bar_screen",
                 preferences = setOf(
+                    SwitchPreference("morphe_hide_filter_bar_in_channel_page"),
                     SwitchPreference("morphe_hide_filter_bar_in_comments"),
                     SwitchPreference("morphe_hide_filter_bar_in_feed"),
                     SwitchPreference("morphe_hide_filter_bar_in_related_videos"),
@@ -349,6 +364,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
                     SwitchPreference("morphe_hide_community_button"),
                     SwitchPreference("morphe_hide_join_button"),
                     SwitchPreference("morphe_hide_links_preview", summary = true),
+                    SwitchPreference("morphe_hide_members_only_chip", summary = true),
                     SwitchPreference("morphe_hide_members_shelf", summary = true),
                     SwitchPreference("morphe_hide_posts_shelf"),
                     SwitchPreference("morphe_hide_store_button"),
@@ -392,6 +408,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
             SwitchPreference("morphe_hide_latest_videos_button", summary = true),
             SwitchPreference("morphe_hide_mix_playlists"),
             SwitchPreference("morphe_hide_movies_section"),
+            SwitchPreference("morphe_hide_notifications_menu_header", summary = true),
             SwitchPreference("morphe_hide_notify_me_button", summary = true),
             SwitchPreference("morphe_hide_playables", summary = true),
             SwitchPreference("morphe_hide_search_term_thumbnails", summary = true),
@@ -415,11 +432,9 @@ val hideLayoutComponentsPatch = bytecodePatch(
             SwitchPreference("morphe_hide_youtube_doodles", summary = true)
         )
 
-        if (is_20_21_or_greater) {
-            PreferenceScreen.FEED.addPreferences(
-                SwitchPreference("morphe_hide_you_may_like_section")
-            )
-        }
+        PreferenceScreen.FEED.addPreferences(
+            SwitchPreference("morphe_hide_you_may_like_section")
+        )
 
         PreferenceScreen.GENERAL.addPreferences(
             PreferenceScreenPreference(
@@ -549,9 +564,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
         // region hide subscribed channels bar
 
         // Tablet
-        val constructorFingerprint = if (is_20_21_or_greater)
-            HideSubscribedChannelsBarConstructorFingerprint
-        else HideSubscribedChannelsBarConstructorLegacyFingerprint
+        val constructorFingerprint = HideSubscribedChannelsBarConstructorFingerprint
 
         constructorFingerprint.let {
             it.method.injectHideViewCall(
@@ -595,7 +608,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
 
         // region hide comments carousel
 
-        hookElement("$COMMENTS_FILTER->onCommentsLoaded([B)[B")
+        hookElement("$COMMENTS_FILTER->onCommentsLoaded")
 
         // endregion
 
@@ -750,17 +763,35 @@ val hideLayoutComponentsPatch = bytecodePatch(
             }
         }
 
-        arrayOf(
-            RelatedChipCloudFingerprint to RelatedChipCloudFingerprint.instructionMatches[2].index,
-            RelatedChipCloudMirrorClassFingerprint to RelatedChipCloudMirrorClassFingerprint.instructionMatches.last().index,
-            RelatedChipCloudMirrorClassFingerprint to RelatedChipCloudMirrorClassFingerprint.instructionMatches[2].index
-        ).forEach { (fingerprint, recyclerViewIndex) ->
-            fingerprint.method.apply {
-                val recyclerViewRegister = getInstruction<OneRegisterInstruction>(recyclerViewIndex).registerA
+        mapOf(
+            RelatedChipCloudFingerprint to 2,
+            RelatedChipCloudMirrorClassFingerprint to 4,
+            RelatedChipCloudMirrorClassFingerprint to 2
+        ).forEach { (fingerprint, matchIndex) ->
+            fingerprint.let {
+                it.method.apply {
+                    val match = it.instructionMatches[matchIndex]
+                    val index = match.index
+                    val register = match.instruction.registersUsed[0]
 
-                addInstruction(
-                    recyclerViewIndex + 1,
-                    "invoke-static { v$recyclerViewRegister }, $LAYOUT_COMPONENTS_FILTER->hideInRelatedVideos(Landroid/support/v7/widget/RecyclerView;)V"
+                    addInstruction(
+                        index + 1,
+                        "invoke-static { v$register }, $LAYOUT_COMPONENTS_FILTER->hideInRelatedVideos(Landroid/view/View;)V"
+                    )
+                }
+            }
+        }
+
+        // fix: related video overlay is broken due to patch.
+        listOf(
+            ModernRelateVideoOverlayFingerprint,
+            RelateVideoOverlayLayoutParamFingerprint
+        ).forEach { fingerprint ->
+            fingerprint.clearMatch()
+            fingerprint.matchAll().forEach {
+                it.method.insertLiteralOverride(
+                    it.instructionMatches.first().index,
+                    "$LAYOUT_COMPONENTS_FILTER->hideInRelatedVideos(Z)Z"
                 )
             }
         }
@@ -790,96 +821,102 @@ val hideLayoutComponentsPatch = bytecodePatch(
 
         // region hide you may like section
 
-        if (is_20_21_or_greater) {
-            val searchSuggestionEndpointField = SearchSuggestionEndpointFingerprint
-                .instructionMatches.first().instruction.getReference<FieldReference>()!!
-            val searchSuggestionEndpointClass = searchSuggestionEndpointField.definingClass
+        val searchSuggestionEndpointField = SearchSuggestionEndpointFingerprint
+            .instructionMatches.first().instruction.getReference<FieldReference>()!!
+        val searchSuggestionEndpointClass = searchSuggestionEndpointField.definingClass
 
-            SearchBoxTypingStringFingerprint.let {
-                it.method.apply {
-                    // A collection of search suggestions.
-                    // This includes trending search (also known as 'You may like' section) and your search history.
-                    val searchSuggestionCollectionField =
-                        it.instructionMatches.first().instruction.getReference<FieldReference>()!!
-                    val typedStringField =
-                        it.instructionMatches[2].instruction.getReference<FieldReference>()!!
+        SearchBoxTypingStringFingerprint.let {
+            it.method.apply {
+                // A collection of search suggestions.
+                // This includes trending search (also known as 'You may like' section) and your search history.
+                val searchSuggestionCollectionField =
+                    it.instructionMatches.first().instruction.getReference<FieldReference>()!!
+                val typedStringField =
+                    it.instructionMatches[2].instruction.getReference<FieldReference>()!!
 
-                    val helperMethod = ImmutableMethod(
-                        definingClass,
-                        "patch_setSearchSuggestions",
-                        listOf(
-                            ImmutableMethodParameter(
-                                parameterTypes.first().toString(),
-                                null,
-                                null
-                            )
-                        ),
-                        "V",
-                        AccessFlags.PRIVATE.value or AccessFlags.FINAL.value,
-                        annotations,
-                        null,
-                        MutableMethodImplementation(7),
-                    ).toMutable().apply {
-                        addInstructionsWithLabels(
-                            0,
-                            """
-                                move-object/from16 v0, p1
-                                iget-object v1, v0, $typedStringField
-                                
-                                # Check if the setting is enabled and if the typed string is empty.
-                                invoke-static { v1 }, $LAYOUT_COMPONENTS_FILTER->hideYouMayLikeSection(Ljava/lang/String;)Z
-                                move-result v1
-                                
-                                # If the setting is disabled or the typed string is not empty, do nothing.
-                                if-eqz v1, :ignore
-
-                                ## Get a collection of search suggestions.
-                                iget-object v1, v0, $searchSuggestionCollectionField
-                                
-                                # Iterate through the collection and check if the search suggestion is the search history.
-                                invoke-interface { v1 }, Ljava/util/Collection;->iterator()Ljava/util/Iterator;
-                                move-result-object v2
-                                
-                                :loop
-                                invoke-interface { v2 }, Ljava/util/Iterator;->hasNext()Z
-                                move-result v3
-                                if-eqz v3, :exit
-                                invoke-interface { v2 }, Ljava/util/Iterator;->next()Ljava/lang/Object;
-                                move-result-object v3
-                                instance-of v4, v3, $searchSuggestionEndpointClass
-                                if-eqz v4, :loop
-                                check-cast v3, $searchSuggestionEndpointClass
-
-                                # Each search suggestion has a command endpoint.
-                                # If the search suggestion is the search history, the command includes the keyword '/delete'.
-                                iget-object v4, v3, $searchSuggestionEndpointField
-                                invoke-static { v3, v4 }, $LAYOUT_COMPONENTS_FILTER->isSearchHistory(Ljava/lang/Object;Ljava/lang/String;)Z
-                                move-result v3
-                                
-                                # If this search suggestion is the search history, do nothing.
-                                if-nez v3, :loop
-                                
-                                # If this search suggestion is not the search history, remove it from the search suggestions collection.
-                                invoke-interface { v2 }, Ljava/util/Iterator;->remove()V
-                                goto :loop
-
-                                # Save the updated collection to a field.
-                                :exit
-                                iput-object v1, v0, $searchSuggestionCollectionField
-
-                                :ignore
-                                return-void
-                            """
+                val helperMethod = ImmutableMethod(
+                    definingClass,
+                    "patch_setSearchSuggestions",
+                    listOf(
+                        ImmutableMethodParameter(
+                            parameterTypes.first().toString(),
+                            null,
+                            null
                         )
-                    }
-
-                    it.classDef.methods.add(helperMethod)
-
-                    addInstruction(
+                    ),
+                    "V",
+                    AccessFlags.PRIVATE.value or AccessFlags.FINAL.value,
+                    annotations,
+                    null,
+                    MutableMethodImplementation(7),
+                ).toMutable().apply {
+                    addInstructionsWithLabels(
                         0,
-                        "invoke-direct/range { p0 .. p1 }, $helperMethod"
+                        """
+                            move-object/from16 v0, p1
+                            iget-object v1, v0, $typedStringField
+                            
+                            # Check if the setting is enabled and if the typed string is empty.
+                            invoke-static { v1 }, $LAYOUT_COMPONENTS_FILTER->hideYouMayLikeSection(Ljava/lang/String;)Z
+                            move-result v1
+                            
+                            # If the setting is disabled or the typed string is not empty, do nothing.
+                            if-eqz v1, :ignore
+
+                            # Get a collection of search suggestions.
+                            iget-object v1, v0, $searchSuggestionCollectionField
+                            if-eqz v1, :ignore
+
+                            # Create a new list to hold filtered search suggestions.
+                            new-instance v2, Ljava/util/ArrayList;
+                            invoke-direct { v2 }, Ljava/util/ArrayList;-><init>()V
+
+                            # Iterate through the collection and check if the search suggestion is the search history.
+                            invoke-interface { v1 }, Ljava/util/Collection;->iterator()Ljava/util/Iterator;
+                            move-result-object v3
+
+                            :loop
+                            invoke-interface { v3 }, Ljava/util/Iterator;->hasNext()Z
+                            move-result v1
+                            if-eqz v1, :exit
+
+                            invoke-interface { v3 }, Ljava/util/Iterator;->next()Ljava/lang/Object;
+                            move-result-object v1
+
+                            instance-of v4, v1, $searchSuggestionEndpointClass
+                            if-eqz v4, :add_item
+
+                            check-cast v1, $searchSuggestionEndpointClass
+
+                            # Each search suggestion has a command endpoint.
+                            # If the search suggestion is the search history, the command includes the keyword '/delete'.
+                            iget-object v4, v1, $searchSuggestionEndpointField
+                            invoke-static { v1, v4 }, $LAYOUT_COMPONENTS_FILTER->isSearchHistory(Ljava/lang/Object;Ljava/lang/String;)Z
+                            move-result v4
+
+                            # If this search suggestion is not the search history, skip adding it.
+                            if-eqz v4, :loop
+
+                            :add_item
+                            invoke-virtual { v2, v1 }, Ljava/util/ArrayList;->add(Ljava/lang/Object;)Z
+                            goto :loop
+
+                            # Save the updated collection to a field.
+                            :exit
+                            iput-object v2, v0, $searchSuggestionCollectionField
+
+                            :ignore
+                            return-void
+                        """
                     )
                 }
+
+                it.classDef.methods.add(helperMethod)
+
+                addInstruction(
+                    0,
+                    "invoke-direct/range { p0 .. p1 }, $helperMethod"
+                )
             }
         }
 
@@ -923,71 +960,106 @@ val hideLayoutComponentsPatch = bytecodePatch(
 
         // region hide channel tab
 
-        if (is_21_20_or_greater) {
-            ChannelTabAddFingerprint.method.apply {
-                val channelTabBuilderMethod = if (is_21_25_or_greater)
-                    ChannelTabBuilderFingerprint.method
-                else ChannelTabBuilderLegacyFingerprint.method
+        ChannelTabRendererFingerprint.method.apply {
+            val iteratorIndex = indexOfFirstInstructionReversedOrThrow(
+                methodCall(name = "hasNext")
+            )
+            val iteratorRegister = getInstruction<FiveRegisterInstruction>(iteratorIndex).registerC
 
-                val targetIndex = indexOfFirstInstructionReversedOrThrow {
-                    val reference = getReference<MethodReference>()
-                    reference?.returnType == channelTabBuilderMethod.returnType &&
-                            reference.parameterTypes == channelTabBuilderMethod.parameterTypes
-                }
-                val objectIndex = indexOfFirstInstructionReversedOrThrow(
-                    targetIndex,
-                    Opcode.IGET_OBJECT
+            if (is_21_20_or_greater) {
+                val addMethod = ChannelTabAddFingerprint.method
+                val channelTabBuilderMethod =
+                    if (is_21_25_or_greater) ChannelTabBuilderFingerprint.method
+                    else ChannelTabBuilderLegacyFingerprint.method
+
+                val targetIndex = addMethod.indexOfFirstInstructionReversedOrThrow(
+                    methodCall(
+                        returnType = channelTabBuilderMethod.returnType,
+                        parameters = channelTabBuilderMethod.parameterTypes.map { it.toString() }
+                    )
                 )
-                val register = getInstruction<TwoRegisterInstruction>(objectIndex).registerA
-                val insertIndex = objectIndex + 1
-                val free = findFreeRegister(insertIndex, register)
+
+                val objectIndex = addMethod.indexOfFirstInstructionReversedOrThrow(
+                    targetIndex, Opcode.IGET_OBJECT
+                )
+                val titleStringFieldRef = addMethod.getInstruction<ReferenceInstruction>(
+                    objectIndex
+                ).reference as FieldReference
+                val nextIndex = indexOfFirstInstructionOrThrow(
+                    iteratorIndex,
+                    methodCall(name = "next")
+                )
+
+                val protoObjectIndex = indexOfFirstInstructionOrThrow(nextIndex) {
+                    opcode == Opcode.IGET_OBJECT
+                }
+
+                val protoInstruction = getInstruction<TwoRegisterInstruction>(protoObjectIndex)
+                val protoRegister = protoInstruction.registerA
+                val auluRegister = protoInstruction.registerB
+                val auluFieldRef = getInstruction<ReferenceInstruction>(
+                    protoObjectIndex
+                ).reference as FieldReference
+
+                val insertIndex = if (is_21_36_or_greater) {
+                    protoObjectIndex + 1
+                } else {
+                    indexOfFirstInstructionOrThrow(protoObjectIndex) {
+                        opcode == Opcode.CHECK_CAST
+                    } + 1
+                }
+
+                val checkCastInstruction = if (is_21_36_or_greater) {
+                    ""
+                } else {
+                    val checkCastIndex = insertIndex - 1
+                    val checkCastRef = getInstruction<ReferenceInstruction>(checkCastIndex).reference
+                    "check-cast v$protoRegister, $checkCastRef"
+                }
 
                 addInstructionsWithLabels(
                     insertIndex,
                     """
-                        invoke-static { v$register }, $LAYOUT_COMPONENTS_FILTER->hideChannelTab(Ljava/lang/String;)Z
-                        move-result v$free
-                        if-eqz v$free, :ignore
-                        return-void
+                        iget-object v$protoRegister, v$protoRegister, $titleStringFieldRef
+                        invoke-static { v$protoRegister }, $LAYOUT_COMPONENTS_FILTER->hideChannelTab(Ljava/lang/String;)Z
+                        move-result v$protoRegister
+                        if-eqz v$protoRegister, :ignore
+                        invoke-interface { v$iteratorRegister }, Ljava/util/Iterator;->remove()V
+                        goto :next_iterator
                         :ignore
-                        nop
-                    """
+                        iget-object v$protoRegister, v$auluRegister, $auluFieldRef
+                        $checkCastInstruction
+                    """,
+                    ExternalLabel("next_iterator", getInstruction(iteratorIndex))
                 )
-            }
-        } else {
-            ChannelTabRendererFingerprint.let { match ->
-                match.method.apply {
-                    val iteratorIndex = indexOfFirstInstructionReversedOrThrow {
-                        getReference<MethodReference>()?.name == "hasNext"
-                    }
-
-                    val channelTabBuilderMethod = ChannelTabBuilderLegacyFingerprint.method
-                    val iteratorRegister = getInstruction<FiveRegisterInstruction>(iteratorIndex).registerC
-                    val targetIndex = indexOfFirstInstructionReversedOrThrow {
-                        val reference = (this as? ReferenceInstruction)?.reference as? MethodReference
-                        opcode == Opcode.INVOKE_INTERFACE &&
-                                reference?.returnType == channelTabBuilderMethod.returnType &&
-                                reference.parameterTypes == channelTabBuilderMethod.parameterTypes
-                    }
-
-                    val objectIndex = indexOfFirstInstructionReversedOrThrow(targetIndex, Opcode.IGET_OBJECT)
-                    val objectInstruction = getInstruction<TwoRegisterInstruction>(objectIndex)
-                    val objectReference = getInstruction<ReferenceInstruction>(objectIndex).reference
-
-                    addInstructionsWithLabels(
-                        objectIndex + 1,
-                        """
-                            invoke-static { v${objectInstruction.registerA} }, $LAYOUT_COMPONENTS_FILTER->hideChannelTab(Ljava/lang/String;)Z
-                            move-result v${objectInstruction.registerA}
-                            if-eqz v${objectInstruction.registerA}, :ignore
-                            invoke-interface { v$iteratorRegister }, Ljava/util/Iterator;->remove()V
-                            goto :next_iterator
-                            :ignore
-                            iget-object v${objectInstruction.registerA}, v${objectInstruction.registerB}, $objectReference
-                        """,
-                        ExternalLabel("next_iterator", getInstruction(iteratorIndex))
+            } else {
+                val channelTabBuilderMethod = ChannelTabBuilderLegacyFingerprint.method
+                val targetIndex = indexOfFirstInstructionReversedOrThrow(
+                    methodCall(
+                        returnType = channelTabBuilderMethod.returnType,
+                        parameters = channelTabBuilderMethod.parameterTypes.map { it.toString() }
                     )
-                }
+                )
+
+                val objectIndex = indexOfFirstInstructionReversedOrThrow(
+                    targetIndex, Opcode.IGET_OBJECT
+                )
+                val objectInstruction = getInstruction<TwoRegisterInstruction>(objectIndex)
+                val objectReference = getInstruction<ReferenceInstruction>(objectIndex).reference
+
+                addInstructionsWithLabels(
+                    objectIndex + 1,
+                    """
+                        invoke-static { v${objectInstruction.registerA} }, $LAYOUT_COMPONENTS_FILTER->hideChannelTab(Ljava/lang/String;)Z
+                        move-result v${objectInstruction.registerA}
+                        if-eqz v${objectInstruction.registerA}, :ignore
+                        invoke-interface { v$iteratorRegister }, Ljava/util/Iterator;->remove()V
+                        goto :next_iterator
+                        :ignore
+                        iget-object v${objectInstruction.registerA}, v${objectInstruction.registerB}, $objectReference
+                    """,
+                    ExternalLabel("next_iterator", getInstruction(iteratorIndex))
+                )
             }
         }
 
@@ -995,26 +1067,43 @@ val hideLayoutComponentsPatch = bytecodePatch(
 
         // region hide search term thumbnails
 
-        CreateSearchSuggestionsFingerprint.let {
+        CreateSearchSuggestionsFingerprint.method.apply {
+            findInstructionIndicesReversedOrThrow(
+                methodCall(
+                    opcodes = listOf(Opcode.INVOKE_INTERFACE, Opcode.INVOKE_VIRTUAL),
+                    parameters = listOf("Landroid/widget/ImageView;", "Landroid/net/Uri;")
+                )
+            ).forEach { insertIndex ->
+                val invokeInstruction = getInstruction<FiveRegisterInstruction>(insertIndex)
+                val imageViewRegister = invokeInstruction.registerD
+                val uriRegister = invokeInstruction.registerE
+
+                addInstructions(
+                    insertIndex,
+                    """
+                        invoke-static { v$imageViewRegister, v$uriRegister }, $LAYOUT_COMPONENTS_FILTER->hideSearchTermThumbnails(Landroid/view/View;Landroid/net/Uri;)Landroid/net/Uri;
+                        move-result-object v$uriRegister
+                    """
+                )
+            }
+        }
+
+        // endregion
+
+        // region hide live chat tooltips
+
+        TooltipAnchorViewFingerprint.let {
             it.method.apply {
-                val methodCalls = findInstructionIndicesReversedOrThrow {
-                    (opcode == Opcode.INVOKE_INTERFACE || opcode == Opcode.INVOKE_VIRTUAL) &&
-                            (getReference<MethodReference>()?.parameterTypes == listOf("Landroid/widget/ImageView;", "Landroid/net/Uri;"))
-                }
+                val anchorFieldGetIndex = it.instructionMatches.first().index
+                val anchorRegister = getInstruction<TwoRegisterInstruction>(anchorFieldGetIndex).registerA
 
-                methodCalls.forEach { insertIndex ->
-                    val invokeInstruction = getInstruction<FiveRegisterInstruction>(insertIndex)
-                    val imageViewRegister = invokeInstruction.registerD
-                    val uriRegister = invokeInstruction.registerE
-
-                    addInstructions(
-                        insertIndex,
-                        """
-                            invoke-static { v$imageViewRegister, v$uriRegister }, $LAYOUT_COMPONENTS_FILTER->hideSearchTermThumbnails(Landroid/view/View;Landroid/net/Uri;)Landroid/net/Uri;
-                            move-result-object v$uriRegister
-                        """
-                    )
-                }
+                addInstructions(
+                    anchorFieldGetIndex + 1,
+                    """
+                        invoke-static { v$anchorRegister }, $COMMENTS_FILTER->hideLiveChatTooltip(Landroid/view/View;)Landroid/view/View;
+                        move-result-object v$anchorRegister
+                    """
+                )
             }
         }
 
@@ -1047,13 +1136,9 @@ val hideLayoutComponentsPatch = bytecodePatch(
         // region hide account menu
 
         // for you tab
-        AccountListFingerprint.matchOrNull()?.let { match ->
+        AccountListFingerprint.let { match ->
             match.method.apply {
-                val literalIndex = match.instructionMatches.first().index
-                val targetIndex = indexOfFirstInstructionOrThrow(literalIndex) {
-                    opcode == Opcode.INVOKE_VIRTUAL &&
-                            getReference<MethodReference>()?.name == "setText"
-                }
+                val targetIndex = match.instructionMatches.last().index
                 val targetInstruction = getInstruction<FiveRegisterInstruction>(targetIndex)
 
                 addInstruction(
@@ -1064,7 +1149,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
             }
         }
 
-        AccountMenuFingerprint.matchOrNull()?.let { match ->
+        AccountMenuFingerprint.let { match ->
             match.method.apply {
                 val targetIndex = match.instructionMatches[2].index
                 val targetInstruction = getInstruction<FiveRegisterInstruction>(targetIndex)
@@ -1078,7 +1163,7 @@ val hideLayoutComponentsPatch = bytecodePatch(
         }
 
         // for you tab bottom items and tablet menus
-        AccountMenuLegacyFingerprint.matchOrNull()?.let { match ->
+        AccountMenuLegacyFingerprint.let { match ->
             match.method.apply {
                 val targetIndex = match.instructionMatches[2].index
                 val targetInstruction = getInstruction<FiveRegisterInstruction>(targetIndex)
@@ -1129,7 +1214,8 @@ val hideLayoutComponentsPatch = bytecodePatch(
                 it.method.apply {
                     addInstruction(
                         it.instructionMatches.first().index + 1,
-                        "invoke-static { p0 }, $LAYOUT_COMPONENTS_FILTER->handleLegacySnackbar(Landroid/view/View;)V"
+                        "invoke-static { p0 }, $LAYOUT_COMPONENTS_FILTER->" +
+                                "handleLegacySnackbar(Landroid/view/View;)V"
                     )
                 }
             }
@@ -1172,6 +1258,24 @@ val hideLayoutComponentsPatch = bytecodePatch(
                     index + 1,
                     "invoke-static { v$register }, $LAYOUT_COMPONENTS_FILTER->hideChaptersTimelineButton(Landroid/view/View;)V"
                 )
+            }
+        }
+
+        // endregion
+
+        // region disable UI padding feature flags
+
+        if (is_21_07_or_greater) {
+            listOf(
+                CommentReplyPaddingFeatureFlagFingerprint,
+                IncognitoSearchPaddingFeatureFlagFingerprint
+            ).forEach { fingerprint ->
+                fingerprint.matchAll().forEach {
+                    it.method.insertLiteralOverride(
+                        it.instructionMatches.first().index,
+                        "$LAYOUT_COMPONENTS_FILTER->disableUIPaddingFeatureFlags(Z)Z"
+                    )
+                }
             }
         }
 

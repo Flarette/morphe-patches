@@ -20,10 +20,9 @@ import app.morphe.patcher.literal
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.opcode
 import app.morphe.patcher.parametersMatch
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import app.morphe.patcher.string
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
-import app.morphe.patches.youtube.layout.hide.general.YouTubeDoodlesImageViewFingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
@@ -66,12 +65,6 @@ internal object CastMenuItemVisibilityFingerprint : Fingerprint(
 internal object AnimatedNavigationTabsFeatureFlagFingerprint : Fingerprint(
     filters = listOf(
         literal(45680008L)
-    )
-)
-
-internal object CollapsingToolbarLayoutFeatureFlagFingerprint : Fingerprint(
-    filters = listOf(
-        literal(45736608L)
     )
 )
 
@@ -134,20 +127,9 @@ internal object PivotBarChangedFingerprint : Fingerprint(
     )
 )
 
-internal object TranslucentNavigationStatusBarFeatureFlagFingerprint : Fingerprint(
-    filters = listOf(
-        literal(45400535L) // Translucent status bar feature flag.
-    )
-)
-
-/**
+/*
  * YouTube nav buttons.
  */
-internal object TranslucentNavigationButtonsFeatureFlagFingerprint : Fingerprint(
-    filters = listOf(
-        literal(45630927L) // Translucent navigation bar buttons feature flag.
-    )
-)
 
 /**
  * Device on screen back/home/recent buttons.

@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">Başlık logosu</string>
   <string name="morphe_header_logo_entry_1">Varsayılan</string>
   <string name="morphe_header_logo_entry_3">Özel</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">Albüm ses parçalarını çal</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">Şarkıların yalnızca sesli albüm sürümünü müzik videosu yerine çal. \'Video akışlarını taklit et\' gerektirir</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">Üçüncü taraf indirme uygulamalarıyla müzik videoları, podcast\'ler veya şarkılar indirin</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x — geçiş yalnızca 9.x ve sonraki sürümlerde çalışır"
   <string name="morphe_music_hide_action_bar_title">Eylem çubuğunu gizle</string>
   <string name="morphe_music_hide_like_dislike_button_title">Beğenme ve Beğenmeme düğmelerini gizle</string>
   <string name="morphe_music_hide_comments_button_title">Yorumlar düğmesini gizle</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">\'Canlı sohbeti tekrar oynat\' düğmesini gizle</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">Şarkı Sözleri düğmesini gizle</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x — geçiş yalnızca 9.x ve sonraki sürümlerde çalışır"
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">İndir düğmesini gizle</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">Radyoyu başlat düğmesini gizle</string>
+  <string name="morphe_music_hide_radio_button_title">\'Radyoyu başlat\' düğmesini gizle</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">Açılır menü</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">Oyuncuda ve kuyrukta görünen bileşenleri seçin</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x — geçiş yalnızca 9.x ve sonraki sürümlerde çalışır"
   <string name="morphe_music_scrobbling_custom_regex_summary">Şarkı adlarından, sanatçılardan veya albümlerden ek metni kaldırmak için özel bir düzenli ifade girin. Örnek: (?i)\\s*\\((clean|explicit)\\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">Başlıktan sanatçı ve parça adını ayrıştır</string>
   <string name="morphe_music_scrobbling_parse_title_summary">\" - \" ayıracını kullanarak video başlığından sanatçı ve parça adını çıkar. Kanal adı sanatçı olarak kullanılmış yeniden yüklenmiş içerik için kullanışlıdır.</string>
+  <string name="morphe_music_scrobbling_guess_album_title">Eksik albümü tamamla</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">Müzik bir albüm içermiyorsa, scrobble\'ınızın tamamlanması için Last.fm\'de arayın.</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">Scrobbling hakkında</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,9 +308,10 @@ Scrobbling'in arka planda çalma sırasında senkronize olduğundan emin olmak i
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">Üçüncü taraf şarkı sözlerini kullan</string>
   <string name="morphe_music_lyrics_enabled_summary">Üçüncü taraf bir servisten şarkı sözleri gösterir, bulunamadığında yerleşik şarkı sözlerine geri döner</string>
-  <string name="morphe_music_lyrics_source_title">Şarkı Sözü Servisi</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB, ardından KuGou</string>
+  <string name="morphe_music_lyrics_section_about_title">Hakkında</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <string name="morphe_music_token_dialog_get_token">Token alın</string>
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">Bir satıra dokunarak şarkıda ilerle</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">Bir satıra dokunmak şarkıda o ana atlar</string>
   <string name="morphe_music_lyrics_show_copy_button_title">Kopyala düğmesini göster</string>
@@ -310,22 +319,12 @@ Scrobbling'in arka planda çalma sırasında senkronize olduğundan emin olmak i
   <string name="morphe_music_lyrics_text_size_title">Yazı tipi boyutu</string>
   <string name="morphe_music_lyrics_text_size_summary">Şarkı sözü metninin boyutu</string>
   <string name="morphe_music_lyrics_offset_ms_title">Zamanlama kaydırması</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">Şarkı sözlerini ileri veya geri kaydırın. Şarkı sözleri şarkının gerisinde kalıyorsa pozitif bir değer kullanın</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">Kaynak: %s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">Çevir</string>
-  <string name="morphe_music_lyrics_translate_hide">Orijinal göster</string>
   <string name="morphe_music_lyrics_translating">Çeviriliyor…</string>
   <string name="morphe_music_lyrics_translate_failed">Şarkı sözleri çevrilemedi</string>
-  <string name="morphe_music_lyrics_copy">Kopyala</string>
   <string name="morphe_music_lyrics_copied">Panoya kopyalandı</string>
-  <string name="morphe_music_lyrics_about_title">Üçüncü taraf şarkı sözleri hakkında</string>
-  <string name="morphe_music_lyrics_about_summary">"Şarkı sözleri, şarkı adı ve sanatçıya göre aranır; bu nedenle olağan dışı meta verilere sahip bir şarkı hiçbir şey bulamayabilir veya yanlış sürümü bulabilir.
-
-Eş zamanlı şarkı sözleri oynatmayı takip eder. Kayıyorsa, zamanlama kaydırmasını ayarlayın.
-
-Üçüncü taraf şarkı sözleri bulunamazsa, bunun yerine yerleşik şarkı sözleri gösterilir"</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - Kalın simgeleri devre dışı bırak</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 - Çalardaki Sıradaki, Şarkı Sözleri ve İlgili sekmelerini geri yükle</string>

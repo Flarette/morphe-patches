@@ -11,8 +11,8 @@ import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.opcode
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import com.android.tools.smali.dexlib2.Opcode
 
 internal object AudioVideoSwitchPillContainerFingerprint : Fingerprint(
@@ -61,22 +61,6 @@ internal object PlaybackQueueLoopButtonFingerprint : Fingerprint(
 internal object PlaybackQueueShuffleButtonFingerprint : Fingerprint(
     filters = listOf(
         resourceLiteral(ResourceType.ID, "playback_queue_shuffle_button_view"),
-        methodCall(opcode = Opcode.INVOKE_VIRTUAL, name = "findViewById"),
-        opcode(Opcode.MOVE_RESULT_OBJECT, location = MatchAfterImmediately())
-    )
-)
-
-internal object QueueLoopButtonFingerprint : Fingerprint(
-    filters = listOf(
-        resourceLiteral(ResourceType.ID, "queue_loop"),
-        methodCall(opcode = Opcode.INVOKE_VIRTUAL, name = "findViewById"),
-        opcode(Opcode.MOVE_RESULT_OBJECT, location = MatchAfterImmediately())
-    )
-)
-
-internal object QueueShuffleButtonFingerprint : Fingerprint(
-    filters = listOf(
-        resourceLiteral(ResourceType.ID, "queue_shuffle_button"),
         methodCall(opcode = Opcode.INVOKE_VIRTUAL, name = "findViewById"),
         opcode(Opcode.MOVE_RESULT_OBJECT, location = MatchAfterImmediately())
     )

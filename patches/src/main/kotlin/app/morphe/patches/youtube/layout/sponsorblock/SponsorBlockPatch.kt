@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Morphe.
+ * https://github.com/MorpheApp/morphe-patches
+ *
+ * Original hard forked code:
+ * https://github.com/ReVanced/revanced-patches/commit/724e6d61b2ecd868c1a9a37d465a688e83a74799
+ *
+ * See the included NOTICE file for GPLv3 Section 7 terms that apply to Morphe contributions.
+ */
+
 package app.morphe.patches.youtube.layout.sponsorblock
 
 import app.morphe.patcher.extensions.InstructionExtensions.addInstruction
@@ -7,7 +17,6 @@ import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.patch.resourcePatch
 import app.morphe.patches.all.misc.resources.addAppResources
 import app.morphe.patches.all.misc.resources.addResourcesPatch
-import app.morphe.patches.all.misc.resources.resourceMappingPatch
 import app.morphe.patches.shared.misc.settings.preference.BasePreference
 import app.morphe.patches.shared.misc.settings.preference.InputType
 import app.morphe.patches.shared.misc.settings.preference.ListPreference
@@ -18,9 +27,12 @@ import app.morphe.patches.shared.misc.settings.preference.SwitchPreference
 import app.morphe.patches.shared.misc.settings.preference.TextPreference
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
 import app.morphe.patches.youtube.misc.playercontrols.addTopControl
+import app.morphe.patches.youtube.misc.playercontrols.disableNewPlayerControlsFeatureFlag
 import app.morphe.patches.youtube.misc.playercontrols.initializeTopControl
 import app.morphe.patches.youtube.misc.playercontrols.legacyPlayerControlsPatch
 import app.morphe.patches.youtube.misc.playertype.playerTypeHookPatch
+import app.morphe.patches.youtube.misc.playservice.is_21_36_or_greater
+import app.morphe.patches.youtube.misc.playservice.versionCheckPatch
 import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.misc.settings.settingsPatch
 import app.morphe.patches.youtube.shared.Constants.COMPATIBILITY_YOUTUBE
@@ -42,6 +54,7 @@ import com.android.tools.smali.dexlib2.iface.reference.FieldReference
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
 private const val SB_PREFERENCES_PACKAGE = "app.morphe.extension.youtube.sponsorblock.preferences"
+private const val YOUTUBE_PREFERENCES_PACKAGE = "app.morphe.extension.youtube.settings.preference"
 private const val SEGMENT_CATEGORY_PREFERENCE_TAG =
     "app.morphe.extension.shared.sponsorblock.objects.SegmentCategoryPreference"
 
@@ -51,7 +64,6 @@ fun categoryPreference(settingKey: String): BasePreference =
 private val sponsorBlockResourcePatch = resourcePatch {
     dependsOn(
         settingsPatch,
-        resourceMappingPatch,
         legacyPlayerControlsPatch,
         addResourcesPatch
     )
@@ -133,7 +145,7 @@ private val sponsorBlockResourcePatch = resourcePatch {
                     ),
                     NonInteractivePreference(
                         key = "morphe_sb_channel_whitelist",
-                        tag = "$SB_PREFERENCES_PACKAGE.SponsorBlockChannelWhitelistPreference",
+                        tag = "$YOUTUBE_PREFERENCES_PACKAGE.ChannelWhitelistPreference",
                         selectable = true
                     ),
                     SwitchPreference("morphe_sb_toast_on_whitelisted_channel", summary = true),
@@ -218,12 +230,12 @@ val sponsorBlockPatch = bytecodePatch(
 ) {
     dependsOn(
         sharedExtensionPatch,
-        resourceMappingPatch,
         videoIdPatch,
         videoInformationPatch,
         playerTypeHookPatch,
         legacyPlayerControlsPatch,
-        sponsorBlockResourcePatch
+        sponsorBlockResourcePatch,
+        versionCheckPatch
     )
 
     compatibleWith(COMPATIBILITY_YOUTUBE)
@@ -342,6 +354,12 @@ val sponsorBlockPatch = bytecodePatch(
                     "invoke-static { v$register }, $EXTENSION_SEGMENT_PLAYBACK_CONTROLLER_CLASS->setAdProgressTextVisibility(I)V"
                 )
             }
+        }
+
+        // FIXME: Skip buttons do not show in new player controls layout.
+        //        Skip buttons may need to be added at runtime like other overlay buttons.
+        if (is_21_36_or_greater) {
+            disableNewPlayerControlsFeatureFlag()
         }
     }
 }

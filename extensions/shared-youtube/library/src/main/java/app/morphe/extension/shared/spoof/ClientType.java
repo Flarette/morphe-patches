@@ -15,7 +15,6 @@ import static app.morphe.extension.shared.patches.AppCheckPatch.IS_YOUTUBE_MUSIC
 import android.os.Build;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.util.Locale;
 
@@ -64,13 +63,14 @@ public enum ClientType {
             false,
             false,
             false,
+            false,
             "Android Music No SDK"
     ),
     /**
      * Video not playable: Kids.
      * AV1 codec not available.
      */
-    ANDROID_VR(
+    ANDROID_VR_SABR(
             28,
             "ANDROID_VR",
             "com.google.android.apps.youtube.vr.pico",
@@ -83,7 +83,7 @@ public enum ClientType {
             "1.73.21",
             null,
             false,
-            false,
+            true,
             true,
             true,
             true,
@@ -92,32 +92,79 @@ public enum ClientType {
             "Android VR"
     ),
     /**
-     * Video not playable: Kids.
-     * AV1 codec available.
+     * Same as {@code ANDROID_VR_SABR} but supports dash streams.
      */
-    ANDROID_XR(
-            28,
-            "ANDROID_VR",
+    ANDROID_VR_DASH(
+            ANDROID_VR_SABR.id,
+            ANDROID_VR_SABR.clientName,
+            ANDROID_VR_SABR.packageName,
+            ANDROID_VR_SABR.deviceMake,
+            ANDROID_VR_SABR.deviceModel,
+            ANDROID_VR_SABR.osName,
+            ANDROID_VR_SABR.osVersion,
+            ANDROID_VR_SABR.androidSdkVersion,
+            ANDROID_VR_SABR.buildID,
+            "1.64.34",
+            ANDROID_VR_SABR.clientPlatform,
+            ANDROID_VR_SABR.canLogin,
+            ANDROID_VR_SABR.requireLogin,
+            false,
+            ANDROID_VR_SABR.supportsOAuth2,
+            ANDROID_VR_SABR.supportsVRImmersiveMode,
+            false,
+            ANDROID_VR_SABR.usePlayerEndpoint,
+            "Android VR Downgraded"
+    ),
+    /**
+     * Same as {@code ANDROID_VR_SABR} but supports AV1 codec.
+     */
+    ANDROID_XR_SABR(
+            ANDROID_VR_SABR.id,
+            ANDROID_VR_SABR.clientName,
             "com.google.android.apps.youtube.xr",
             "Samsung",
             "SM-I610", // Galaxy XR.
-            "Android",
+            ANDROID_VR_SABR.osName,
             "14",
             "34",
             "UML1.250710.002.A1",
             "1.73.21",
-            null,
-            false,
-            false,
-            true,
-            true,
-            true,
-            true,
-            true,
+            ANDROID_VR_SABR.clientPlatform,
+            ANDROID_VR_SABR.canLogin,
+            ANDROID_VR_SABR.requireLogin,
+            ANDROID_VR_SABR.supportsMultiAudioTracks,
+            ANDROID_VR_SABR.supportsOAuth2,
+            ANDROID_VR_SABR.supportsVRImmersiveMode,
+            ANDROID_VR_SABR.requireSABR,
+            ANDROID_VR_SABR.usePlayerEndpoint,
             "Android XR"
     ),
     /**
-     * Video not playable: Livestream.
+     * Same as {@code ANDROID_XR_SABR} but supports dash streams.
+     */
+    ANDROID_XR_DASH(
+            ANDROID_XR_SABR.id,
+            ANDROID_XR_SABR.clientName,
+            ANDROID_XR_SABR.packageName,
+            ANDROID_XR_SABR.deviceMake,
+            ANDROID_XR_SABR.deviceModel,
+            ANDROID_XR_SABR.osName,
+            ANDROID_XR_SABR.osVersion,
+            ANDROID_XR_SABR.androidSdkVersion,
+            ANDROID_XR_SABR.buildID,
+            "1.69.27",
+            ANDROID_XR_SABR.clientPlatform,
+            ANDROID_XR_SABR.canLogin,
+            ANDROID_XR_SABR.requireLogin,
+            false,
+            ANDROID_XR_SABR.supportsOAuth2,
+            ANDROID_XR_SABR.supportsVRImmersiveMode,
+            false,
+            ANDROID_XR_SABR.usePlayerEndpoint,
+            "Android XR Downgraded"
+    ),
+    /**
+     * Video not playable: Live stream.
      * AV1 codec and HDR codec are not available, and the maximum resolution is 720p.
      */
     // https://dumps.tadiphone.dev/dumps/google/mustang
@@ -143,6 +190,30 @@ public enum ClientType {
             "Android Studio"
     ),
     /**
+     * Plain ANDROID client used for caption / transcript fetching.
+     */
+    ANDROID(
+            3,
+            "ANDROID",
+            "com.google.android.youtube",
+            Build.MANUFACTURER,
+            Build.MODEL,
+            "Android",
+            Build.VERSION.RELEASE,
+            String.valueOf(Build.VERSION.SDK_INT),
+            Build.ID,
+            "20.10.38",
+            null,
+            true,
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            "Android"
+    ),
+    /**
      * Video not playable: None.
      * AV1 codec available.
      */
@@ -161,12 +232,13 @@ public enum ClientType {
             true,
             false,
             true,
+            false,
             true,
             "TV"
     ),
     /**
-     * It is the same as TV_SABR but supports dash streams.
-     * This client cannot be selected in the settings and is used only for livestreams.
+     * Same as {@code TV_SABR} but supports dash streams.
+     * This client cannot be selected in the settings and is used only for live streams.
      */
     TV_DASH(
             TV_SABR.id,
@@ -183,6 +255,7 @@ public enum ClientType {
             TV_SABR.supportsMultiAudioTracks,
             TV_SABR.supportsVRImmersiveMode,
             TV_SABR.requireJS,
+            TV_SABR.requirePoToken,
             false,
             "TV Downgraded"
     ),
@@ -202,11 +275,11 @@ public enum ClientType {
             TV_SABR.userAgent,
             true,
             // This client requires a PoToken for logout.
-            // Use as a login-only client.
-            true,
+            false,
             TV_SABR.supportsMultiAudioTracks,
             TV_SABR.supportsVRImmersiveMode,
             TV_SABR.requireJS,
+            true,
             false,
             "TV Simply"
     ),
@@ -221,14 +294,15 @@ public enum ClientType {
             "Apple",
             "RealityDevice17,1",
             "visionOS",
-            "26.5.23O471",
+            "26.6.1",
             "1.03",
             null,
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 15_7_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Safari/605.1.15",
+            "com.google.visionosyoutube/1.03 (RealityDevice17,1; U; CPU visionOS 26_6_1 like Mac OS X; en_US) gzip",
             false,
             false,
             true,
             true,
+            false,
             false,
             false,
             "visionOS 1.03"
@@ -244,15 +318,16 @@ public enum ClientType {
             VISIONOS_1_03.deviceMake,
             "RealityDevice14,1",
             VISIONOS_1_03.osName,
-            "2.6.22O785",
+            VISIONOS_1_03.osVersion,
             "1.02",
             VISIONOS_1_03.clientPlatform,
-            VISIONOS_1_03.userAgent,
+            "com.google.visionosyoutube/1.02 (RealityDevice14,1; U; CPU visionOS 26_6_1 like Mac OS X; en_US) gzip",
             VISIONOS_1_03.canLogin,
             VISIONOS_1_03.requireLogin,
             VISIONOS_1_03.supportsMultiAudioTracks,
             VISIONOS_1_03.supportsVRImmersiveMode,
             VISIONOS_1_03.requireJS,
+            VISIONOS_1_03.requirePoToken,
             VISIONOS_1_03.requireSABR,
             "visionOS 1.02"
     );
@@ -267,8 +342,9 @@ public enum ClientType {
 
     /**
      * App package name.
+     * Field is empty if not applicable.
      */
-    @Nullable
+    @NonNull
     private final String packageName;
 
     /**
@@ -298,9 +374,9 @@ public enum ClientType {
 
     /**
      * Android SDK version, equivalent to {@link Build.VERSION#SDK} (System property: ro.build.version.sdk)
-     * Field is null if not applicable.
+     * Field is empty if not applicable.
      */
-    @Nullable
+    @NonNull
     public final String androidSdkVersion;
 
     /**
@@ -348,6 +424,11 @@ public enum ClientType {
      * If true, JavaScript must be fetched to decrypt the 'n' parameter.
      */
     public final boolean requireJS;
+
+    /**
+     * If the client requires PoToken.
+     */
+    public final boolean requirePoToken;
 
     /**
      * If the client require SABR.
@@ -419,6 +500,7 @@ public enum ClientType {
         Logger.printDebug(() -> "userAgent: " + this.userAgent);
 
         requireJS = false;
+        requirePoToken = false;
     }
 
     ClientType(int id,
@@ -435,6 +517,7 @@ public enum ClientType {
                boolean supportsMultiAudioTracks,
                boolean supportsVRImmersiveMode,
                boolean requireJS,
+               boolean requirePoToken,
                boolean requireSABR,
                String friendlyName) {
         this.id = id;
@@ -451,12 +534,13 @@ public enum ClientType {
         this.supportsMultiAudioTracks = supportsMultiAudioTracks;
         this.supportsVRImmersiveMode = supportsVRImmersiveMode;
         this.requireJS = requireJS;
+        this.requirePoToken = requirePoToken;
         this.requireSABR = requireSABR;
         this.friendlyName = friendlyName;
 
-        androidSdkVersion = null;
+        androidSdkVersion = "";
         buildID = null;
-        packageName = null;
+        packageName = "";
         supportsOAuth2 = false;
         usePlayerEndpoint = true;
     }

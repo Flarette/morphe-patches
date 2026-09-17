@@ -16,8 +16,8 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="reddit_privacy_policy">Reddit maxfiylik siyosati</string>
+  <string name="morphe_google_signin_not_available_toast">Google orqali kirish mavjud emas. Elektron pochtadan foydalanib kiring.</string>
   <string name="morphe_screen_ads_title">Reklama</string>
   <string name="morphe_hide_post_ads_title">Yashirish: Lentadagi reklamalar</string>
   <string name="morphe_hide_comment_ads_title">Yashirish: Izohlardagi reklamalar</string>
@@ -68,4 +68,5 @@ Second \"item\" text"</string>
   <string name="morphe_open_links_directly_summary">Tashqi havolalarni ochganda yo\'naltirish URL-larini bypass qiladi</string>
   <string name="morphe_open_links_externally_title">Havolalarni tashqi ko\'rinishda ochish</string>
   <string name="morphe_open_links_externally_summary">Havolalarni ilovadan tashqaridagi brauzeringizda ochadi</string>
+  <string name="morphe_app_icon_default">Standart</string>
 </resources>

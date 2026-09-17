@@ -13,6 +13,7 @@ package app.morphe.extension.youtube.patches.components;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
 
@@ -21,6 +22,8 @@ import androidx.annotation.NonNull;
 import java.util.List;
 
 import app.morphe.extension.shared.Logger;
+import app.morphe.extension.shared.ResourceType;
+import app.morphe.extension.shared.ResourceUtils;
 import app.morphe.extension.shared.Utils;
 import app.morphe.extension.shared.patches.components.BufferAsciiStrings;
 import app.morphe.extension.shared.patches.components.ByteArrayFilterGroup;
@@ -30,6 +33,7 @@ import app.morphe.extension.shared.patches.components.Filter;
 import app.morphe.extension.shared.patches.components.StringFilterGroup;
 import app.morphe.extension.youtube.innertube.NextResponseOuterClass.NewElement;
 import app.morphe.extension.youtube.patches.VersionCheckPatch;
+import app.morphe.extension.youtube.patches.utils.FlyoutUtils;
 import app.morphe.extension.youtube.settings.Settings;
 import app.morphe.extension.youtube.shared.PlayerType;
 
@@ -40,6 +44,8 @@ public class CommentsFilter extends Filter {
     private static final String COMMENT_COMPOSER_PATH = "comment_composer.e";
     private static final String VIDEO_LOCKUP_WITH_ATTACHMENT_PATH = "video_lockup_with_attachment.e";
     private static final String VIDEO_METADATA_CAROUSEL_PATH = "video_metadata_carousel.e";
+    private static final int ID_LIVE_CHAT_ACTION_PANEL =
+            ResourceUtils.getIdentifierOrThrow(ResourceType.ID, "live_chat_action_panel");
 
     private static final List<String> commentsCarouselFilterStrings =
             Utils.getFilterStrings(Settings.HIDE_COMMENTS_CAROUSEL_FILTER_STRINGS);
@@ -55,7 +61,8 @@ public class CommentsFilter extends Filter {
     public CommentsFilter() {
         var channelGuidelines = new StringFilterGroup(
                 Settings.HIDE_COMMENTS_CHANNEL_GUIDELINES,
-                "channel_guidelines_entry_banner"
+                "channel_guidelines_entry_banner",
+                "viewer_engagement_message"
         );
 
         var chatSummary = new StringFilterGroup(
@@ -111,7 +118,8 @@ public class CommentsFilter extends Filter {
 
         var communityGuidelines = new StringFilterGroup(
                 Settings.HIDE_COMMENTS_COMMUNITY_GUIDELINES,
-                "community_guidelines"
+                "community_guidelines",
+                "viewer_engagement_message"
         );
 
         var createAShortButton = new StringFilterGroup(
@@ -152,6 +160,11 @@ public class CommentsFilter extends Filter {
                 "composer_timestamp_button.e"
         );
 
+        var topFansButton = new StringFilterGroup(
+                Settings.HIDE_COMMENTS_TOP_FANS_BUTTON,
+                "live_viewer_leaderboard_chat_entry_point.e"
+        );
+
         addPathCallbacks(
                 channelGuidelines,
                 chatSummary,
@@ -168,7 +181,8 @@ public class CommentsFilter extends Filter {
                 previewComment,
                 previewCommentDotsSelector,
                 thanksButton,
-                timestampButton
+                timestampButton,
+                topFansButton
         );
     }
 
@@ -284,6 +298,23 @@ public class CommentsFilter extends Filter {
     /**
      * Injection point.
      */
+    public static View hideLiveChatTooltip(View anchor) {
+        if (anchor == null || !Settings.HIDE_COMMENTS_LIVE_CHAT_TOOLTIPS.get()) {
+            return anchor;
+        }
+
+        for (ViewParent parent = anchor.getParent(); parent instanceof View view; parent = view.getParent()) {
+            if (view.getId() == ID_LIVE_CHAT_ACTION_PANEL) {
+                return null;
+            }
+        }
+
+        return anchor;
+    }
+
+    /**
+     * Injection point.
+     */
     public static void hideLiveChatEmojiButton(View view) {
         if (Settings.HIDE_COMMENTS_EMOJI_BUTTON.get() && view != null) {
             ViewGroup.LayoutParams lp = view.getLayoutParams();
@@ -340,6 +371,8 @@ public class CommentsFilter extends Filter {
      * Injection point.
      */
     public static byte[] onCommentsLoaded(byte[] bytes) {
+        FlyoutUtils.onCommentsLoaded(bytes);
+
         if (Settings.HIDE_COMMENTS_CAROUSEL.get() && !commentsCarouselFilterStrings.isEmpty()) {
             try {
                 var newElement = NewElement.parseFrom(bytes).toBuilder();
@@ -352,47 +385,50 @@ public class CommentsFilter extends Filter {
                     var data = videoMetadataCarouselModel.getData().toBuilder();
                     var carouselTitleDatasList = data.getCarouselTitleDatasList();
 
-                    boolean modified = false;
+                    if (!carouselTitleDatasList.isEmpty()) {
+                        boolean modified = false;
 
-                    for (int i = carouselTitleDatasList.size() - 1; i > -1; i--) {
-                        var carouselTitleData = carouselTitleDatasList.get(i);
+                        for (int i = carouselTitleDatasList.size() - 1; i > -1; i--) {
+                            var carouselTitleData = carouselTitleDatasList.get(i);
 
-                        String title = carouselTitleData.getTitle();
-                        Logger.printDebug(() -> "comments title: " + title);
+                            String title = carouselTitleData.getTitle();
+                            Logger.printDebug(() -> "comments title: " + title);
 
-                        if (title != null) {
-                            for (String filter : commentsCarouselFilterStrings) {
-                                if (title.contains(filter)) {
-                                    data.removeCarouselItemDatas(i);
-                                    data.removeCarouselTitleDatas(i);
-                                    modified = true;
+                            if (title != null) {
+                                for (String filter : commentsCarouselFilterStrings) {
+                                    if (title.contains(filter)) {
+                                        data.removeCarouselItemDatas(i);
+                                        data.removeCarouselTitleDatas(i);
+                                        modified = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (modified) {
-                        var newBuild = data.build();
-                        videoMetadataCarouselModel.clearData();
-                        videoMetadataCarouselModel.setData(newBuild);
+                        if (modified) {
+                            var newBuild = data.build();
+                            videoMetadataCarouselModel.clearData();
+                            videoMetadataCarouselModel.setData(newBuild);
 
-                        var newVideoMetadataCarouselModel = videoMetadataCarouselModel.build();
-                        model.clearVideoMetadataCarouselModel();
-                        model.setVideoMetadataCarouselModel(newVideoMetadataCarouselModel);
+                            var newVideoMetadataCarouselModel = videoMetadataCarouselModel.build();
+                            model.clearVideoMetadataCarouselModel();
+                            model.setVideoMetadataCarouselModel(newVideoMetadataCarouselModel);
 
-                        var newModel = model.build();
-                        componentType.clearModel();
-                        componentType.setModel(newModel);
+                            var newModel = model.build();
+                            componentType.clearModel();
+                            componentType.setModel(newModel);
 
-                        var newComponentType = componentType.build();
-                        type.clearComponentType();
-                        type.setComponentType(newComponentType);
+                            var newComponentType = componentType.build();
+                            type.clearComponentType();
+                            type.setComponentType(newComponentType);
 
-                        var newType = type.build();
-                        newElement.clearType();
-                        newElement.setType(newType);
+                            var newType = type.build();
+                            newElement.clearType();
+                            newElement.setType(newType);
 
-                        return newElement.build().toByteArray();
+                            return newElement.build().toByteArray();
+                        }
                     }
                 }
             } catch (Exception ex) {

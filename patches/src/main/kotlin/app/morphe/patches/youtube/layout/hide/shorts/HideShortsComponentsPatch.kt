@@ -16,12 +16,10 @@ import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
 import app.morphe.patcher.patch.booleanOption
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.patch.resourcePatch
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.getResourceId
-import app.morphe.patches.all.misc.resources.resourceMappingPatch
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resource.resourceId
 import app.morphe.patches.shared.misc.litho.filter.addLithoFilter
 import app.morphe.patches.shared.misc.settings.preference.PreferenceCategory
-import app.morphe.patches.shared.misc.settings.preference.PreferenceScreenPreference
 import app.morphe.patches.shared.misc.settings.preference.SwitchPreference
 import app.morphe.patches.youtube.misc.engagement.engagementPanelHookPatch
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
@@ -30,6 +28,7 @@ import app.morphe.patches.youtube.misc.litho.observer.layoutReloadObserverPatch
 import app.morphe.patches.youtube.misc.navigation.addBottomBarContainerHook
 import app.morphe.patches.youtube.misc.navigation.navigationBarHookPatch
 import app.morphe.patches.youtube.misc.playservice.is_21_05_or_greater
+import app.morphe.patches.youtube.misc.playservice.is_21_17_or_greater
 import app.morphe.patches.youtube.misc.playservice.versionCheckPatch
 import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.misc.settings.settingsPatch
@@ -41,6 +40,7 @@ import app.morphe.util.getReference
 import app.morphe.util.indexOfFirstInstructionOrThrow
 import app.morphe.util.removeFromParent
 import app.morphe.util.returnLate
+import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 
@@ -61,13 +61,63 @@ internal val hideShortsWidgetOption = booleanOption(
 private val hideShortsComponentsResourcePatch = resourcePatch {
     dependsOn(
         settingsPatch,
-        resourceMappingPatch,
         versionCheckPatch
     )
 
     execute {
         val hideShortsAppShortcut by hideShortsAppShortcutOption
         val hideShortsWidget by hideShortsWidgetOption
+
+        PreferenceScreen.addShortsPlayerPreferences(
+
+                // Shorts player components.
+                // Ideally each group should be ordered similar to how they appear in the UI
+
+                // Vertical row of buttons on right side of the screen.
+                // Like fountain may no longer be used by YT anymore.
+                //SwitchPreference("morphe_hide_shorts_like_fountain"),
+                SwitchPreference("morphe_disable_shorts_double_tap_to_like"),
+                SwitchPreference("morphe_hide_shorts_like_button"),
+                SwitchPreference("morphe_hide_shorts_comments_button"),
+                SwitchPreference("morphe_hide_shorts_save_button"),
+                SwitchPreference("morphe_hide_shorts_share_button"),
+                SwitchPreference("morphe_hide_shorts_remix_button"),
+                SwitchPreference("morphe_hide_shorts_sound_button"),
+
+                // Upper and middle area of the player.
+                SwitchPreference("morphe_hide_shorts_join_button"),
+                SwitchPreference("morphe_hide_shorts_subscribe_button"),
+                SwitchPreference("morphe_hide_shorts_gesture_hints"),
+                SwitchPreference("morphe_hide_shorts_paused_overlay_buttons"),
+
+                // Suggested actions.
+                SwitchPreference("morphe_hide_shorts_preview_comment"),
+                SwitchPreference("morphe_hide_shorts_save_sound_button"),
+                SwitchPreference("morphe_hide_shorts_use_sound_button"),
+                SwitchPreference("morphe_hide_shorts_use_template_button"),
+                SwitchPreference("morphe_hide_shorts_upcoming_button"),
+                SwitchPreference("morphe_hide_shorts_effect_button"),
+                SwitchPreference("morphe_hide_shorts_green_screen_button"),
+                SwitchPreference("morphe_hide_shorts_hashtag_button"),
+                SwitchPreference("morphe_hide_shorts_live_preview"),
+                SwitchPreference("morphe_hide_shorts_new_posts_button"),
+                SwitchPreference("morphe_hide_shorts_shop_button"),
+                SwitchPreference("morphe_hide_shorts_tagged_products"),
+                SwitchPreference("morphe_hide_shorts_search_suggestions"),
+                SwitchPreference("morphe_hide_shorts_super_thanks_button"),
+
+                // Bottom of the screen.
+                SwitchPreference("morphe_hide_shorts_ai_button"),
+                SwitchPreference("morphe_hide_shorts_auto_dubbed_label"),
+                SwitchPreference("morphe_hide_shorts_location_label"),
+                SwitchPreference("morphe_hide_shorts_channel_bar"),
+                SwitchPreference("morphe_hide_shorts_info_panel"),
+                SwitchPreference("morphe_hide_shorts_full_video_link_label"),
+                SwitchPreference("morphe_hide_shorts_video_title"),
+                SwitchPreference("morphe_hide_shorts_sound_metadata_label"),
+                SwitchPreference("morphe_hide_shorts_navigation_bar")
+
+            )
 
         PreferenceScreen.SHORTS.addPreferences(
             PreferenceCategory(
@@ -81,57 +131,7 @@ private val hideShortsComponentsResourcePatch = resourcePatch {
                     SwitchPreference("morphe_hide_shorts_history")
                 )
             ),
-            SwitchPreference("morphe_disable_shorts_double_tap_to_like"),
-            PreferenceScreenPreference(
-                key = "morphe_shorts_player_screen",
-                sorting = PreferenceScreenPreference.Sorting.UNSORTED,
-                preferences = setOf(
-                    // Shorts player components.
-                    // Ideally each group should be ordered similar to how they appear in the UI
 
-                    // Vertical row of buttons on right side of the screen.
-                    // Like fountain may no longer be used by YT anymore.
-                    //SwitchPreference("morphe_hide_shorts_like_fountain"),
-                    SwitchPreference("morphe_hide_shorts_like_button"),
-                    SwitchPreference("morphe_hide_shorts_comments_button"),
-                    SwitchPreference("morphe_hide_shorts_save_button"),
-                    SwitchPreference("morphe_hide_shorts_share_button"),
-                    SwitchPreference("morphe_hide_shorts_remix_button"),
-                    SwitchPreference("morphe_hide_shorts_sound_button"),
-
-                    // Upper and middle area of the player.
-                    SwitchPreference("morphe_hide_shorts_join_button"),
-                    SwitchPreference("morphe_hide_shorts_subscribe_button"),
-                    SwitchPreference("morphe_hide_shorts_paused_overlay_buttons"),
-
-                    // Suggested actions.
-                    SwitchPreference("morphe_hide_shorts_preview_comment"),
-                    SwitchPreference("morphe_hide_shorts_save_sound_button"),
-                    SwitchPreference("morphe_hide_shorts_use_sound_button"),
-                    SwitchPreference("morphe_hide_shorts_use_template_button"),
-                    SwitchPreference("morphe_hide_shorts_upcoming_button"),
-                    SwitchPreference("morphe_hide_shorts_effect_button"),
-                    SwitchPreference("morphe_hide_shorts_green_screen_button"),
-                    SwitchPreference("morphe_hide_shorts_hashtag_button"),
-                    SwitchPreference("morphe_hide_shorts_live_preview"),
-                    SwitchPreference("morphe_hide_shorts_new_posts_button"),
-                    SwitchPreference("morphe_hide_shorts_shop_button"),
-                    SwitchPreference("morphe_hide_shorts_tagged_products"),
-                    SwitchPreference("morphe_hide_shorts_search_suggestions"),
-                    SwitchPreference("morphe_hide_shorts_super_thanks_button"),
-
-                    // Bottom of the screen.
-                    SwitchPreference("morphe_hide_shorts_ai_button"),
-                    SwitchPreference("morphe_hide_shorts_auto_dubbed_label"),
-                    SwitchPreference("morphe_hide_shorts_location_label"),
-                    SwitchPreference("morphe_hide_shorts_channel_bar"),
-                    SwitchPreference("morphe_hide_shorts_info_panel"),
-                    SwitchPreference("morphe_hide_shorts_full_video_link_label"),
-                    SwitchPreference("morphe_hide_shorts_video_title"),
-                    SwitchPreference("morphe_hide_shorts_sound_metadata_label"),
-                    SwitchPreference("morphe_hide_shorts_navigation_bar")
-                )
-            )
         )
 
         // Verify the file has the expected node, even if the patch option is off.
@@ -172,7 +172,6 @@ val hideShortsComponentsPatch = bytecodePatch(
         layoutReloadObserverPatch,
         lithoFilterPatch,
         navigationBarHookPatch,
-        resourceMappingPatch,
         sharedExtensionPatch,
         versionCheckPatch,
     )
@@ -189,7 +188,7 @@ val hideShortsComponentsPatch = bytecodePatch(
 
         if (!is_21_05_or_greater) {
             forEachLiteralValueInstruction(
-                getResourceId(ResourceType.DIMEN, "reel_player_right_pivot_v2_size")
+                resourceId(ResourceType.DIMEN, "reel_player_right_pivot_v2_size")
             ) { literalInstructionIndex ->
                 val targetIndex = indexOfFirstInstructionOrThrow(literalInstructionIndex) {
                     getReference<MethodReference>()?.name == "getDimensionPixelSize"
@@ -278,6 +277,8 @@ val hideShortsComponentsPatch = bytecodePatch(
 
         // endregion
 
+        // region Disable double-tap to like.
+
         DoubleTapToLikeLogicFingerprint.let {
             it.method.apply {
                 val index = it.instructionMatches.last().index
@@ -292,5 +293,30 @@ val hideShortsComponentsPatch = bytecodePatch(
                 )
             }
         }
+
+        // endregion
+
+        // region Hide Shorts gesture hints.
+
+        if (is_21_17_or_greater) {
+            listOf(
+                ReelSpeedmasterEduContainerFingerprint,
+                SpeedmasterIndicatorChipFingerprint
+            ).forEach { fingerprint ->
+                fingerprint.let { match ->
+                    match.method.apply {
+                        val invokeIndex = match.instructionMatches.last().index
+                        val viewStubRegister = getInstruction<FiveRegisterInstruction>(invokeIndex).registerC
+
+                        addInstruction(
+                            invokeIndex + 1,
+                            "invoke-static { v$viewStubRegister }, $EXTENSION_FILTER->hideGestureHints(Landroid/view/View;)V"
+                        )
+                    }
+                }
+            }
+        }
+
+        // endregion
     }
 }

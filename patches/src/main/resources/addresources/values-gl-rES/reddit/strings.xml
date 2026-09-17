@@ -16,7 +16,6 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="morphe_screen_ads_title">Anuncios</string>
   <string name="morphe_hide_post_ads_title">Ocultar anuncios no feed</string>
   <string name="morphe_hide_comment_ads_title">Ocultar anuncios en los comentarios</string>
@@ -41,4 +40,5 @@ Second \"item\" text"</string>
   <string name="morphe_about_summary">Versión de parche e ligazóns oficiais</string>
   <string name="morphe_sanitize_sharing_links_title">Limpar enlaces compartidos</string>
   <string name="morphe_open_links_directly_title">Abrir enlaces directamente</string>
+  <string name="morphe_app_icon_default">Predefinido</string>
 </resources>

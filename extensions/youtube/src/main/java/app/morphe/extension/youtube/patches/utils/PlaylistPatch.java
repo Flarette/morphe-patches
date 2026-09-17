@@ -11,9 +11,8 @@ import static app.morphe.extension.shared.StringRef.str;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -36,6 +35,7 @@ import app.morphe.extension.shared.ResourceType;
 import app.morphe.extension.shared.ResourceUtils;
 import app.morphe.extension.shared.Utils;
 import app.morphe.extension.shared.innertube.utils.AuthUtils;
+import app.morphe.extension.shared.theme.ThemeUtils;
 import app.morphe.extension.shared.ui.Dim;
 import app.morphe.extension.shared.ui.SheetBottomDialog;
 import app.morphe.extension.youtube.patches.LoadVideoPatch;
@@ -52,6 +52,8 @@ import kotlin.Pair;
 
 @SuppressWarnings({"unused", "StaticFieldLeak"})
 public class PlaylistPatch {
+    private static final int PLAYLIST_LIST_MAX_HEIGHT_PERCENT = 50;
+
     private static final String checkFailedAuth = str("morphe_queue_manager_check_failed_auth");
     private static final String checkFailedPlaylistId = str("morphe_queue_manager_check_failed_playlist_id");
     private static final String checkFailedQueue = str("morphe_queue_manager_check_failed_queue");
@@ -168,16 +170,15 @@ public class PlaylistPatch {
         row.setClickable(true);
         row.setFocusable(true);
 
-        int[] attrs = {android.R.attr.selectableItemBackground};
-        Drawable ripple;
-        try (TypedArray typedArray = context.obtainStyledAttributes(attrs)) {
-            ripple = typedArray.getDrawable(0);
+        TypedValue ripple = new TypedValue();
+        if (context.getTheme().resolveAttribute(
+                android.R.attr.selectableItemBackground, ripple, true)) {
+            row.setBackgroundResource(ripple.resourceId);
         }
-        row.setBackground(ripple);
 
         ImageView icon = new ImageView(context);
         icon.setImageResource(iconId);
-        icon.setColorFilter(Utils.getAppForegroundColor());
+        icon.setColorFilter(ThemeUtils.getAppForegroundColor());
         LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(Dim.dp24, Dim.dp24);
         iconParams.setMarginEnd(Dim.dp16);
         icon.setLayoutParams(iconParams);
@@ -185,8 +186,8 @@ public class PlaylistPatch {
 
         TextView text = new TextView(context);
         text.setText(title);
-        text.setTextColor(Utils.getAppForegroundColor());
-        text.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 16);
+        text.setTextColor(ThemeUtils.getAppForegroundColor());
+        text.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         text.setLayoutParams(textParams);
@@ -307,14 +308,8 @@ public class PlaylistPatch {
                         listContainer.addView(itemLayout);
                     }
 
-                    ScrollView scrollView = new ScrollView(context) {
-                        @Override
-                        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-                            heightMeasureSpec = MeasureSpec.makeMeasureSpec(Dim.pctHeight(50), MeasureSpec.AT_MOST);
-                            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-                        }
-                    };
-                    scrollView.setVerticalScrollBarEnabled(false);
+                    ScrollView scrollView = SheetBottomDialog.createCappedScrollView(
+                            context, PLAYLIST_LIST_MAX_HEIGHT_PERCENT);
                     scrollView.addView(listContainer);
                     mainLayout.addView(scrollView);
 
@@ -398,7 +393,7 @@ public class PlaylistPatch {
                             currentPlaylistId;
                 }
 
-                LoadVideoPatch.openIntent(url, reload);
+                LoadVideoPatch.openVideoIntent(url, reload);
             } catch (Exception ex) {
                 Logger.printException(() -> "openQueue failure", ex);
             }
@@ -413,7 +408,7 @@ public class PlaylistPatch {
         Utils.showToastShort(reason);
     }
 
-    private enum QueueManager {
+    public enum QueueManager {
         ADD_TO_QUEUE(
                 "morphe_queue_manager_add_to_queue",
                 "yt_outline_list_add_black_24",

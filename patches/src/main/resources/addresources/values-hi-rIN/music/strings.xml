@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">हेडर लोगो</string>
   <string name="morphe_header_logo_entry_1">डिफ़ॉल्ट</string>
   <string name="morphe_header_logo_entry_3">कस्टम</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">एल्बम ऑडियो ट्रैक चलाएँ</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">एल्बम के गानों का केवल ऑडियो संस्करण चलाएं, म्यूजिक वीडियो के बजाय। ‘स्पूफ वीडियो स्ट्रीम्स’ की आवश्यकता है</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">तृतीय-पक्ष डाउनलोडिंग ऐप्स के साथ संगीत वीडियो, पॉडकास्ट या गाने डाउनलोड करें</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x - क्रॉसफ़ेड केवल 9.x और उस�
   <string name="morphe_music_hide_action_bar_title">एक्शन बार छिपाएँ</string>
   <string name="morphe_music_hide_like_dislike_button_title">लाइक और डिसलाइक बटन छिपाएँ</string>
   <string name="morphe_music_hide_comments_button_title">कमेंट बटन छिपाएँ</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">‘लाइव चैट रिप्ले’ बटन छिपाएँ</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">गीत के बोल बटन छिपाएँ</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x - क्रॉसफ़ेड केवल 9.x और उस�
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">डाउनलोड बटन छुपाएं</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">रेडियो शुरू करें बटन छुपाएं</string>
+  <string name="morphe_music_hide_radio_button_title">‘रेडियो प्रारंभ करें’ बटन छिपाएँ</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">फ़्लोटआउट मेनू</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">चुनें कि प्लेयर और क्यू फ़्लोटआउट मेनू में कौन से घटक दिखाई दें</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x - क्रॉसफ़ेड केवल 9.x और उस�
   <string name="morphe_music_scrobbling_custom_regex_summary">एक कस्टम रेगुलर एक्सप्रेशन दर्ज करें ताकि गाने के शीर्षक, कलाकारों या एल्बम से अतिरिक्त टेक्स्ट हटाया जा सके। उदाहरण: (?i)\\s*\\((clean|explicit)\\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">शीर्षक से कलाकार और ट्रैक का विश्लेषण करें</string>
   <string name="morphe_music_scrobbling_parse_title_summary">\" - \" विभाजक का उपयोग करके वीडियो शीर्षक से कलाकार और ट्रैक नाम निकालें। उन पुनः अपलोड सामग्री के लिए उपयोगी जहां चैनल नाम को कलाकार के रूप में उपयोग किया जा सकता है।</string>
+  <string name="morphe_music_scrobbling_guess_album_title">लापता एल्बम भरें</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">जब संगीत में एल्बम शामिल न हो, तो उसे Last.fm पर खोजें ताकि आपका scrobble पूरा हो जाए</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">स्क्रबिंग के बारे में</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,9 +308,10 @@ YouTube Music 8.x - क्रॉसफ़ेड केवल 9.x और उस�
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">तृतीय-पक्ष गीत का उपयोग करें</string>
   <string name="morphe_music_lyrics_enabled_summary">किसी तृतीय-पक्ष सेवा से गीत दिखाता है, जब कोई नहीं मिलता है तो अंतर्निहित गीतों पर वापस चला जाता है</string>
-  <string name="morphe_music_lyrics_source_title">गीत सेवा</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB, फिर KuGou</string>
+  <string name="morphe_music_lyrics_section_service_title">गीत बोल सेवा</string>
+  <string name="morphe_music_lyrics_section_about_title">इसके बारे में</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">लाइन पर टैप करके आगे बढ़ें</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">लाइन पर टैप करने से गाना उस पल में चला जाता है</string>
   <string name="morphe_music_lyrics_show_copy_button_title">कॉपी बटन दिखाएं</string>
@@ -310,22 +319,12 @@ YouTube Music 8.x - क्रॉसफ़ेड केवल 9.x और उस�
   <string name="morphe_music_lyrics_text_size_title">टेक्स्ट का आकार</string>
   <string name="morphe_music_lyrics_text_size_summary">गीत टेक्स्ट का आकार</string>
   <string name="morphe_music_lyrics_offset_ms_title">समय का अंतर</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">समकालिक गीतों को आगे या पीछे शिफ्ट करें। यदि गीत गाने से आगे चल रहे हैं, तो एक सकारात्मक मान का उपयोग करें</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">स्रोत: %s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">अनुवाद करें</string>
-  <string name="morphe_music_lyrics_translate_hide">मूल दिखाएं</string>
   <string name="morphe_music_lyrics_translating">अनुवाद किया जा रहा है…</string>
   <string name="morphe_music_lyrics_translate_failed">गीत का अनुवाद नहीं कर सका</string>
-  <string name="morphe_music_lyrics_copy">कॉपी</string>
   <string name="morphe_music_lyrics_copied">क्लिपबोर्ड में कॉपी किया गया</string>
-  <string name="morphe_music_lyrics_about_title">तृतीय-पक्ष गीतों के बारे में</string>
-  <string name="morphe_music_lyrics_about_summary">"ट्रैक शीर्षक और कलाकार द्वारा गीत देखे जाते हैं, इसलिए असामान्य मेटाडेटा वाला एक ट्रैक कुछ भी नहीं खोज सकता है, या गलत संस्करण खोज सकता है
-
-समकालिक गीत प्लेबैक का पालन करते हैं। यदि वे भटक जाते हैं, तो समय के अंतर को समायोजित करें
-
-जब कोई तृतीय-पक्ष गीत नहीं मिलता है, तो अंतर्निहित गीत इसके बजाय दिखाए जाते हैं"</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - बोल्ड आइकन अक्षम करें</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 - प्लेयर के अप नेक्स्ट, गीत और संबंधित टैब को पुनर्स्थापित करें</string>

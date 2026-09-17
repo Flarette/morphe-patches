@@ -6,47 +6,26 @@ import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
 import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.patch.bytecodePatch
-import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
-import app.morphe.patches.all.misc.resources.resourceMappingPatch
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
+import app.morphe.patches.youtube.shared.getPlayerTypeFingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
-import java.lang.ref.WeakReference
 
 private const val EXTENSION_CLASS = "Lapp/morphe/extension/youtube/patches/PlayerTypeHookPatch;"
-
-private lateinit var playerTypeMethodRef: WeakReference<MutableMethod>
-
-/**
- * Adds a callback that is invoked whenever the regular player's type changes.
- *
- * @param methodDescriptor static method accepting the original player type enum.
- */
-internal fun addPlayerTypeHook(methodDescriptor: String) =
-    playerTypeMethodRef.get()!!.addInstruction(
-        0,
-        "invoke-static { p1 }, $methodDescriptor",
-    )
 
 val playerTypeHookPatch = bytecodePatch(
     description = "Hook to get the current player type and video playback state.",
 ) {
-    dependsOn(sharedExtensionPatch, resourceMappingPatch)
+    dependsOn(sharedExtensionPatch)
 
     execute {
-        playerTypeMethodRef = WeakReference(
-            Fingerprint(
-                definingClass = "/YouTubePlayerOverlaysLayout;",
-                accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
-                returnType = "V",
-                parameters = listOf(PlayerTypeEnumFingerprint.originalClassDef.type)
-            ).method
+        getPlayerTypeFingerprint().method.addInstruction(
+            0,
+            "invoke-static { p1 }, $EXTENSION_CLASS->setPlayerType(Ljava/lang/Enum;)V",
         )
-
-        addPlayerTypeHook("$EXTENSION_CLASS->setPlayerType(Ljava/lang/Enum;)V")
 
         ReelWatchPagerFingerprint.let {
             it.method.apply {

@@ -1,3 +1,13 @@
+/*
+ * Copyright 2026 Morphe.
+ * https://github.com/MorpheApp/morphe-patches
+ *
+ * Original hard forked code:
+ * https://github.com/ReVanced/revanced-patches/commit/724e6d61b2ecd868c1a9a37d465a688e83a74799
+ *
+ * See the included NOTICE file for GPLv3 Section 7 terms that apply to Morphe contributions.
+ */
+
 package app.morphe.extension.youtube.swipecontrols
 
 import android.graphics.Color
@@ -5,7 +15,9 @@ import android.view.MotionEvent
 import app.morphe.extension.shared.Logger
 import app.morphe.extension.shared.StringRef.str
 import app.morphe.extension.shared.Utils
+import app.morphe.extension.shared.settings.Setting
 import app.morphe.extension.shared.settings.StringSetting
+import app.morphe.extension.shared.settings.preference.SeekBarPreference
 import app.morphe.extension.youtube.settings.Settings
 import app.morphe.extension.youtube.shared.PlayerType
 import app.morphe.extension.youtube.swipecontrols.controller.gesture.ClassicSwipeController
@@ -13,33 +25,123 @@ import app.morphe.extension.youtube.swipecontrols.controller.gesture.PressToSwip
 import app.morphe.extension.youtube.swipecontrols.controller.gesture.core.BaseGestureController
 
 /**
- * Provides configuration settings for volume and brightness swipe controls in the YouTube player.
- * Manages enabling/disabling gestures, overlay appearance, and behavior preferences.
+ * Provides configuration settings for the swipe controls in the YouTube player.
+ * Manages the action of each zone, overlay appearance, and behavior preferences.
  */
 class SwipeControlsConfigurationProvider {
+    //region zone actions
+    /**
+     * The action performed by a swipe zone.
+     */
+    enum class SwipeZoneAction {
+        OFF,
+        VOLUME,
+        BRIGHTNESS,
+        SPEED,
+    }
+
+    /**
+     * Availability based on any zone having an action assigned.
+     */
+    class AnySwipeZoneAvailability : Setting.Availability {
+        override fun isAvailable() =
+            Settings.SWIPE_LEFT_ZONE.get() != SwipeZoneAction.OFF ||
+                Settings.SWIPE_RIGHT_ZONE.get() != SwipeZoneAction.OFF ||
+                Settings.SWIPE_TOP_ZONE.get() != SwipeZoneAction.OFF
+
+        override fun getParentSettings() =
+            listOf<Setting<*>>(Settings.SWIPE_LEFT_ZONE, Settings.SWIPE_RIGHT_ZONE, Settings.SWIPE_TOP_ZONE)
+    }
+
+    /**
+     * Availability based on either side zone having an action assigned.
+     */
+    class SideSwipeZonesAvailability : Setting.Availability {
+        override fun isAvailable() =
+            Settings.SWIPE_LEFT_ZONE.get() != SwipeZoneAction.OFF ||
+                Settings.SWIPE_RIGHT_ZONE.get() != SwipeZoneAction.OFF
+
+        override fun getParentSettings() =
+            listOf<Setting<*>>(Settings.SWIPE_LEFT_ZONE, Settings.SWIPE_RIGHT_ZONE)
+    }
+
+    /**
+     * Availability based on the top zone having an action assigned.
+     */
+    class TopSwipeZoneAvailability : Setting.Availability {
+        override fun isAvailable() = Settings.SWIPE_TOP_ZONE.get() != SwipeZoneAction.OFF
+
+        override fun getParentSettings() = listOf<Setting<*>>(Settings.SWIPE_TOP_ZONE)
+    }
+
+    /**
+     * Availability based on any zone being assigned the given action.
+     */
+    class SwipeActionAvailability(private val action: SwipeZoneAction) : Setting.Availability {
+        override fun isAvailable() =
+            Settings.SWIPE_LEFT_ZONE.get() == action ||
+                Settings.SWIPE_RIGHT_ZONE.get() == action ||
+                Settings.SWIPE_TOP_ZONE.get() == action
+
+        override fun getParentSettings() =
+            listOf<Setting<*>>(Settings.SWIPE_LEFT_ZONE, Settings.SWIPE_RIGHT_ZONE, Settings.SWIPE_TOP_ZONE)
+    }
+    //endregion
+
     //region swipe enable
     /**
      * Indicates whether swipe controls are enabled globally.
-     * Returns true if either volume or brightness controls are enabled and the video is in fullscreen mode.
+     * Returns true if either volume or brightness controls are enabled and the video is in fullscreen or multi-window mode.
      */
     val enableSwipeControls: Boolean
-        get() = (enableVolumeControls || enableBrightnessControl || enableSpeedGestureControl) && (isFullscreenVideo || isVideoSliding)
+        get() = (enableVolumeControls || enableBrightnessControl || enableSpeedGestureControl) &&
+                (isFullscreenOrMultiWindowVideo || isVideoSliding)
+
+    val leftZoneAction: SwipeZoneAction
+        get() = Settings.SWIPE_LEFT_ZONE.get()
+
+    val rightZoneAction: SwipeZoneAction
+        get() = Settings.SWIPE_RIGHT_ZONE.get()
+
+    val topZoneAction: SwipeZoneAction
+        get() = Settings.SWIPE_TOP_ZONE.get()
+
+    /**
+     * Indicates whether any zone is assigned the given action.
+     */
+    private fun isActionAssigned(action: SwipeZoneAction) =
+        leftZoneAction == action || rightZoneAction == action || topZoneAction == action
 
     /**
      * Indicates whether swipe controls for adjusting volume are enabled.
      */
-    val enableVolumeControls = Settings.SWIPE_VOLUME.get()
+    val enableVolumeControls: Boolean
+        get() = isActionAssigned(SwipeZoneAction.VOLUME)
 
     /**
      * Indicates whether swipe controls for adjusting brightness are enabled.
      */
-    val enableBrightnessControl = Settings.SWIPE_BRIGHTNESS.get()
+    val enableBrightnessControl: Boolean
+        get() = isActionAssigned(SwipeZoneAction.BRIGHTNESS)
 
     /**
      * Checks if the video player is currently in fullscreen mode.
      */
     val isFullscreenVideo: Boolean
         get() = PlayerType.current == PlayerType.WATCH_WHILE_FULLSCREEN
+
+    /**
+     * Checks if the video player is currently in split screen / multi-window mode.
+     */
+    val isMultiWindowVideo: Boolean
+        get() = (SwipeControlsHostActivity.currentHost.get()?.isInSplitScreenMode == true) &&
+                (PlayerType.current == PlayerType.WATCH_WHILE_FULLSCREEN || PlayerType.current == PlayerType.WATCH_WHILE_MAXIMIZED)
+
+    /**
+     * Checks if the video player is in fullscreen or multi-window mode.
+     */
+    val isFullscreenOrMultiWindowVideo: Boolean
+        get() = isFullscreenVideo || isMultiWindowVideo
 
     /**
      * Checks if the video player is currently in sliding mode.
@@ -62,13 +164,19 @@ class SwipeControlsConfigurationProvider {
     //region keys enable
     /**
      * Indicates whether volume key controls should be overridden by swipe controls.
-     * Returns true if volume controls are enabled and the video is in fullscreen mode.
+     * Returns true if volume controls are enabled and the video is in fullscreen or multi-window mode.
      */
     val overwriteVolumeKeyControls: Boolean
-        get() = enableVolumeControls && isFullscreenVideo
+        get() = enableVolumeControls && isFullscreenOrMultiWindowVideo
     //endregion
 
     //region gesture adjustments
+    /**
+     * Indicates whether swipe gestures should be ignored while the native lock screen is engaged.
+     */
+    val shouldIgnoreSwipesWhenLocked: Boolean
+        get() = Settings.SWIPE_IGNORE_WHEN_LOCKED.get()
+
     /**
      * Indicates whether press-to-swipe mode is enabled, requiring a press before swiping to activate controls.
      */
@@ -81,19 +189,53 @@ class SwipeControlsConfigurationProvider {
     val swipeMagnitudeThreshold = Settings.SWIPE_MAGNITUDE_THRESHOLD.get()
 
     /**
-     * The sensitivity of volume swipe gestures, determining how much volume changes per swipe.
+     * The swipe distance of a single volume step, in dp.
      * Resets to default if set to 0, as it would disable swiping.
      */
-    val volumeSwipeSensitivity: Int
+    val volumeSwipeDistance: Int
         get() {
-            val sensitivity = Settings.SWIPE_VOLUME_SENSITIVITY.get()
+            val distance = Settings.SWIPE_VOLUME_DISTANCE.get()
 
-            if (sensitivity < 1) {
-                return Settings.SWIPE_VOLUME_SENSITIVITY.resetToDefault()
+            if (distance < 1) {
+                return Settings.SWIPE_VOLUME_DISTANCE.resetToDefault()
             }
 
-            return sensitivity
+            return distance
         }
+
+    /**
+     * Number of steps the volume range is divided into.
+     * Devices that expose a fine-grained volume stream (such as 150 indices) otherwise
+     * adjust the volume by a tenth of what the device volume UI does.
+     */
+    @Suppress("unused")
+    enum class SwipeVolumeSteps(val steps: Int) {
+        DEVICE_DEFAULT(0),
+        STEPS_5(5),
+        STEPS_10(10),
+        STEPS_15(15),
+        STEPS_20(20),
+        STEPS_30(30),
+        STEPS_50(50),
+    }
+
+    /**
+     * The number of volume steps to use, or 0 to use the raw steps of the device volume stream.
+     */
+    val volumeStepCount: Int
+        get() = Settings.SWIPE_VOLUME_STEPS.get().steps
+
+    companion object {
+        /**
+         * The volume change of a single step, in stream index units.
+         *
+         * @param maxVolume The number of indices the device volume stream has.
+         * @param stepCount The number of steps to split the stream into, or 0 for the raw indices.
+         */
+        @JvmStatic
+        fun volumeStepSize(maxVolume: Int, stepCount: Int) =
+            if (stepCount < 1) 1 else maxOf(1, maxVolume / stepCount)
+    }
 
     /**
      * The sensitivity of brightness swipe gestures, determining how much brightness changes per swipe.
@@ -111,9 +253,10 @@ class SwipeControlsConfigurationProvider {
         }
 
     /**
-     * Indicates whether the horizontal swipe gesture for playback speed control is enabled.
+     * Indicates whether the swipe gesture for playback speed control is enabled in any zone.
      */
-    val enableSpeedGestureControl = Settings.SWIPE_SPEED.get()
+    val enableSpeedGestureControl: Boolean
+        get() = isActionAssigned(SwipeZoneAction.SPEED)
 
     /**
      * The sensitivity of speed swipe gestures, controlling how much physical movement is needed per step.
@@ -151,18 +294,10 @@ class SwipeControlsConfigurationProvider {
 
     /**
      * The background opacity of the overlay, converted from a percentage (0-100) to an alpha value (0-255).
-     * Resets to default and shows a toast if the value is out of range.
      */
     val overlayBackgroundOpacity: Int
         get() {
-            var opacity = Settings.SWIPE_OVERLAY_OPACITY.get()
-
-            if (opacity !in 0..100) {
-                Utils.showToastLong(str("morphe_swipe_overlay_background_opacity_invalid_toast"))
-                opacity = Settings.SWIPE_OVERLAY_OPACITY.resetToDefault()
-            }
-
-            opacity = opacity * 255 / 100
+            val opacity = SeekBarPreference.clampToRange(Settings.SWIPE_OVERLAY_OPACITY) * 255 / 100
             return Color.argb(opacity, 0, 0, 0)
         }
 
@@ -213,17 +348,9 @@ class SwipeControlsConfigurationProvider {
 
     /**
      * The text size in the overlay, in density-independent pixels (dp).
-     * Must be between 1 and 30 dp; resets to default and shows a toast if invalid.
      */
     val overlayTextSize: Int
-        get() {
-            val size = Settings.SWIPE_OVERLAY_TEXT_SIZE.get()
-            if (size !in 1..30) {
-                Utils.showToastLong(str("morphe_swipe_text_overlay_size_invalid_toast"))
-                return Settings.SWIPE_OVERLAY_TEXT_SIZE.resetToDefault()
-            }
-            return size
-        }
+        get() = SeekBarPreference.clampToRange(Settings.SWIPE_OVERLAY_TEXT_SIZE)
 
     /**
      * Defines the style of the swipe controls overlay, determining its layout and appearance.

@@ -30,6 +30,7 @@ import app.morphe.patches.youtube.misc.addon.EXTENSION_ADD_ON_API_CLASS_DESCRIPT
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
 import app.morphe.patches.youtube.misc.litho.context.conversionContextPatch
 import app.morphe.patches.youtube.misc.playertype.playerTypeHookPatch
+import app.morphe.patches.youtube.misc.playservice.is_21_29_or_greater
 import app.morphe.patches.youtube.misc.playservice.versionCheckPatch
 import app.morphe.patches.youtube.shared.InitializePlaybackSpeedValuesFingerprint
 import app.morphe.patches.youtube.shared.SpeedLimiterFingerprint
@@ -66,6 +67,8 @@ private const val EXTENSION_PLAYER_INTERFACE =
     $$"Lapp/morphe/extension/youtube/patches/VideoInformation$PlaybackController;"
 internal const val EXTENSION_PLAYBACK_SPEED_MENU_INTERFACE =
     $$"Lapp/morphe/extension/youtube/patches/VideoInformation$PlaybackSpeedMenuInterface;"
+internal const val EXTENSION_EXOPLAYERIMPL_INTERFACE =
+    $$"Lapp/morphe/extension/youtube/patches/VideoInformation$ExoPlayerImpl;"
 private const val EXTENSION_VIDEO_QUALITY_MENU_INTERFACE =
     $$"Lapp/morphe/extension/youtube/patches/VideoInformation$VideoQualityMenuInterface;"
 internal const val EXTENSION_VIDEO_QUALITY_INTERFACE =
@@ -498,6 +501,19 @@ val videoInformationPatch = bytecodePatch(
             val channelNameMethodCall = getChannelNameFingerprint(playerResponseType).instructionMatches.last()
                 .instruction.getReference<MethodReference>()!!
 
+            // The helper this resolves through only exists in later targets, and the title is
+            // only used by the minimal miniplayer, which is only rebuilt for those.
+            val videoTitleInstructions = if (is_21_29_or_greater) {
+                val videoTitleMethodCall = getVideoTitleFingerprint(playerResponseType)
+                    .instructionMatches.first().instruction.getReference<MethodReference>()!!
+
+                """
+                    invoke-interface { p1 }, $videoTitleMethodCall
+                    move-result-object v0
+                    invoke-static { v0 }, $EXTENSION_CLASS->setVideoTitle(Ljava/lang/String;)V
+                """
+            } else ""
+
             it.classDef.apply {
                 val helperMethod = ImmutableMethod(
                     type,
@@ -523,7 +539,9 @@ val videoInformationPatch = bytecodePatch(
                             invoke-interface { p1 }, $channelNameMethodCall
                             move-result-object v0
                             invoke-static { v0 }, $EXTENSION_CLASS->setChannelName(Ljava/lang/String;)V
-                            
+
+                            $videoTitleInstructions
+
                             return-void
                         """.toInstructions(),
                         null,
@@ -540,6 +558,83 @@ val videoInformationPatch = bytecodePatch(
                     )
                 }
             }
+        }
+
+        // region ExoPlayerImpl.
+
+        val playbackParametersType = PlaybackParametersToStringFingerprint.classDef.type
+        val setPlaybackParametersFingerprint = getPlaybackParametersSetterFingerprint(playbackParametersType)
+        
+        // for patch_setPlaybackParameters helper method to call setPlaybackParameters(PlaybackParameters p1).
+        val setPlaybackParametersMethod = setPlaybackParametersFingerprint.method
+
+        // A reference to the setPlaybackParameters implementation, to call from the helper method.
+        val setPlaybackParametersReference = "${setPlaybackParametersMethod.definingClass}->${setPlaybackParametersMethod.name}($playbackParametersType)V"
+
+        // for {androidx.media3.common.PlaybackParameters.speed} field.
+        // The toString() method reads the speed field before the pitch field.
+        val playbackParametersSpeedField = PlaybackParametersToStringFingerprint
+            .instructionMatches.first().getFieldAccessed()
+
+        // The PlaybackParameters type and primary constructor with 2 arguments (speed, pitch).
+        val playbackParametersConstructorReference = "$playbackParametersType-><init>(FF)V"
+
+        // Pitch is obtained from this Extension and force set.
+        // Need to construct new PlaybackParameters instance as it has final fields.
+        setPlaybackParametersMethod.addInstructions(
+            0,
+            """
+                iget v0, p1, $playbackParametersSpeedField
+                invoke-static {}, $EXTENSION_CLASS->getPlaybackAudioPitch()F
+                move-result v1
+                new-instance p1, $playbackParametersType
+                invoke-direct {p1, v0, v1}, $playbackParametersConstructorReference
+            """
+        )
+
+        // Capture the ExoPlayerImpl reference at its init constructor (only 1 yet)
+        // Extension is initialized (Application.onCreate) before starting to play any video.
+        // This is required for patch_setPlaybackParameters function.
+        getExoPlayerImplFingerprint(playbackParametersType).matchAll().forEach {
+            val firstInstructionMatch = it.instructionMatches.first()
+            val register = firstInstructionMatch.getInstruction<FiveRegisterInstruction>().registerC
+            it.method.addInstruction(
+                firstInstructionMatch.index + 1,
+                "invoke-static { v$register }, $EXTENSION_CLASS->" +
+                        "initializeExoPlayerImpl($EXTENSION_EXOPLAYERIMPL_INTERFACE)V"
+            )
+        }
+
+        setPlaybackParametersFingerprint.classDef.apply {
+            // Add interface and helper method to allow extension code
+            // to directly set the ExoPlayer playback parameters.
+            interfaces.add(EXTENSION_EXOPLAYERIMPL_INTERFACE)
+
+            methods.add(
+                ImmutableMethod(
+                    type,
+                    "patch_setPlaybackParameters",
+                    listOf(
+                        ImmutableMethodParameter("F", null, null),
+                        ImmutableMethodParameter("F", null, null)
+                    ),
+                    "V",
+                    AccessFlags.PUBLIC.value or AccessFlags.FINAL.value,
+                    null,
+                    null,
+                    MutableMethodImplementation(4),
+                ).toMutable().apply {
+                    addInstructions(
+                        0,
+                        """
+                            new-instance v0, $playbackParametersType
+                            invoke-direct { v0, p1, p2 }, $playbackParametersConstructorReference
+                            invoke-virtual { p0, v0 }, $setPlaybackParametersReference
+                            return-void
+                        """
+                    )
+                }
+            )
         }
 
         // endregion.

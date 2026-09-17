@@ -6,6 +6,7 @@ dependencies {
     compileOnly(project(":extensions:shared:library"))
     compileOnly(project(":extensions:youtube:stub"))
     compileOnly(libs.annotation)
+    compileOnly(libs.protobuf.javalite)
 }
 
 configure<ApplicationExtension> {
@@ -13,4 +14,3 @@ configure<ApplicationExtension> {
         minSdk = 26
     }
 }
-

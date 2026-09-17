@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">Лого на заглавието</string>
   <string name="morphe_header_logo_entry_1">По подразбиране</string>
   <string name="morphe_header_logo_entry_3">По избор</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">Пусни аудио песните от албума</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">Пусни аудио версията на песните от албума вместо музикално видео. Изисква \'Spoof video streams\'</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">Изтеглете музикални видеа, подкасти или песни с помощта на приложения за изтегляне от трети страни</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x — кросфейдът работи само в 9.x и по-
   <string name="morphe_music_hide_action_bar_title">Скриване на лентата с действия</string>
   <string name="morphe_music_hide_like_dislike_button_title">Скриване на бутона Харесвам и Не харесвам</string>
   <string name="morphe_music_hide_comments_button_title">Скриване на бутона Коментари</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">Скрий бутона \'Повторение на чата на живо\'.</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">Скриване на бутона Текстове</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x — кросфейдът работи само в 9.x и по-
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">Скрий бутона Изтегли</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">Скрий бутона Стартирай радио</string>
+  <string name="morphe_music_hide_radio_button_title">Скрий бутона \'Стартиране на радио\'</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">Изскачащо меню</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">Изберете кои компоненти да се показват в менютата на плейъра и опашката</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x — кросфейдът работи само в 9.x и по-
   <string name="morphe_music_scrobbling_custom_regex_summary">Въведете потребителски регулярен израз за премахване на допълнителен текст от заглавия на песни, изпълнители или албуми. Пример: (?i)\\s*\\((clean|explicit)\\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">Извличане на изпълнител и песен от заглавието</string>
   <string name="morphe_music_scrobbling_parse_title_summary">Извличане на името на изпълнителя и песента от заглавието на видеото, използвайки разделител \" - \". Полезно за прекачени видеа, където името на канала може да се използва като изпълнител.</string>
+  <string name="morphe_music_scrobbling_guess_album_title">Попълнете липсващия албум</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">Когато музиката не включва албум, потърсете го в Last.fm, за да е пълен вашият scrobble.</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">Относно отбелязването</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,9 +308,9 @@ YouTube Music 8.x — кросфейдът работи само в 9.x и по-
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">Използване на текстове от трети страни</string>
   <string name="morphe_music_lyrics_enabled_summary">Показва текстове от външен източник, като се връща към вградените текстове, когато такива не бъдат намерени</string>
-  <string name="morphe_music_lyrics_source_title">Услуга за текстове</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB, след това KuGou</string>
+  <string name="morphe_music_lyrics_section_about_title">Отношение</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">Докоснете ред, за да преместите</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">Докосването на ред преминава към този момент в песента</string>
   <string name="morphe_music_lyrics_show_copy_button_title">Покажи бутон Копиране</string>
@@ -310,22 +318,12 @@ YouTube Music 8.x — кросфейдът работи само в 9.x и по-
   <string name="morphe_music_lyrics_text_size_title">Размер на текста</string>
   <string name="morphe_music_lyrics_text_size_summary">Размер на текста на текста на песните</string>
   <string name="morphe_music_lyrics_offset_ms_title">Времево отместване</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">Преместване на синхронизирания текст напред или назад. Използвайте положителна стойност, ако текстът изпреварва песента</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">Източник: %s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">Преведи</string>
-  <string name="morphe_music_lyrics_translate_hide">Покажи оригиналния текст</string>
   <string name="morphe_music_lyrics_translating">Превежда се…</string>
   <string name="morphe_music_lyrics_translate_failed">Не може да преведе текста</string>
-  <string name="morphe_music_lyrics_copy">Копирай</string>
   <string name="morphe_music_lyrics_copied">Копирано в клипборда</string>
-  <string name="morphe_music_lyrics_about_title">Относно текста от трети страни</string>
-  <string name="morphe_music_lyrics_about_summary">"Текстовете се търсят по заглавие на песента и изпълнител, така че песен с необичайни метаданни може да не намери нищо или да намери грешната версия
-
-Синхронизираният текст следва възпроизвеждането. Ако се разминава, коригирайте времевото отместване
-
-Когато не бъдат намерени текстове от трети страни, вместо тях се показва вграденият текст"</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - Деактивиране на удебелени икони</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 - Възстановяване на разделите Up next, Lyrics и Related</string>

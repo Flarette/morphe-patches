@@ -16,7 +16,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -46,6 +45,7 @@ import app.morphe.extension.youtube.innertube.GuideResponseOuterClass.Buttons;
 import app.morphe.extension.youtube.innertube.GuideResponseOuterClass.PivotBarItemRenderer;
 import app.morphe.extension.youtube.innertube.IconOuterClass.Icon;
 import app.morphe.extension.youtube.innertube.IconOuterClass.YTIconType;
+import app.morphe.extension.youtube.patches.spoof.SpoofOSNamePatch;
 import app.morphe.extension.youtube.settings.Settings;
 import app.morphe.extension.youtube.shared.NavigationBar;
 
@@ -65,11 +65,7 @@ public final class NavigationBarPatch {
 
     private static final boolean SWAP_CREATE_WITH_NOTIFICATIONS_BUTTON = Settings.SWAP_CREATE_WITH_NOTIFICATIONS_BUTTON.get();
 
-    private static final boolean DISABLE_TRANSLUCENT_STATUS_BAR = Settings.DISABLE_TRANSLUCENT_STATUS_BAR.get();
-
-    private static final boolean DISABLE_TRANSLUCENT_NAVIGATION_BAR_LIGHT = Settings.DISABLE_TRANSLUCENT_NAVIGATION_BAR_LIGHT.get();
-
-    private static final boolean DISABLE_TRANSLUCENT_NAVIGATION_BAR_DARK = Settings.DISABLE_TRANSLUCENT_NAVIGATION_BAR_DARK.get();
+    private static final boolean DISABLE_TRANSLUCENT_NAVIGATION = Settings.DISABLE_TRANSLUCENT_NAVIGATION.get();
 
     private static final boolean NARROW_NAVIGATION_BUTTONS = Settings.NARROW_NAVIGATION_BUTTONS.get();
 
@@ -77,13 +73,15 @@ public final class NavigationBarPatch {
 
     private static final boolean HIDE_NAVIGATION_BAR = Settings.HIDE_NAVIGATION_BAR.get();
 
+    public static boolean isPatchIncluded() {
+        return false;
+    }
+
     /**
      * Injection point.
      */
     public static String swapCreateWithNotificationButton(String osName) {
-        return SWAP_CREATE_WITH_NOTIFICATIONS_BUTTON
-                ? "Android Automotive"
-                : osName;
+        return SpoofOSNamePatch.getOSName(SWAP_CREATE_WITH_NOTIFICATIONS_BUTTON);
     }
 
     /**
@@ -148,48 +146,18 @@ public final class NavigationBarPatch {
 
     /**
      * Injection point.
+     *
+     * @param bottomBarContainer The container of the navigation bar, which also covers the area
+     *                           behind the system navigation buttons or gesture handle.
      */
-    public static boolean allowCollapsingToolbarLayout(boolean original) {
-        if (DISABLE_TRANSLUCENT_STATUS_BAR) return false;
-        return original;
-    }
+    public static void setNavigationBarOpaque(View bottomBarContainer) {
+        if (!DISABLE_TRANSLUCENT_NAVIGATION) return;
 
-    /**
-     * Injection point.
-     */
-    public static boolean useTranslucentNavigationStatusBar(boolean original) {
-        // Must check Android version, as forcing this on Android 11 or lower causes app hang and crash.
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
-            return original;
+        try {
+            OpaqueSystemBars.apply(bottomBarContainer);
+        } catch (Exception ex) {
+            Logger.printException(() -> "setNavigationBarOpaque failure", ex);
         }
-
-        if (DISABLE_TRANSLUCENT_STATUS_BAR) {
-            return false;
-        }
-
-        return original;
-    }
-
-    /**
-     * Injection point.
-     */
-    public static boolean useTranslucentNavigationButtons(boolean original) {
-        // Feature requires Android 13+
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return original;
-        }
-
-        if (!DISABLE_TRANSLUCENT_NAVIGATION_BAR_DARK && !DISABLE_TRANSLUCENT_NAVIGATION_BAR_LIGHT) {
-            return original;
-        }
-
-        if (DISABLE_TRANSLUCENT_NAVIGATION_BAR_DARK && DISABLE_TRANSLUCENT_NAVIGATION_BAR_LIGHT) {
-            return false;
-        }
-
-        return Utils.isDarkModeEnabled()
-                ? !DISABLE_TRANSLUCENT_NAVIGATION_BAR_DARK
-                : !DISABLE_TRANSLUCENT_NAVIGATION_BAR_LIGHT;
     }
 
     // Navigation search and settings button
@@ -257,6 +225,17 @@ public final class NavigationBarPatch {
                 Logger.printException(() -> "Failed to set search bar OnClickListener", ex);
             }
         }
+    }
+
+    /**
+     * Injection point.
+     */
+    public static boolean useTranslucentNavigation(boolean original) {
+        if (DISABLE_TRANSLUCENT_NAVIGATION) {
+            return false;
+        }
+
+        return original;
     }
 
     /**

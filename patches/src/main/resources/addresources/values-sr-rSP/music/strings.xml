@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">Логотип у заглављу</string>
   <string name="morphe_header_logo_entry_1">Подразумевани</string>
   <string name="morphe_header_logo_entry_3">Компюта</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">Репродукуј аудио нумере албума</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">Репродукуј само аудио верзије песама уместо музичког видеа. Захтева \'Лажирање видео стримова\'</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">Преузмите музичке спотове, подкасте или песме помоћу апликација за преузимање података од трећих страна</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x — прелазак ради само на 9.x и новиј�
   <string name="morphe_music_hide_action_bar_title">Сакриј траку са акцијама</string>
   <string name="morphe_music_hide_like_dislike_button_title">Сакриј дугмад „Свиђа се” и „Не свиђа се”</string>
   <string name="morphe_music_hide_comments_button_title">Сакриј дугме „Коментари”</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">Сакриј дугме \'Репродукција ћаскања уживо\'</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">Сакриј дугме „Текстови песама”</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x — прелазак ради само на 9.x и новиј�
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">Сакриј дугме „Преузми“</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">Сакриј дугме „Пусти радио“</string>
+  <string name="morphe_music_hide_radio_button_title">Сакриј дугме \'Покрени радио\'</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">Падајући мени</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">Одаберите које компоненте ће се појавити у менију плејера и реда за репродукцију</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x — прелазак ради само на 9.x и новиј�
   <string name="morphe_music_scrobbling_custom_regex_summary">Unesite prilagođeni regularni izraz za uklanjanje dodatnog teksta iz naslova pesama, izvođača ili albuma. Primer: (?i)\s*\((clean|explicit)\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">Распознај извођача и песму из наслова</string>
   <string name="morphe_music_scrobbling_parse_title_summary">Извуците име извођача и назив песме из наслова видеа користећи сепаратор \" - \". Корисно за поновно отпремљено садржај где се назив канала може користити као извођач.</string>
+  <string name="morphe_music_scrobbling_guess_album_title">Попуни недостајући албум</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">Када музика не садржи албум, потражи га на Last.fm да би твој scrobble био потпун</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">О scrobbling-у</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,9 +308,10 @@ Da biste osigurali sinhronizaciju scrobbling-a tokom reprodukcije u pozadini, po
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">Коришћење текстова песама треће стране</string>
   <string name="morphe_music_lyrics_enabled_summary">Приказује текстове песама са сервиса треће стране, враћајући се на уграђене текстове песама када нису пронађени</string>
-  <string name="morphe_music_lyrics_source_title">Сервис за текстове песама</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB, затим KuGou</string>
+  <string name="morphe_music_lyrics_section_service_title">Сервис за текстове песама</string>
+  <string name="morphe_music_lyrics_section_about_title">O programu</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">Додирните ред да бисте премотали</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">Додиривање реда прескаче на тај тренутак у песми</string>
   <string name="morphe_music_lyrics_show_copy_button_title">Прикажи дугме за копирање</string>
@@ -310,22 +319,12 @@ Da biste osigurali sinhronizaciju scrobbling-a tokom reprodukcije u pozadini, po
   <string name="morphe_music_lyrics_text_size_title">Величина текста</string>
   <string name="morphe_music_lyrics_text_size_summary">Величина текста текстова песама</string>
   <string name="morphe_music_lyrics_offset_ms_title">Корекција времена</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">Померите синхронизоване текстове песама напред или назад. Користите позитивну вредност ако текстови претече песми</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">Извор: %s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">Преведи</string>
-  <string name="morphe_music_lyrics_translate_hide">Прикажи оригинал</string>
   <string name="morphe_music_lyrics_translating">Превођење…</string>
   <string name="morphe_music_lyrics_translate_failed">Није било могуће превести текстове песама</string>
-  <string name="morphe_music_lyrics_copy">Kopiraj</string>
   <string name="morphe_music_lyrics_copied">Копирано у привремену меморију</string>
-  <string name="morphe_music_lyrics_about_title">О текстовима песама треће стране</string>
-  <string name="morphe_music_lyrics_about_summary">"Текстови песама се траже према наслову и извођачу, тако да песма са необичним метаподовима може да не пронађе ништа или да пронађе погрешну верзију
-
-Текстови који су синхронизовани прате репродукцију. Ако се одмакну, подесите корекцију времена
-
-Када није пронађен текст треће стране, уместо тога се приказује уграђени текст"</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - Онемогући подебљане иконе</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 — Врати картице „Следеће”, „Текстови” и „Повезано” у плејеру</string>

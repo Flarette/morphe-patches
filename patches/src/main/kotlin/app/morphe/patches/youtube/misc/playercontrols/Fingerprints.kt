@@ -1,3 +1,10 @@
+/*
+ * Copyright 2026 Morphe.
+ * https://github.com/MorpheApp/morphe-patches
+ *
+ * See the included NOTICE file for GPLv3 Section 7 terms that apply to Morphe contributions.
+ */
+
 package app.morphe.patches.youtube.misc.playercontrols
 
 import app.morphe.patcher.Fingerprint
@@ -8,8 +15,8 @@ import app.morphe.patcher.checkCast
 import app.morphe.patcher.literal
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.opcode
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import app.morphe.patches.youtube.layout.player.overlay.CreatePlayerOverviewFingerprint
 import app.morphe.patches.youtube.layout.sponsorblock.ControlsOverlayFingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
@@ -26,7 +33,13 @@ internal object PlayerControlsVisibilityEntityModelFingerprint : Fingerprint(
     )
 )
 
- internal object PlayerTopControlsInflateFingerprint : Fingerprint(
+internal object ModernPlayerTopControlsFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45750838L)
+    )
+)
+
+internal object PlayerTopControlsInflateFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
     returnType = "V",
     parameters = listOf(),
@@ -77,12 +90,43 @@ internal object PlayerControlsLargeOverlayButtonsFeatureFlagFingerprint : Finger
 
 internal object PlayerControlsFullscreenLargeButtonsFeatureFlagFingerprint : Fingerprint(
     filters = listOf(
-        literal(45686474L)
+        literal(45686474L) // 21.35 and older.
     )
 )
 
 internal object PlayerControlsButtonStrokeFeatureFlagFingerprint : Fingerprint(
     filters = listOf(
         literal(45713296)
+    )
+)
+
+internal object PlayerControlsModernAccessibilityFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45757309) // Not completely clear what this flag does.
+    )
+)
+
+internal object PlayerCommentTeaserFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45771730)
+    )
+)
+
+
+internal object RecycleViewScrollingFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45763727)
+    )
+)
+
+internal object NewPlayerOverlaysFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45752335L)
+    )
+)
+
+internal object PlayerSeekbarFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45698813)
     )
 )

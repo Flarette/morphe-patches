@@ -13,16 +13,16 @@ package app.morphe.patches.youtube.layout.branding.header
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
 import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resource.resourceId
 import app.morphe.patcher.util.Document
 import app.morphe.patches.shared.layout.branding.header.CUSTOM_HEADER_RESOURCE_NAME
 import app.morphe.patches.shared.layout.branding.header.baseChangeHeaderPatch
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.getResourceId
-import app.morphe.patches.all.misc.resources.resourceMappingPatch
 import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.morphe.util.findElementByAttributeValueOrThrow
 import app.morphe.util.forEachLiteralValueInstruction
+import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
 
 private val variants = arrayOf("light", "dark")
@@ -39,7 +39,6 @@ private val logoResourceNames = arrayOf("morphe_header")
 private const val EXTENSION_CLASS = "Lapp/morphe/extension/youtube/patches/ChangeHeaderPatch;"
 
 private val changeHeaderBytecodePatch = bytecodePatch {
-    dependsOn(resourceMappingPatch)
 
     execute {
         // Verify images exist. Resources are not used during patching but extension code does.
@@ -48,7 +47,7 @@ private val changeHeaderBytecodePatch = bytecodePatch {
             "yt_ringo2_premium_wordmark_header"
         ).forEach { resource ->
             variants.forEach { theme ->
-                getResourceId(ResourceType.DRAWABLE, resource + "_" + theme)
+                resourceId(ResourceType.DRAWABLE, resource + "_" + theme)
             }
         }
 
@@ -56,7 +55,7 @@ private val changeHeaderBytecodePatch = bytecodePatch {
             "ytWordmarkHeader",
             "ytPremiumWordmarkHeader"
         ).forEach { resourceName ->
-            val resourceId = getResourceId(ResourceType.ATTR, resourceName)
+            val resourceId = resourceId(ResourceType.ATTR, resourceName)
 
             forEachLiteralValueInstruction(resourceId) { literalIndex ->
                 val register = getInstruction<OneRegisterInstruction>(literalIndex).registerA
@@ -65,6 +64,20 @@ private val changeHeaderBytecodePatch = bytecodePatch {
                     """
                         invoke-static { v$register }, $EXTENSION_CLASS->getHeaderAttributeId(I)I
                         move-result v$register    
+                    """
+                )
+            }
+        }
+
+        DrawerHeaderRenderFingerprint.matchAll().forEach { match ->
+            match.method.apply {
+                val addViewIndex = match.instructionMatches.last().index
+                val viewGroupRegister = getInstruction<FiveRegisterInstruction>(addViewIndex).registerC
+
+                addInstructions(
+                    addViewIndex + 1,
+                    """
+                        invoke-static { v$viewGroupRegister }, $EXTENSION_CLASS->updateDrawerLogo(Landroid/view/ViewGroup;)V
                     """
                 )
             }

@@ -16,5 +16,5 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
+  <string name="morphe_app_icon_title">App icon</string>
 </resources>

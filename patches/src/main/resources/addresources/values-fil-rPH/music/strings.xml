@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">Logo ng Header</string>
   <string name="morphe_header_logo_entry_1">Panimula</string>
   <string name="morphe_header_logo_entry_3">Pasadya</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">I-play ang mga audio track ng album</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">I-play ang bersyon ng audio-only ng mga kanta sa album sa halip na music video. Nangangailangan ng \'Spoof video streams\'</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">I-download ang mga music video, podcast, o kanta gamit ang mga app sa pag-download mula sa third-party</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x — tumatakbo lamang ang crossfade sa 9.x at mas bago"</string
   <string name="morphe_music_hide_action_bar_title">Itago ang action bar</string>
   <string name="morphe_music_hide_like_dislike_button_title">Itago ang pindutan ng Like at Dislike</string>
   <string name="morphe_music_hide_comments_button_title">Itago ang pindutan ng Komento</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">Itago ang button na \'Live chat replay\'</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">Itago ang pindutan ng Lyrics</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x — tumatakbo lamang ang crossfade sa 9.x at mas bago"</string
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">Itago ang button na I-download</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">Itago ang button na Simulan ang radio</string>
+  <string name="morphe_music_hide_radio_button_title">Itago ang pindutan ng \'Start radio\'</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">Lumabas na menu</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">Piliin kung aling mga bahagi ang lalabas sa mga menu ng player at pila</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x — tumatakbo lamang ang crossfade sa 9.x at mas bago"</string
   <string name="morphe_music_scrobbling_custom_regex_summary">Maglagay ng custom regular expression para alisin ang karagdagang teksto mula sa mga pamagat ng kanta, artist, o album. Halimbawa: (?i)\\s*\\((clean|explicit)\\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">I-parse ang artist at track mula sa pamagat</string>
   <string name="morphe_music_scrobbling_parse_title_summary">I-extract ang pangalan ng artist at track mula sa pamagat ng video gamit ang separator na \" - \". Kapaki-pakinabang ito para sa mga muling inupload na content kung saan ang pangalan ng channel ay maaaring gamitin bilang artist.</string>
+  <string name="morphe_music_scrobbling_guess_album_title">Punan ang nawawalang album</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">Kapag ang musika ay walang album, hanapin ito sa Last.fm upang kumpleto ang iyong scrobble.</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">Tungkol sa pag-scrobble</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,32 +308,24 @@ Para matiyak na naka-sync ang scrobbling habang nagpe-play sa background, sigura
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">Gumamit ng mga liriko mula sa third-party</string>
   <string name="morphe_music_lyrics_enabled_summary">Nagpapakita ng mga liriko mula sa isang third-party service, babalik sa mga built-in na liriko kapag walang nakita</string>
-  <string name="morphe_music_lyrics_source_title">Serbisyo ng liriko</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB, pagkatapos KuGou</string>
+  <string name="morphe_music_lyrics_section_service_title">Serbisyo ng liriko</string>
+  <string name="morphe_music_lyrics_section_about_title">Tungkol</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">I-tap ang isang linya upang maghanap</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">Ang pag-tap sa isang linya ay dadalhin ka sa sandaling iyon sa kanta</string>
   <string name="morphe_music_lyrics_show_copy_button_title">Ipakita ang button na Kopyahin</string>
   <string name="morphe_music_lyrics_show_translate_button_title">Ipakita ang button na Isalin</string>
+  <string name="morphe_music_lyrics_saved">Na-save</string>
   <string name="morphe_music_lyrics_text_size_title">Laki ng teksto</string>
   <string name="morphe_music_lyrics_text_size_summary">Laki ng teksto ng lyrics</string>
   <string name="morphe_music_lyrics_offset_ms_title">Pagkaantala ng oras</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">Ilipat ang lyrics na naka-sync pasulong o paatras. Gumamit ng positibong halaga kung ang lyrics ay nauuna sa kanta</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">Pinagmulan: %s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">Isalin</string>
-  <string name="morphe_music_lyrics_translate_hide">Ipakita ang orihinal</string>
   <string name="morphe_music_lyrics_translating">Nagsasalin…</string>
   <string name="morphe_music_lyrics_translate_failed">Hindi ma-isalin ang lyrics</string>
-  <string name="morphe_music_lyrics_copy">Kopyahin</string>
   <string name="morphe_music_lyrics_copied">Nakopya sa clipboard</string>
-  <string name="morphe_music_lyrics_about_title">Tungkol sa lyrics ng third-party</string>
-  <string name="morphe_music_lyrics_about_summary">"Ang lyrics ay hinahanap sa pamamagitan ng pamagat ng track at artist, kaya ang isang track na may hindi pangkaraniwang metadata ay maaaring walang mahanap, o mahanap ang maling bersyon
-
-Ang naka-sync na lyrics ay sumusunod sa pag-playback. Kung lumihis ang mga ito, ayusin ang pagkaantala ng oras
-
-Kapag walang lyrics ng third-party na natagpuan, ang built-in na lyrics ay ipapakita sa halip"</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - I-disable ang mga bold na icon</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 - Ibalik ang Player Up next, Lyrics, at Related tabs</string>

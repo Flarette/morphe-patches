@@ -1,6 +1,7 @@
 /*
  * Copyright 2026 Morphe.
  * https://github.com/MorpheApp/morphe-patches
+ * https://github.com/MorpheApp/morphe-patches/pull/2451
  *
  * Original hard forked code:
  * https://github.com/ReVanced/revanced-patches/commit/724e6d61b2ecd868c1a9a37d465a688e83a74799
@@ -35,8 +36,6 @@ import app.morphe.patches.youtube.misc.navigation.addBottomBarContainerHook
 import app.morphe.patches.youtube.misc.navigation.hookNavigationButtonCreated
 import app.morphe.patches.youtube.misc.navigation.navigationBarHookPatch
 import app.morphe.patches.youtube.misc.playservice.is_20_31_or_greater
-import app.morphe.patches.youtube.misc.playservice.is_20_46_or_greater
-import app.morphe.patches.youtube.misc.playservice.is_21_30_or_greater
 import app.morphe.patches.youtube.misc.playservice.versionCheckPatch
 import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.misc.settings.settingsPatch
@@ -48,6 +47,7 @@ import app.morphe.util.addInstructionsAtControlFlowLabel
 import app.morphe.util.getFreeRegisterProvider
 import app.morphe.util.getReference
 import app.morphe.util.insertLiteralOverride
+import app.morphe.util.setExtensionIsPatchIncluded
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
@@ -71,7 +71,7 @@ private const val EXTENSION_SETTING_INTERFACE =
 val navigationBarPatch = bytecodePatch(
     name = "Navigation bar",
     description = "Adds options to hide and change the bottom navigation bar (such as the Shorts button) "
-            + " and the upper navigation toolbar."
+            + "and the upper navigation toolbar."
 ) {
     dependsOn(
         sharedExtensionPatch,
@@ -102,18 +102,11 @@ val navigationBarPatch = bytecodePatch(
             SwitchPreference("morphe_narrow_navigation_buttons", summary = true),
             SwitchPreference("morphe_hide_navigation_button_labels"),
             SwitchPreference("morphe_navigation_bar_animations", summary = true),
-            SwitchPreference("morphe_disable_translucent_navigation_bar_light", summary = true),
-            SwitchPreference("morphe_disable_translucent_navigation_bar_dark", summary = true)
+            SwitchPreference("morphe_disable_translucent_navigation", summary = true)
         )
 
         if (is_20_31_or_greater) {
             navPreferences += SwitchPreference("morphe_disable_auto_hide_navigation_bar", summary = true)
-        }
-
-        if (!is_21_30_or_greater) {
-            PreferenceScreen.GENERAL.addPreferences(
-                SwitchPreference("morphe_disable_translucent_status_bar", summary = true)
-            )
         }
 
         PreferenceScreen.GENERAL.addPreferences(
@@ -129,6 +122,7 @@ val navigationBarPatch = bytecodePatch(
             Endpoint.GUIDE,
             "$EXTENSION_CLASS->swapCreateWithNotificationButton(Ljava/lang/String;)Ljava/lang/String;"
         )
+        setExtensionIsPatchIncluded(EXTENSION_CLASS)
 
         // Hide navigation button labels.
         CreatePivotBarFingerprint.let {
@@ -150,47 +144,16 @@ val navigationBarPatch = bytecodePatch(
         // Hide navigation bar
         addBottomBarContainerHook("$EXTENSION_CLASS->hideNavigationBar(Landroid/view/View;)V")
 
-        // Force on/off translucent effect on status bar and navigation buttons.
-        if (!is_21_30_or_greater) {
-            TranslucentNavigationStatusBarFeatureFlagFingerprint.matchAll().forEach {
-                it.method.insertLiteralOverride(
-                    it.instructionMatches.first().index,
-                    "$EXTENSION_CLASS->useTranslucentNavigationStatusBar(Z)Z"
-                )
-            }
-        }
+        // Paint over the translucent status bar and navigation bar, instead of turning off the
+        // feature flags that drive them. Those flags also switch the app out of edge to edge, which
+        // moves the whole window layout and breaks everything measuring against it.
+        addBottomBarContainerHook("$EXTENSION_CLASS->setNavigationBarOpaque(Landroid/view/View;)V")
 
         AnimatedNavigationTabsFeatureFlagFingerprint.matchAll().forEach {
             it.method.insertLiteralOverride(
                 it.instructionMatches.first().index,
                 "$EXTENSION_CLASS->useAnimatedNavigationButtons(Z)Z"
             )
-        }
-
-        if (!is_21_30_or_greater) {
-            TranslucentNavigationButtonsSystemFeatureFlagFingerprint.matchAll().forEach {
-                it.method.insertLiteralOverride(
-                    it.instructionMatches.first().index,
-                    "$EXTENSION_CLASS->useTranslucentNavigationButtons(Z)Z"
-                )
-            }
-        }
-
-        TranslucentNavigationButtonsFeatureFlagFingerprint.matchAll().forEach {
-            it.method.insertLiteralOverride(
-                it.instructionMatches.first().index,
-                "$EXTENSION_CLASS->useTranslucentNavigationButtons(Z)Z"
-            )
-        }
-
-        if (is_20_46_or_greater && !is_21_30_or_greater) {
-            // Feature interferes with translucent status bar and must be forced off.
-            CollapsingToolbarLayoutFeatureFlagFingerprint.matchAll().forEach {
-                it.method.insertLiteralOverride(
-                    it.instructionMatches.first().index,
-                    "$EXTENSION_CLASS->allowCollapsingToolbarLayout(Z)Z"
-                )
-            }
         }
 
         arrayOf(
@@ -247,6 +210,13 @@ val navigationBarPatch = bytecodePatch(
                             "searchQueryViewLoaded(Landroid/widget/TextView;)V"
                 )
             }
+        }
+
+        TranslucentNavigationButtonsSystemFeatureFlagFingerprint.matchAll().forEach {
+            it.method.insertLiteralOverride(
+                it.instructionMatches.first().index,
+                "$EXTENSION_CLASS->useTranslucentNavigation(Z)Z"
+            )
         }
 
         PivotBarRendererFingerprint.let {

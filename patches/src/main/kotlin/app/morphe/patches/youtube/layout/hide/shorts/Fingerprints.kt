@@ -18,8 +18,8 @@ import app.morphe.patcher.literal
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.opcode
 import app.morphe.patcher.string
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
@@ -96,5 +96,31 @@ internal object DoubleTapToLikeLogicFingerprint : Fingerprint(
             location = MatchAfterWithin(25)
         ),
         opcode(Opcode.IF_EQZ, location = MatchAfterWithin(5))
+    )
+)
+
+internal object ReelSpeedmasterEduContainerFingerprint : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.CONSTRUCTOR),
+    filters = listOf(
+        resourceLiteral(ResourceType.ID, "reel_speedmaster_edu_stub"),
+        resourceLiteral(ResourceType.ID, "reel_speedmaster_edu_container"),
+        methodCall(
+            opcode = Opcode.INVOKE_VIRTUAL,
+            name = "setInflatedId",
+            location = MatchAfterWithin(5)
+        )
+    )
+)
+
+internal object SpeedmasterIndicatorChipFingerprint : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.CONSTRUCTOR),
+    filters = listOf(
+        resourceLiteral(ResourceType.ID, "reel_speedmaster_indicator_chip_stub"),
+        resourceLiteral(ResourceType.ID, "speedmaster_indicator_chip"),
+        methodCall(
+            opcode = Opcode.INVOKE_VIRTUAL,
+            name = "setInflatedId",
+            location = MatchAfterWithin(5)
+        )
     )
 )

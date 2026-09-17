@@ -16,19 +16,23 @@ import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
 import app.morphe.patcher.extensions.InstructionExtensions.instructions
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
-import app.morphe.patches.all.misc.resources.resourceMappingPatch
 import app.morphe.patches.shared.misc.fix.bitmap.fixRecycledBitmapPatch
+import app.morphe.patches.shared.misc.settings.preference.ListPreference
 import app.morphe.patches.shared.misc.settings.preference.SwitchPreference
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
+import app.morphe.patches.youtube.misc.playercontrols.disableNewPlayerControlsFeatureFlag
 import app.morphe.patches.youtube.misc.playertype.playerTypeHookPatch
 import app.morphe.patches.youtube.misc.playservice.is_20_29_or_greater
-import app.morphe.patches.youtube.misc.playservice.is_21_04_or_greater
+import app.morphe.patches.youtube.misc.playservice.is_20_49_or_greater
+import app.morphe.patches.youtube.misc.playservice.is_21_15_or_greater
 import app.morphe.patches.youtube.misc.playservice.is_21_21_or_greater
+import app.morphe.patches.youtube.misc.playservice.is_21_36_or_greater
 import app.morphe.patches.youtube.misc.playservice.versionCheckPatch
 import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.misc.settings.settingsPatch
 import app.morphe.patches.youtube.shared.BackgroundPlaybackManagerShortsFingerprint
 import app.morphe.patches.youtube.shared.Constants.COMPATIBILITY_YOUTUBE
+import app.morphe.patches.youtube.video.information.onCreateHook
 import app.morphe.patches.youtube.video.information.videoInformationPatch
 import app.morphe.util.addInstructionsAtControlFlowLabel
 import app.morphe.util.findInstructionIndicesReversedOrThrow
@@ -54,7 +58,6 @@ val backgroundPlaybackPatch = bytecodePatch(
         settingsPatch,
         versionCheckPatch,
         fixRecycledBitmapPatch,
-        resourceMappingPatch
     )
 
     compatibleWith(COMPATIBILITY_YOUTUBE)
@@ -65,8 +68,11 @@ val backgroundPlaybackPatch = bytecodePatch(
         )
 
         PreferenceScreen.MISC.addPreferences(
-            SwitchPreference("morphe_remove_background_playback_restrictions")
+            SwitchPreference("morphe_remove_background_playback_restrictions"),
+            ListPreference("morphe_auto_pause_on_screen_lock")
         )
+
+        onCreateHook(EXTENSION_CLASS, "initialize")
 
         arrayOf(
             BackgroundPlaybackManagerFingerprint to "isBackgroundPlaybackAllowed",
@@ -129,6 +135,31 @@ val backgroundPlaybackPatch = bytecodePatch(
                 .getMutableMethod().addBackgroundPlaybackIsPatchEnabledHook()
         }
 
+        // Prevents playback from resuming if it was interrupted from the notification
+        // and the app was subsequently brought to the foreground.
+        if (is_21_15_or_greater) {
+            AutomaticForegroundPlaybackResumeFeatureFlagFingerprint.matchAll().forEach {
+                it.apply {
+                    method.insertLiteralOverride(
+                        instructionMatches.first().index,
+                        "$EXTENSION_CLASS->isAutomaticForegroundPlaybackAllowed(Z)Z"
+                    )
+                }
+            }
+        }
+
+        // Prevents playback from pausing when the overlay video settings is invoked.
+        if (is_20_49_or_greater) {
+            AutomaticPlaybackPausedInFlyoutFeatureFlagFingerprint.matchAll().forEach {
+                it.apply {
+                    method.insertLiteralOverride(
+                        instructionMatches.first().index,
+                        "$EXTENSION_CLASS->isAutomaticPlaybackPauseInFlyout(Z)Z"
+                    )
+                }
+            }
+        }
+
         // Force allowing background play for videos labeled for kids.
         KidsBackgroundPlaybackPolicyControllerFingerprint.method.addBackgroundPlaybackIsPatchEnabledHook()
 
@@ -142,20 +173,20 @@ val backgroundPlaybackPatch = bytecodePatch(
             PipInputConsumerFeatureFlagFingerprint.addBackgroundPlaybackFeatureFlagHook(false)
         }
 
-        if (is_20_29_or_greater) {
+        if (is_20_29_or_greater && !is_21_36_or_greater) {
             // Client flag that interferes with background playback of some video types.
             // Exact purpose is not clear and it's used in ~ 100 locations.
+            // Flag cannot be forced off with 21.36+ or the player seekbar is missing.
+            //
+            // Edit: This override may not be needed and only 45752335L override might be needed.
             NewPlayerTypeEnumFeatureFlagFingerprint.matchAll().forEach {
                 it.method.addBackgroundPlaybackFeatureFlagHook(it.instructionMatches.first().index, false)
             }
         }
 
-        if (is_21_04_or_greater) {
-            // If NewPlayerTypeEnumFeatureFlagFingerprint is present and forced off then this flag
-            // must also be disabled, otherwise the player is a black screen with no buttons and no playback.
-            NewPlayerOverlaysFeatureFlagFingerprint.matchAll().forEach {
-                it.method.addBackgroundPlaybackFeatureFlagHook(it.instructionMatches.first().index, false)
-            }
-        }
+
+        // If NewPlayerTypeEnumFeatureFlagFingerprint is overridden then must also
+        // force off new player control flags otherwise player has no buttons visible.
+        disableNewPlayerControlsFeatureFlag()
     }
 }

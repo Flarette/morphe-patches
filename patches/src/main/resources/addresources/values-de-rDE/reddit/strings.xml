@@ -16,8 +16,8 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="reddit_privacy_policy">Datenschutzerklärung von Reddit</string>
+  <string name="morphe_google_signin_not_available_toast">Google Login nicht verfügbar. Verwende die E-Mail-Adresse für die Anmeldung.</string>
   <string name="morphe_screen_ads_title">Anzeigen</string>
   <string name="morphe_hide_post_ads_title">Feed-Anzeigen ausblenden</string>
   <string name="morphe_hide_comment_ads_title">Kommentar-Anzeigen ausblenden</string>
@@ -68,4 +68,8 @@ Second \"item\" text"</string>
   <string name="morphe_open_links_directly_summary">Umgeht Weiterleitungs-URLs beim Öffnen externer Links</string>
   <string name="morphe_open_links_externally_title">Links extern öffnen</string>
   <string name="morphe_open_links_externally_summary">Öffnet Links in Ihrem Browser anstatt im In-App-Browser</string>
+  <string name="morphe_app_icon_title">App-Icon</string>
+  <string name="morphe_app_icon_choose_title">App-Symbol auswählen</string>
+  <string name="morphe_app_icon_default">Standard</string>
+  <string name="morphe_app_icon_unknown">Unbekannt</string>
 </resources>

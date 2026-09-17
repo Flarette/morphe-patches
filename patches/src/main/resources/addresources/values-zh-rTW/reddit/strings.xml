@@ -16,8 +16,8 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="reddit_privacy_policy">Reddit 隱私權政策</string>
+  <string name="morphe_google_signin_not_available_toast">Google 登入不可用。請使用電子郵件登入</string>
   <string name="morphe_screen_ads_title">廣告</string>
   <string name="morphe_hide_post_ads_title">隱藏動態廣告</string>
   <string name="morphe_hide_comment_ads_title">隱藏留言廣告</string>
@@ -68,4 +68,8 @@ Second \"item\" text"</string>
   <string name="morphe_open_links_directly_summary">開啟外部連結時，繞過重新導向網址</string>
   <string name="morphe_open_links_externally_title">開啟外部連結</string>
   <string name="morphe_open_links_externally_summary">在您的瀏覽器中開啟連結，而不是應用程式內瀏覽器</string>
+  <string name="morphe_app_icon_title">應用程式圖示</string>
+  <string name="morphe_app_icon_choose_title">選擇應用程式圖示</string>
+  <string name="morphe_app_icon_default">預設</string>
+  <string name="morphe_app_icon_unknown">未知</string>
 </resources>

@@ -24,6 +24,8 @@ Second \"item\" text"</string>
   <string name="morphe_settings_screen_11_misc_title">Майда-чүйдө</string>
   <string name="morphe_settings_screen_12_video_title">Видео</string>
   <!-- misc.backgroundplayback.backgroundPlaybackPatch -->
+  <string name="morphe_auto_pause_on_screen_lock_off">Өчүк</string>
+  <!-- layout.disableScrollSpeedLimitPatch -->
   <!-- layout.disableLayoutUpdatesPatch -->
   <!-- layout.hide.general.hideLayoutComponentsPatch -->
   <string name="morphe_hide_expandable_card_entry_1">Баарын көрсөтүү</string>
@@ -32,8 +34,9 @@ Second \"item\" text"</string>
           for the card in the Messages section at the top of the Notifications tab. -->
   <!-- 'Latest videos' should be translated using the same localized wording YouTube displays for the button.
           This button usually appears in the Home feed for refreshing the feed. -->
+  <!-- 'Notifications' should be translated using the same localized wording YouTube displays for the menu item. -->
   <!-- 'Notify me' should be translated using the same localized wording YouTube displays for the button.
-          This button usually appears in the Subscriptions feed for future livestreams or unreleased videos. -->
+          This button usually appears in the Subscriptions feed for future live streams or unreleased videos. -->
   <!-- 'Show more' should be translated using the same localized wording YouTube displays for the button.
           This button usually appears when searching for a YouTube creator. -->
   <string name="morphe_hide_upload_time_title">Жүктөлгөн убакытты жашыруу</string>
@@ -59,7 +62,9 @@ Second \"item\" text"</string>
   <string name="morphe_hide_about_category_title">Маалымат</string>
   <!-- ad.hideAdsPatch -->
   <string name="morphe_hide_video_ads_title">Видео жарнамаларын жашыруу</string>
+  <!-- Channel whitelist dialog, shared by ad.hideAdsPatch and layout.sponsorblock.sponsorBlockPatch -->
   <!-- interaction.doubletap.doubleTapLengthPatch -->
+  <!-- interaction.channelsearch.channelSearchPatch -->
   <!-- interaction.copyvideolink.copyVideoLinkButtonPatch -->
   <!-- layout.hide.signintotv.disableSignInToTVPopupPatch -->
   <!-- interaction.doubletap.disableDoubleTapActionsPatch -->
@@ -72,9 +77,10 @@ Second \"item\" text"</string>
   <!-- interaction.playall.playAllButtonPatch -->
   <!-- interaction.reload.reloadVideoPatch -->
   <!-- interaction.savetowatchlater.saveToWatchLaterPatch -->
+  <!-- "Spoof video streams" must use the same translation as morphe_spoof_video_streams_screen_title -->
   <!-- interaction.livering.openChannelOfLiveAvatarPatch -->
   <!-- interaction.seekbar.disablePreciseSeekingGesturePatch -->
-  <!-- interaction.seekbar.livestreamDVRPatch -->
+  <!-- interaction.seekbar.liveStreamDVRPatch -->
   <!-- interaction.seekbar.seekbarThumbnailPreviewPatch -->
   <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
   <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
@@ -83,6 +89,8 @@ Second \"item\" text"</string>
   <!-- interaction.swipecontrols.swipeControlsPatch -->
   <string name="morphe_swipe_zone_label_brightness">Жарыктык</string>
   <string name="morphe_swipe_zone_label_volume">Үн</string>
+  <string name="morphe_swipe_zone_label_off">Өчүк</string>
+  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the player menu item. -->
   <!-- layout.buttons.action.hideButtonsPatch -->
   <!-- 'Share' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- 'Stop ads' should be translated using the same localized wording YouTube displays for the button. -->
@@ -123,21 +131,22 @@ Second \"item\" text"</string>
   <string name="morphe_show_toolbar_settings_button_title">Оңдоолор баскычын көрсөтүү</string>
   <string name="morphe_show_toolbar_settings_button_index_title">Оңдоолор баскычынын оорду</string>
   <!-- layout.hide.player.flyoutmenupanel.hidePlayerFlyoutMenuPatch -->
-  <!-- 'Audio Track' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title'.
-          'Android Studio' must be kept untranslated. -->
-  <!-- 'Captions' should be translated using the same localized wording YouTube displays for the menu item. -->
   <!-- 'Additional settings / More' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <!-- 'Sleep timer' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <!-- 'Loop video' should be translated using the same localized wording YouTube displays for the menu item. -->
   <!-- 'Ambient mode' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <!-- 'Stable volume' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title'.
+         'Android Studio' and 'Android VR Downgraded' must be kept untranslated. -->
+  <!-- 'Audio Track' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'Captions' should be translated using the same localized wording YouTube displays for the menu item. -->
   <!-- 'Help & feedback' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <!-- 'Playback speed' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the menu item. -->
   <!-- 'Listen with YouTube Music' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <!-- 'Watch in VR' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'Loop video' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'On-the-go' should be translated using the same localized wording YouTube displays for the menu item. -->
   <!-- 'Quality' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'Sleep timer' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'Playback speed' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'Stable volume' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <!-- 'Watch in VR' should be translated using the same localized wording YouTube displays for the menu item. -->
   <!-- layout.hide.autoplaypreview.hideAutoplayPreviewPatch -->
   <!-- layout.buttons.overlay.hidePlayerOverlayButtonsPatch -->
   <!-- This button does not display any text, but 'Captions' should match the language used in 'morphe_hide_player_flyout_captions_title'. -->
@@ -151,20 +160,24 @@ Second \"item\" text"</string>
   <!-- 'Subscriptions' should be translated using the same localized wording YouTube displays for the tab. -->
   <!-- 'Join' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- YouTube may no longer use this feature and this setting may be obsolete. -->
+  <!-- 'Remix' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- 'Save' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- 'Share' should be translated using the same localized wording YouTube displays for the button. -->
-  <!-- 'Remix' should be translated using the same localized wording YouTube displays for the button. -->
   <!-- layout.hide.endscreensuggestedvideo.hideEndScreenSuggestedVideoPatch -->
   <!-- layout.hide.relatedvideos.hideRelatedVideosPatch -->
   <!-- layout.hide.relatedvideooverlay.hideRelatedVideoOverlayPatch -->
   <!-- layout.hide.time.hideTimestampPatch -->
   <!-- layout.panels.popup.disablePlayerPopupPanelsPatch -->
+  <!-- layout.playlistautoplay.disablePlaylistAutoplayPatch -->
   <!-- layout.player.fullscreen.exitFullscreenPatch -->
   <!-- layout.player.fullscreen.disableFullscreenGesturesPatch -->
   <!-- layout.player.fullscreen.openVideosFullscreenPatch -->
   <string name="morphe_open_videos_fullscreen_entry_1">Иштен чыгарылган</string>
+  <!-- layout.player.fullscreen.stretchVideoPatch -->
+  <!-- layout.player.buttons.muteVideoButtonPatch -->
   <!-- layout.player.overlay.customPlayerOverlayOpacityPatch -->
   <!-- layout.searchbar.wideSearchbarPatch -->
+  <string name="morphe_searchbar_type_entry_disabled">Иштен чыгарылган</string>
   <!-- layout.sponsorblock.sponsorBlockPatch -->
   <!-- layout.formfactor.changeFormFactorPatch -->
   <!-- "Restore old video action bar" must be translated the same as morphe_restore_old_video_action_bar_title -->
@@ -178,11 +191,12 @@ Second \"item\" text"</string>
   <!-- layout.playbackinfeeds.playbackInFeedsPatch -->
   <string name="morphe_playback_in_feeds_entry_off">Өчүк</string>
   <!-- layout.miniplayer.miniplayerPatch -->
+  <!-- misc.fix.fixBackToExitGesturePatch -->
   <!-- layout.theme.themePatch -->
   <string name="morphe_splash_screen_animation_style_entry_1">Иштен чыгарылган</string>
   <!-- layout.branding.customBrandingPatch -->
   <!-- layout.branding.header.changeHeaderPatch -->
-  <!-- Translations should match the language used in 'morphe_custom_branding_icon_entry_3'. -->
+  <!-- Translations should match the language used in 'morphe_custom_branding_icon_entry_7'. -->
   <!-- layout.thumbnails.bypassImageRegionRestrictionsPatch -->
   <!-- layout.thumbnails.alternativeThumbnailsPatch -->
   <!-- 'Home' should be translated using the same localized wording YouTube displays for the tab. -->
@@ -199,12 +213,11 @@ Second \"item\" text"</string>
   <!-- misc.links.openLinksExternallyPatch -->
   <!-- video.quality.rememberVideoQualityPatch -->
   <!-- Translations should match the language used in 'morphe_custom_playback_speeds_auto'. -->
-  <!-- 'Force AVC (H.264) codec' should be the same translation used for 'morphe_force_avc_codec_title'. -->
-  <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
   <!-- video.speed.button.playbackSpeedButtonPatch -->
   <!-- video.quality.button.videoQualityDialogButtonPatch -->
   <!-- video.speed.custom.customPlaybackSpeedPatch -->
   <!-- video.speed.remember.rememberPlaybackSpeedPatch -->
+  <!-- video.livestream.rememberLiveStreamPositionPatch -->
   <!-- video.codecs.disableVideoCodecsPatch -->
   <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
   <!-- video.quality.advancedVideoQualityMenuPatch -->

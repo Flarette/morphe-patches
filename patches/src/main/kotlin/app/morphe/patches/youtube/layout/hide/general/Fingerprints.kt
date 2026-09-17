@@ -23,8 +23,8 @@ import app.morphe.patcher.newInstance
 import app.morphe.patcher.opcode
 import app.morphe.patcher.parametersMatch
 import app.morphe.patcher.string
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
@@ -80,18 +80,6 @@ internal object HideSubscribedChannelsBarConstructorFingerprint : Fingerprint(
             field.type == "Landroid/support/v7/widget/RecyclerView;"
         }
     }
-)
-
-/**
- * 20.21
- */
-internal object HideSubscribedChannelsBarConstructorLegacyFingerprint : Fingerprint(
-    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.CONSTRUCTOR),
-    filters = listOf(
-        resourceLiteral(ResourceType.ID, "parent_container"),
-        opcode(Opcode.MOVE_RESULT_OBJECT, location = MatchAfterWithin(3)),
-        newInstance($$"Landroid/widget/LinearLayout$LayoutParams;", location = MatchAfterWithin(5))
-    )
 )
 
 internal object HideSubscribedChannelsBarLandscapeFingerprint : Fingerprint(
@@ -542,6 +530,27 @@ internal object CreateSearchSuggestionsFingerprint : Fingerprint(
     strings = listOf("ss_rds")
 )
 
+internal object TooltipAnchorViewFingerprint : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+    returnType = "V",
+    parameters = listOf("L"),
+    filters = listOf(
+        fieldAccess(
+            opcode = Opcode.IGET_OBJECT,
+            type = "Landroid/view/View;"
+        ),
+        resourceLiteral(ResourceType.LAYOUT, "tooltip_content_view"),
+        methodCall(
+            opcode = Opcode.INVOKE_STATIC,
+            definingClass = "Landroid/view/View;",
+            name = "inflate",
+            returnType = "Landroid/view/View;",
+            location = MatchAfterWithin(10)
+        ),
+        opcode(Opcode.MOVE_RESULT_OBJECT, location = MatchAfterImmediately())
+    )
+)
+
 internal object ThumbnailAndEmojiPickerContainerFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
     returnType = "Landroid/view/View;",
@@ -581,7 +590,8 @@ internal object AccountListFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.PROTECTED, AccessFlags.FINAL, AccessFlags.SYNTHETIC),
     returnType = "V",
     filters = listOf(
-        resourceLiteral(ResourceType.ATTR, "ytCallToAction")
+        resourceLiteral(ResourceType.ATTR, "ytCallToAction"),
+        methodCall(opcode = Opcode.INVOKE_VIRTUAL, name = "setText")
     )
 )
 
@@ -771,5 +781,17 @@ internal object HideTimeBarEntryPointContainerFingerprint : Fingerprint(
             name = "findViewById"
         ),
         opcode(Opcode.MOVE_RESULT_OBJECT, location = MatchAfterImmediately())
+    )
+)
+
+internal object CommentReplyPaddingFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45752241)
+    )
+)
+
+internal object IncognitoSearchPaddingFeatureFlagFingerprint : Fingerprint(
+    filters = listOf(
+        literal(45724388)
     )
 )

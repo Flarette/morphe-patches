@@ -33,6 +33,8 @@ Second \"item\" text"</string>
   <!-- misc.backgroundplayback.backgroundPlaybackPatch -->
   <string name="morphe_remove_background_playback_restrictions_title">Fondan oʻynash cheklovlarini olib tashlash</string>
   <string name="morphe_shorts_disable_background_playback_title">Shorts\'da fonda oʻynashni oʻchirish</string>
+  <!-- layout.disableScrollSpeedLimitPatch -->
+  <string name="morphe_disable_scrolling_speed_limit_title">Aylantirish tezligi cheklovini o\'chirish</string>
   <!-- layout.disableLayoutUpdatesPatch -->
   <string name="morphe_disable_layout_updates_title">Tartib sozlamalarini oʻzgartirishni oʻchirish</string>
   <string name="morphe_disable_layout_updates_summary">Ilovaning tartibini yangilash oldini oladi</string>
@@ -84,10 +86,12 @@ Oʻzgarishlar:
   <string name="morphe_hide_latest_videos_button_summary">Bosh sahifa oziqlantirishning tepasida koʻrinadigan \'Eng soʻnggi videolar\' bannerini yashiradi</string>
   <string name="morphe_hide_mix_playlists_title">Miks pleyllarni yashirish</string>
   <string name="morphe_hide_movies_section_title">Filmlar bo\'limini yashirish</string>
+  <!-- 'Notifications' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_notifications_menu_header_title">Bildirishnomalar menyusini yashirish</string>
+  <string name="morphe_hide_notifications_menu_header_summary">Qo\'ng\'iroq tugmasi bosilganda Bildirishnomalar menyu sarlavhasini yashiradi</string>
   <!-- 'Notify me' should be translated using the same localized wording YouTube displays for the button.
-          This button usually appears in the Subscriptions feed for future livestreams or unreleased videos. -->
+          This button usually appears in the Subscriptions feed for future live streams or unreleased videos. -->
   <string name="morphe_hide_notify_me_button_title">“Bildirishnomalar” tugmasini yashirish</string>
-  <string name="morphe_hide_notify_me_button_summary">Rejalashtirilgan jonli efir va premyerelar uchun eslatma tugmasini yashiradi</string>
   <string name="morphe_hide_playables_title">Playable’larni yashirish</string>
   <string name="morphe_hide_playables_summary">Oʻyin oʻynash imkoniyatini yashiradi</string>
   <string name="morphe_hide_search_term_thumbnails_title">Qidiruv atamasi tasvirchalarini yashirish</string>
@@ -164,16 +168,13 @@ Oʻzgarishlar:
   <string name="morphe_hide_explore_podcast_section_title">\'Podcastni kashf etish\' boʻlimini yashiring</string>
   <string name="morphe_hide_featured_channels_section_title">Tanlab olingan kanallar bo\'limini yashiring</string>
   <string name="morphe_hide_featured_links_section_title">Tanlangan havolalarni yashiring</string>
-  <string name="morphe_hide_featured_places_section_title">\'Tanlangan joylar\' boʻlimini yashiring</string>
   <string name="morphe_hide_featured_playlists_section_title">Featured pleylistlar bo\'limini yashirish</string>
   <string name="morphe_hide_featured_videos_section_title">\'Tanlangan videolar\' boʻlimini yashiring</string>
-  <string name="morphe_hide_gaming_section_title">\'Oʻyinlar\' boʻlimini yashiring</string>
   <string name="morphe_hide_hashtag_section_title">Hashteglar bo\'limini yashirish</string>
-  <string name="morphe_hide_how_this_was_made_section_title">\'Bu kontent qanday yaratilgan\' boʻlimini yashiring</string>
+  <string name="morphe_hide_how_this_was_made_section_title">Bu qanday yaratilgan bo\'limini yashirish</string>
   <string name="morphe_hide_hype_points_title">Hype ballarini yashirish</string>
   <string name="morphe_hide_info_cards_section_title">Maʼlumot kartalari boʻlimini yashiring</string>
   <string name="morphe_hide_key_concepts_section_title">\'Asosiy tushunchalar\' boʻlimini yashiring</string>
-  <string name="morphe_hide_music_section_title">\'Musiqa\' boʻlimini yashiring</string>
   <string name="morphe_hide_quizzes_section_title">\'Savollar\' boʻlimini yashiring</string>
   <string name="morphe_hide_search_inside_this_video_section_title">\'Ushbu videodagi qidiruv\' bo\'limini yashirish</string>
   <string name="morphe_hide_subscribe_button_title">Obuna tugmasini yashirish</string>
@@ -181,6 +182,7 @@ Oʻzgarishlar:
   <string name="morphe_hide_video_details_section_title">\'Video haqida maʼlumot\' boʻlimini yashiring</string>
   <string name="morphe_hide_filter_bar_screen_title">Filtrlar paneli</string>
   <string name="morphe_hide_filter_bar_screen_summary">Filtruvar panellini yashirish joyini tanlang</string>
+  <string name="morphe_hide_filter_bar_in_channel_page_title">Kanal sahifasida yashirish</string>
   <string name="morphe_hide_filter_bar_in_comments_title">Izohlar ichida yashiring</string>
   <string name="morphe_hide_filter_bar_in_feed_title">Oziqlanish ichida yashiring</string>
   <string name="morphe_hide_filter_bar_in_related_videos_title">Tavsiya qilinadigan videolarda yashiring</string>
@@ -197,6 +199,8 @@ Oʻzgarishlar:
   <string name="morphe_hide_join_button_title">Do\'kon tugmasini yashirish</string>
   <string name="morphe_hide_links_preview_title">Havolalarni ko\'rsatish</string>
   <string name="morphe_hide_links_preview_summary">Kanal varagʻidagi koʻrsatiladigan veb havolarni yashiradi</string>
+  <string name="morphe_hide_members_only_chip_title">\'Faqat a\'zolar\' belgisini yashirish</string>
+  <string name="morphe_hide_members_only_chip_summary">Kanal filtr satridagi \'Faqat a\'zolar\' belgisini yashiradi</string>
   <string name="morphe_hide_members_shelf_title">A\'zo javonini yashirish</string>
   <string name="morphe_hide_members_shelf_summary">Kanal aʼzolarining roʻyxatini yashiradi</string>
   <string name="morphe_hide_posts_shelf_title">Postlar javonini yashirish</string>
@@ -251,18 +255,21 @@ Oʻzgarishlar:
   <string name="morphe_hide_comments_gift_button_title">Sovg\'a tugmasini yashirish</string>
   <string name="morphe_hide_comments_info_button_title">Maʼlumot tugmasini yashirish</string>
   <string name="morphe_hide_comments_live_chat_donators_bar_title">Jonli chat donorlari panelini yashiring</string>
+  <string name="morphe_hide_comments_live_chat_tooltips_title">Jonli chat maslahatlarini yashirish</string>
+  <string name="morphe_hide_comments_live_chat_tooltips_summary">Chat kiritish paneli yaqinida ko\'rsatiladigan maslahat oynalarini, masalan, obunachilar chat xabarnomasini yashiradi</string>
   <string name="morphe_hide_comments_preview_comment_title">Oldindan ko\'rsatish izohini yashirish</string>
   <string name="morphe_hide_comments_preview_comment_summary">Toʻliq izohlar boʻlimini ochishdan oldin videoning ostidagi sharh old koʻrinishini yashiradi</string>
   <string name="morphe_hide_comments_thanks_button_title">“Rahmat” tugmasini yashirish</string>
   <string name="morphe_hide_comments_timestamp_button_title">Vaqt belgisi tugmasini yashirish</string>
+  <string name="morphe_hide_comments_top_fans_button_title">\'Top muxlislar\' tugmasini yashirish</string>
   <string name="morphe_sanitize_comments_highlighted_search_links_title">Sanitarlangan ajratilgan havola</string>
   <string name="morphe_sanitize_comments_highlighted_search_links_summary">Faqat asl matnni qoldirib, sanatlangan ajratilgan havola</string>
   <string name="morphe_hide_keyword_content_screen_title">Kalit soʻz filtri</string>
   <string name="morphe_hide_keyword_content_screen_summary">Oziqlantirish va qidiruvdagi videolarni yashirish uchun kalit soʻzlar va iboralarni tanlang</string>
+  <string name="morphe_hide_keyword_content_comments_title">Izohlardagi kalit so\'zlar bo\'yicha izollarni yashirish</string>
   <string name="morphe_hide_keyword_content_home_title">Uy sahifasidagi videolarni kalit so\'zlar bo\'yicha yashirish</string>
   <string name="morphe_hide_keyword_content_search_title">Qidiruv natijalarini kalit so\'zlar bo\'yicha yashirish</string>
   <string name="morphe_hide_keyword_content_subscriptions_title">Obunachilar sahifasidagi videolarni kalit so\'zlar bo\'yicha yashirish</string>
-  <string name="morphe_hide_keyword_content_comments_title">Izohlardagi kalit so\'zlar bo\'yicha izollarni yashirish</string>
   <string name="morphe_hide_keyword_content_phrases_title">Yashirish uchun kalit so\'zlar</string>
   <!-- For localization, it is preferred, but not required, if 'LeBlanc' is replaced with a localized name or a familiar word that has upper case letters in the middle of the word.
          This is because keywords can be in any language, and showing an example in the localized script helps convey this. -->
@@ -326,7 +333,9 @@ Batafsil ma'lumot olish uchun AiSlopList.com ni oching"</string>
   <string name="morphe_hide_shopping_links_title">Savdo havolalarini yashirish</string>
   <string name="morphe_hide_video_ads_title">Videodagi reklamalarni yashirish</string>
   <string name="morphe_hide_youtube_premium_promotions_title">YouTube Premium reklamasini yashirish</string>
+  <!-- Channel whitelist dialog, shared by ad.hideAdsPatch and layout.sponsorblock.sponsorBlockPatch -->
   <!-- interaction.doubletap.doubleTapLengthPatch -->
+  <!-- interaction.channelsearch.channelSearchPatch -->
   <!-- interaction.copyvideolink.copyVideoLinkButtonPatch -->
   <string name="morphe_share_copy_link_button_success">Havola quvvatlantirildi</string>
   <string name="morphe_share_copy_link_with_timestamp_button_success">Vaqt muhrini o\'z ichiga olgan havola quvvatlantirildi</string>
@@ -439,20 +448,24 @@ Ma'lumot: Jonli efirlarda ishlamasligi mumkin"</string>
   <string name="morphe_reload_video_button_title">Saqlash tugmasini koʻrsatish</string>
   <string name="morphe_dismiss_player_not_available_toast">Video ID mavjud emas. Videoni qoʻlda yangilashni xohlaysizmi?</string>
   <!-- interaction.savetowatchlater.saveToWatchLaterPatch -->
-  <string name="morphe_save_to_watch_later_button_title">Bildirishnomalar menyusida saqlash tugmasini koʻrsatish</string>
-  <string name="morphe_save_to_watch_later_button_summary">Keyingi tomoshabinlar ro\'yxatiga saqlash uchun teging, navbatga qo\'shish uchun bosib ushlab turing</string>
+  <string name="morphe_save_to_watch_later_button_title">Keyinroq ko\'rish uchun saqlash tugmasini ko\'rsatish</string>
+  <string name="morphe_save_to_watch_later_button_summary">Keyinroq ko\'rish uchun saqlash uchun bosing, navbat variantlari uchun bosib turing</string>
   <string name="morphe_save_to_watch_later_success_toast">Video Watch Later pleyistiga saqlab qoʻyildi</string>
   <string name="morphe_save_to_watch_later_already_exists_toast">Ushbu video hali Watch Later pleyistida saqlangan</string>
   <string name="morphe_save_to_watch_later_error_toast">Ushbu videoni Watch Later ga saqlab boʻlmadi</string>
+  <string name="morphe_save_to_watch_later_flyout_title">Keyinroq ko\'rish uchun saqlash</string>
+  <string name="morphe_save_to_watch_later_kids_flyout_button_title">Bolalar videolarida keyinroq ko\'rish uchun saqlash tugmasini ko\'rsatish</string>
+  <string name="morphe_save_to_watch_later_kids_flyout_button_summary">Bolalar videolarini \'Keyinroq ko\'rish\' ochiladigan menyusida saqlash imkonini beradi</string>
   <string name="morphe_queue_flyout_title">Morphe navbatiga qo\'sh</string>
   <string name="morphe_queue_restore_title">Ilovaning qayta ishga tushirilgandan so\'ng navbat saqlanadi</string>
   <string name="morphe_queue_restore_summary">Kirish qilinmagan</string>
   <string name="morphe_swap_save_and_queue_actions_title">Saqlash uchun teging, navbatga qo\'shish uchun bosib ushlab turing</string>
-  <string name="morphe_swap_save_and_queue_actions_summary">Kutubxonadagi vazifalarni ko\'rish uchun bosing, keyinroq tomosha qilish uchun bosib ushlab turing</string>
+  <string name="morphe_swap_save_and_queue_actions_summary">Navbat opsiyalari uchun bosing, \'Keyinroq ko\'rish\'ga saqlash uchun bosib turing</string>
   <string name="morphe_queue_override_flyout_menu_title">Oqim menyusi navbat tugmasini bekor qilish</string>
   <string name="morphe_queue_override_flyout_menu_summary">YouTube navbati o\'rniga Morphe navbatini ochadi</string>
   <string name="morphe_queue_add_flyout_menu_title">Lenta ochiladigan menyusiga navbat bandini qo\'shish</string>
   <string name="morphe_queue_add_flyout_menu_summary">Qo\'shimcha ochiladigan menyu bandini qo\'shadi. Agar \"Navbatga qo\'shish\" ko\'rsatilmasa, buni yoqing</string>
+  <!-- "Spoof video streams" must use the same translation as morphe_spoof_video_streams_screen_title -->
   <string name="morphe_queue_manager_check_failed_auth">Tizimga kirmagan</string>
   <string name="morphe_queue_manager_check_failed_playlist_id">Navbat bo\'sh</string>
   <string name="morphe_queue_manager_check_failed_queue">Navbat boʻsh</string>
@@ -482,23 +495,13 @@ Ma'lumot: Jonli efirlarda ishlamasligi mumkin"</string>
   <!-- interaction.seekbar.disablePreciseSeekingGesturePatch -->
   <string name="morphe_disable_precise_seeking_gesture_title">Aniq qidirish harakatini o\'chirish</string>
   <string name="morphe_disable_precise_seeking_gesture_summary">Progress barni tortib olganda faollashtiradigan aniq izlash rejimini o\'chirish</string>
-  <!-- interaction.seekbar.livestreamDVRPatch -->
-  <string name="morphe_livestream_dvr_title">Jonli oqim DVR-ni yoqish</string>
-  <string name="morphe_livestream_dvr_summary">Jonli oqimlarda, odatda cheklanganlarida ham, orqa tomon sari izlash imkonini beradi</string>
+  <!-- interaction.seekbar.liveStreamDVRPatch -->
   <!-- interaction.seekbar.seekbarThumbnailPreviewPatch -->
   <string name="morphe_seekbar_thumbnail_preview_title">Seekbar uchun miniatyuralarni yoqish</string>
   <string name="morphe_seekbar_thumbnail_preview_summary">Seekbar\'ni sudrab borayotganda video miniatyurasini ko\'rsatadi</string>
   <string name="morphe_seekbar_thumbnail_heatmap_peak_point">Eng ko\'p qayta ko\'rilgan</string>
   <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
-  <string name="morphe_livestream_dvr_not_available">"'Jonli efir DVR-ni yoqish' mavjud bo'lmasligi mumkin
-
-Buni tuzatish uchun 'Video oqimlarini soxtalashtirish'ni yoqing va 'Standart mijoz'ni 'TV' yoki 'visionOS' ga o'zgartiring."</string>
-  <string name="morphe_expand_livestream_dvr_duration_title">Jonli oqim DVR davomiyligini kengaytirish</string>
-  <string name="morphe_expand_livestream_dvr_duration_summary">Sizga jonli efirlarni 7 kungacha ortga aylantirish imkonini beradi</string>
   <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
-  <string name="morphe_expand_livestream_dvr_duration_not_available">"'Jonli efir DVR davomiyligini kengaytirish' mavjud bo'lmasligi mumkin
-
-Buni tuzatish uchun 'Video oqimlarini soxtalashtirish'ni yoqing va 'Standart mijoz'ni 'TV' yoki 'visionOS' ga o'zgartiring."</string>
   <!-- interaction.seekbar.enableSlideToSeekPatch -->
   <string name="morphe_slide_to_seek_title">Sekish harakatini yoqish</string>
   <string name="morphe_slide_to_seek_summary">Video pleerni bosib ushlab turganingizda 2 barobar tezlikda ijro qilish o\'rniga siljishni yoqish</string>
@@ -506,15 +509,18 @@ Buni tuzatish uchun 'Video oqimlarini soxtalashtirish'ni yoqing va 'Standart mij
   <string name="morphe_tap_to_seek_title">Sekib o\'tish uchun teginishni yoqish</string>
   <string name="morphe_tap_to_seek_summary">Siljishni tortib olmasdan ma\'lum pozitsiyaga o\'tish uchun progress bargacha bosing</string>
   <!-- interaction.swipecontrols.swipeControlsPatch -->
-  <string name="morphe_swipe_brightness_title">Yorqinlikni boshqarish uchun sirt bilan surishni yoqish</string>
-  <string name="morphe_swipe_brightness_summary">Toʻliq ekran rejimida yorqinlikni sozlash uchun chap tomonda vertikal surish</string>
-  <string name="morphe_swipe_volume_title">Hajmni boshqarish uchun sirt bilan surishni yoqish</string>
-  <string name="morphe_swipe_volume_summary">Toʻliq ekran rejimida ovoz balandligini sozlash uchun oʻng tomonda vertikal surish</string>
-  <string name="morphe_swipe_zone_width_title">Yorqinlik/balandlik zonasi kengligi</string>
-  <string name="morphe_swipe_zone_width_summary">Yorqinlik va balandlik harakatlari uchun tayinlangan har bir ekran qismining foizi (5-50)</string>
+  <string name="morphe_swipe_left_zone_title">Chapga surish jesti</string>
+  <string name="morphe_swipe_right_zone_title">O\'ngga surish jesti</string>
+  <string name="morphe_swipe_top_zone_title">Yuqoriga surish jesti</string>
+  <string name="morphe_swipe_zone_width_title">Chap/O\'ng zona kengligi</string>
+  <string name="morphe_swipe_zone_width_summary">Chap va o\'ng surish jestlari uchun ajratilgan har bir ekran chetidagi foiz (5-50)</string>
   <string name="morphe_swipe_zone_label_brightness">Yorqinlik</string>
   <string name="morphe_swipe_zone_label_volume">Volyum</string>
   <string name="morphe_swipe_zone_label_native">Asliy</string>
+  <string name="morphe_swipe_zone_label_off">O\'chirilgan</string>
+  <string name="morphe_swipe_ignore_when_locked_title">Qulflanganda surishlarni e\'tiborsiz qoldirish</string>
+  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the player menu item. -->
+  <string name="morphe_swipe_ignore_when_locked_summary">Surish jestlari player \'Qulflash ekrani\' bilan qulflanganida e\'tiborsiz qoldiriladi</string>
   <string name="morphe_swipe_press_to_engage_title">Sirt bilan surish harakatini yoqish uchun bosishni yoqish</string>
   <string name="morphe_swipe_press_to_engage_summary">Surish imo-ishorasi tan olinishi uchun bosib ushlab turish talab qilinadi</string>
   <string name="morphe_swipe_haptic_feedback_title">Hissiy aloqani yoqish</string>
@@ -527,7 +533,6 @@ Buni tuzatish uchun 'Video oqimlarini soxtalashtirish'ni yoqing va 'Standart mij
   <string name="morphe_swipe_overlay_timeout_summary">Qoplama necha millisekund davomida ko\'rsatilishi</string>
   <string name="morphe_swipe_overlay_background_opacity_title">Sirt bilan surish qoplamasining fonini shaffoflik darajasi</string>
   <string name="morphe_swipe_overlay_background_opacity_summary">On-ekrandagi matnning oʻlchamini sozlash (1–30)</string>
-  <string name="morphe_swipe_overlay_background_opacity_invalid_toast">Sirt bilan surish qoplamasining shaffofligi 0–100 oraligʻida boʻlishi kerak.</string>
   <string name="morphe_swipe_overlay_progress_brightness_color_title">Sirt bilan surish qoplamasining yorqinlik rangi</string>
   <string name="morphe_swipe_overlay_progress_brightness_color_summary">Sozlash harakatini boshlash uchun talab qilinadigan surish masofasini sozlang</string>
   <string name="morphe_swipe_overlay_progress_volume_color_title">Sirt bilan surish qoplamasining hajmi rangi</string>
@@ -536,19 +541,13 @@ Buni tuzatish uchun 'Video oqimlarini soxtalashtirish'ni yoqing va 'Standart mij
   <string name="morphe_swipe_overlay_progress_speed_color_summary">O\'ynash tezligi boshqaruvlari progress bosqichlarining rangini belgilang</string>
   <string name="morphe_swipe_text_overlay_size_title">Sirt bilan surish qoplamasining matn hajmi</string>
   <string name="morphe_swipe_text_overlay_size_summary">On-ekrandagi matnning oʻlchamini sozlash (1–30)</string>
-  <string name="morphe_swipe_text_overlay_size_invalid_toast">Matn hajmi 1-30 oralig\'ida bo\'lishi kerak</string>
   <string name="morphe_swipe_threshold_title">Sirt bilan surish harakatining chegarasi</string>
   <string name="morphe_swipe_threshold_summary">\'Yoqish\' va \'Obuna\' tugmalari ijodkor ularni aytganda porlamasligi</string>
-  <string name="morphe_swipe_volume_sensitivity_title">Hajm bilan sirt bilan surish sezgirligi</string>
-  <string name="morphe_swipe_volume_sensitivity_summary">Har bir siljishda ovoz balandligini oshirish qiymatlari yuqori</string>
   <string name="morphe_swipe_brightness_sensitivity_title">Yorqinlik siljish sezgirligi</string>
   <string name="morphe_swipe_brightness_sensitivity_summary">Yorqinlik bosqichlari uchun ko\'proq siljish kerak bo\'lgan qiymatlar yuqori</string>
-  <string name="morphe_swipe_speed_title">Tezlik ishorasini yoqish</string>
-  <string name="morphe_swipe_speed_summary">To\'liq ekran rejimida o\'ynash tezligini o\'zgartirish uchun ekranda chapga yoki o\'ngga suring</string>
   <string name="morphe_swipe_speed_sensitivity_title">Tezlik siljish sezgirligi</string>
   <string name="morphe_swipe_speed_sensitivity_summary">Tezlik bosqichlari uchun ko\'proq siljish kerak bo\'lgan qiymatlar yuqori</string>
   <string name="morphe_swipe_speed_step_title">Tezlik bosqichi</string>
-  <string name="morphe_swipe_speed_step_summary">Har bir siljishda o\'ynash tezligini o\'zgartirish miqdori</string>
   <string name="morphe_swipe_speed_zone_height_title">Tezlik zonasining balandligi</string>
   <string name="morphe_swipe_speed_zone_height_summary">O\'yinchi balandligining foizi sifatida tezlik ishorasi zonasining balandligi (5-75)</string>
   <string name="morphe_swipe_zone_label_speed">Tezlik</string>
@@ -676,15 +675,8 @@ Sozlamalarga kirish uchun Umumiy → Asboblar → Sozlamalarni koʻrsatish orqal
   <string name="morphe_navigation_bar_animations_summary">Varaqlar oʻrtasida almashishda animatsiyali oʻtishlarni yaratadi</string>
   <string name="morphe_disable_auto_hide_navigation_bar_title">Avtomatik yashiriladigan navigatsiya panelini oʻchirish</string>
   <string name="morphe_disable_auto_hide_navigation_bar_summary">Prokrul paytida navigatsiya panelini koʻrinishda ushlab turadi</string>
-  <string name="morphe_disable_translucent_status_bar_title">Shaffof maqom panelini o\'chirish</string>
-  <string name="morphe_disable_translucent_status_bar_summary">Status panelini toʻliq qorongʻi qiladi</string>
-  <string name="morphe_disable_translucent_status_bar_user_dialog_message">"Cheklovlar:
-• Video pleerining tepasida qora chiziq paydo boʻlishi mumkin.
-• Sistemani navigatsiya paneli shaffofga oʻtishi mumkin va videolarga izoh qoldirish mumkin emas."</string>
-  <string name="morphe_disable_translucent_navigation_bar_light_title">Engil shaffof navigatsiya panelini oʻchirish</string>
-  <string name="morphe_disable_translucent_navigation_bar_light_summary">Yorugʻlik rejimida navigatsiya panelini toʻliq qorongʻi qiladi</string>
-  <string name="morphe_disable_translucent_navigation_bar_dark_title">Qorongʻu shaffof navigatsiya panelini oʻchirish</string>
-  <string name="morphe_disable_translucent_navigation_bar_dark_summary">Qorongʻi rejimda navigatsiya panelini toʻliq qorongʻi qiladi</string>
+  <string name="morphe_disable_translucent_navigation_title">Shaffof navigatsiya panelini o\'chirish</string>
+  <string name="morphe_disable_translucent_navigation_summary">Navigatsiya va holat panelini to\'liq noaniq qiladi</string>
   <string name="morphe_toolbar_screen_title">Navigatsiya panelini yashirish</string>
   <string name="morphe_toolbar_screen_summary">Pleerdagi paydo boʻladigan tugmalarni tanlang</string>
   <string name="morphe_hide_toolbar_cast_button_title">\'Audio Track\' menyusini yashirish</string>
@@ -700,42 +692,43 @@ Sozlamalarga kirish uchun Umumiy → Asboblar → Sozlamalarni koʻrsatish orqal
   <!-- layout.hide.player.flyoutmenupanel.hidePlayerFlyoutMenuPatch -->
   <string name="morphe_hide_player_flyout_title">Pleyer menyusi</string>
   <string name="morphe_hide_player_flyout_summary">\'Atmosfera rejimi\' menyusini yashirish</string>
+  <!-- 'Additional settings / More' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_additional_settings_title">\'Sifat\' menyusini yashirish</string>
+  <!-- 'Ambient mode' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_ambient_mode_title">Reklama ekranini yashiradi</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title'.
+         'Android Studio' and 'Android VR Downgraded' must be kept untranslated. -->
+  <string name="morphe_hide_player_flyout_audio_track_not_available">"\"Audio Track\" menyusi yashirilgan
+
+\"Audio Track\" menyusini ko'rsatish uchun \"Spoof video streams\" sozlamasini \"Android Studio\" va \"Android VR Downgraded\"dan tashqari istalgan mijozga o'zgartiring"</string>
   <!-- 'Audio Track' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_audio_track_title">\'Barqaror ovoz\' menyusini yashirish</string>
-  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title'.
-          'Android Studio' must be kept untranslated. -->
-  <string name="morphe_hide_player_flyout_audio_track_not_available">"'Audio Track' menyusi yashirilgan
-
-'Audio Track' menyusini ko'rsatish uchun, 'Video oqimlarini qalbakilashtirish'ni 'Android Studio'dan tashqari istalgan mijozga o'zgartiring'"</string>
   <string name="morphe_hide_player_flyout_audio_track_footer_title">\'Oʻqish tezligi\' menyusini yashirish</string>
   <!-- 'Captions' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_captions_title">\'Qulf ekran\' menyusini yashirish</string>
   <string name="morphe_hide_player_flyout_captions_footer_title">\'YouTube Music bilan tinglash\' menyusini yashirish</string>
   <string name="morphe_hide_player_flyout_captions_header_title">\'VR da tomoshabin\' menyusini yashirish</string>
-  <!-- 'Additional settings / More' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_additional_settings_title">\'Sifat\' menyusini yashirish</string>
-  <!-- 'Sleep timer' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_sleep_timer_title">\'Sifat\' menyusining pastki qismini yashirish</string>
-  <!-- 'Loop video' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_loop_video_title">\'Sifat\' menyusining tepa qismini yashirish</string>
-  <!-- 'Ambient mode' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_ambient_mode_title">Reklama ekranini yashiradi</string>
-  <!-- 'Stable volume' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_stable_volume_title">\'Auto-dubbed\' yorligini yashirish</string>
   <!-- 'Help & feedback' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_help_title">\'Yordam va fikr-mulohada\' menyusini yashirish</string>
-  <!-- 'Playback speed' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_speed_title">Video watch later pleyistiga saqlab qoʻyishda xabar ko\'rsatish</string>
-  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_lock_screen_title">Video watch later pleyistida allaqachon saqlanganligi haqida xabar ko\'rsatish</string>
   <!-- 'Listen with YouTube Music' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_listen_with_youtube_music_title">Videoni watch later ga saqlab bo\'lmasligi haqida xabar ko\'rsatish</string>
-  <!-- 'Watch in VR' should be translated using the same localized wording YouTube displays for the menu item. -->
-  <string name="morphe_hide_player_flyout_watch_in_vr_title">\'Watch in VR\' menyusini yashirish</string>
+  <!-- 'Lock screen' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_lock_screen_title">Video watch later pleyistida allaqachon saqlanganligi haqida xabar ko\'rsatish</string>
+  <!-- 'Loop video' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_loop_video_title">\'Sifat\' menyusining tepa qismini yashirish</string>
+  <!-- 'On-the-go' should be translated using the same localized wording YouTube displays for the menu item. -->
   <!-- 'Quality' should be translated using the same localized wording YouTube displays for the menu item. -->
   <string name="morphe_hide_player_flyout_quality_title">Fonda oʻynashni oʻchirish</string>
   <string name="morphe_hide_player_flyout_quality_footer_title">Fonda oʻynashni yoqish</string>
   <string name="morphe_hide_player_flyout_quality_header_title">Kengaytirilgan pleyer tugmasi uslubini tiklash</string>
+  <!-- 'Sleep timer' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_sleep_timer_title">\'Sifat\' menyusining pastki qismini yashirish</string>
+  <!-- 'Playback speed' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_speed_title">Video watch later pleyistiga saqlab qoʻyishda xabar ko\'rsatish</string>
+  <!-- 'Stable volume' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_stable_volume_title">\'Auto-dubbed\' yorligini yashirish</string>
+  <!-- 'Watch in VR' should be translated using the same localized wording YouTube displays for the menu item. -->
+  <string name="morphe_hide_player_flyout_watch_in_vr_title">\'Watch in VR\' menyusini yashirish</string>
   <!-- layout.hide.autoplaypreview.hideAutoplayPreviewPatch -->
   <string name="morphe_hide_autoplay_preview_title">Oldindan ko\'rishni yashirish</string>
   <string name="morphe_hide_autoplay_preview_summary">Mini-pleyer</string>
@@ -772,8 +765,6 @@ Sozlamalarga kirish uchun Umumiy → Asboblar → Sozlamalarni koʻrsatish orqal
   <string name="morphe_hide_seekbar_thumbnail_summary">Tomosha qilgan videolar tasvirlaringizda ko\'rsatiladigan progress barni yashiradi</string>
   <string name="morphe_fullscreen_large_seekbar_title">Kengaytirilgan sekbar panelini yoqish</string>
   <!-- layout.hide.shorts.hideShortsComponentsPatch -->
-  <string name="morphe_shorts_player_screen_title">Qisqa pleyer</string>
-  <string name="morphe_shorts_player_screen_summary">Cheklovlar</string>
   <string name="morphe_hide_shorts_category_title">Shortsni yashirish</string>
   <string name="morphe_hide_shorts_channel_title">Tasvirni tuzish</string>
   <!-- 'Home' should be translated using the same localized wording YouTube displays for the tab. -->
@@ -783,45 +774,47 @@ Sozlamalarga kirish uchun Umumiy → Asboblar → Sozlamalarni koʻrsatish orqal
   <string name="morphe_hide_shorts_subscriptions_title">Qidiruv natijalarida qidiruvni yashirish</string>
   <string name="morphe_hide_shorts_video_description_title">Obunalar oziqlantirishida yashirish</string>
   <string name="morphe_hide_shorts_history_title">Video tavsifida yashirish</string>
+  <string name="morphe_shorts_player_screen_title">Qisqa pleyer</string>
+  <string name="morphe_shorts_player_screen_summary">Cheklovlar</string>
+  <string name="morphe_disable_shorts_double_tap_to_like_title">Tarixda yashirish</string>
   <string name="morphe_hide_shorts_ai_button_title">AI tugmasini yashirish</string>
   <string name="morphe_hide_shorts_auto_dubbed_label_title">\'Auto-dubbed\' yorligʻini yashirish</string>
-  <string name="morphe_hide_shorts_super_thanks_button_title">“Dublyaj qilingan” yorlig\'ini yashirish</string>
+  <string name="morphe_hide_shorts_channel_bar_title">Vaqt belgisi</string>
+  <string name="morphe_hide_shorts_comments_button_title">Navigatsiya tugmalarini yashirish</string>
   <string name="morphe_hide_shorts_effect_button_title">Effekt tugmasini yashirish</string>
+  <string name="morphe_hide_shorts_full_video_link_label_title">Video havolasi yorlig\'ini yashirish</string>
   <string name="morphe_hide_shorts_green_screen_button_title">“Super rahmat” tugmasini yashirish</string>
   <string name="morphe_hide_shorts_hashtag_button_title">Hashtag tugmasini yashirish</string>
+  <string name="morphe_hide_shorts_info_panel_title">End ekrandagi taklif qiluvchi videolarni yashirish</string>
   <!-- 'Join' should be translated using the same localized wording YouTube displays for the button. -->
   <string name="morphe_hide_shorts_join_button_title">“A’zoga qo\'shilish” tugmasini yashirish</string>
+  <string name="morphe_hide_shorts_like_button_title">Yoqish</string>
+  <!-- YouTube may no longer use this feature and this setting may be obsolete. -->
+  <string name="morphe_hide_shorts_like_fountain_title">YouTube Doodles’larni yashirish</string>
   <string name="morphe_hide_shorts_live_preview_title">Jonli efir ko\'rsatilishini yashirish</string>
   <string name="morphe_hide_shorts_location_label_title">Joy holati yorlig\'ini yashirish</string>
+  <string name="morphe_hide_shorts_navigation_bar_title">Navigatsiya panelini yashirish</string>
   <string name="morphe_hide_shorts_new_posts_button_title">“Yashil ekran” tugmasini yashirish</string>
   <string name="morphe_hide_shorts_paused_overlay_buttons_title">To\'xtatilgan qoplama tugmalarini yashirish</string>
   <string name="morphe_hide_shorts_preview_comment_title">Oldindan ko\'rsatish izohini yashirish</string>
+  <!-- 'Remix' should be translated using the same localized wording YouTube displays for the button. -->
+  <string name="morphe_hide_shorts_remix_button_title">Tartiblash tugmasini yashirish</string>
+  <!-- 'Save' should be translated using the same localized wording YouTube displays for the button. -->
+  <string name="morphe_hide_shorts_save_button_title">Saqlash tugmasini yashirish</string>
   <string name="morphe_hide_shorts_save_sound_button_title">“Yangi postlar” tugmasini yashirish</string>
   <string name="morphe_hide_shorts_search_suggestions_title">Do\'kon tugmasini yashirish</string>
+  <!-- 'Share' should be translated using the same localized wording YouTube displays for the button. -->
+  <string name="morphe_hide_shorts_share_button_title">Dialogdagi “Ko\'rishni toʻxtatish”ni oʻchirish</string>
   <string name="morphe_hide_shorts_shop_button_title">“Obuna” tugmasini yashirish</string>
+  <string name="morphe_hide_shorts_sound_button_title">Ijodkor do\'konini yashirish</string>
+  <string name="morphe_hide_shorts_sound_metadata_label_title">Tovush metadata yorlig\'ini yashirish</string>
   <string name="morphe_hide_shorts_subscribe_button_title">Mahsulotlarni yashirish</string>
+  <string name="morphe_hide_shorts_super_thanks_button_title">“Dublyaj qilingan” yorlig\'ini yashirish</string>
   <string name="morphe_hide_shorts_tagged_products_title">“Bildirish” tugmasini yashirish</string>
   <string name="morphe_hide_shorts_upcoming_button_title">Chipta panelini yashirish</string>
   <string name="morphe_hide_shorts_use_sound_button_title">“Ovoz saqlash” tugmasini yashirish</string>
   <string name="morphe_hide_shorts_use_template_button_title">“Ushbu ovozdan foydalanish” tugmasini yashirish</string>
-  <!-- YouTube may no longer use this feature and this setting may be obsolete. -->
-  <string name="morphe_hide_shorts_like_fountain_title">YouTube Doodles’larni yashirish</string>
-  <string name="morphe_hide_shorts_like_button_title">Yoqish</string>
-  <string name="morphe_hide_shorts_comments_button_title">Navigatsiya tugmalarini yashirish</string>
-  <!-- 'Save' should be translated using the same localized wording YouTube displays for the button. -->
-  <string name="morphe_hide_shorts_save_button_title">Saqlash tugmasini yashirish</string>
-  <!-- 'Share' should be translated using the same localized wording YouTube displays for the button. -->
-  <string name="morphe_hide_shorts_share_button_title">Dialogdagi “Ko\'rishni toʻxtatish”ni oʻchirish</string>
-  <!-- 'Remix' should be translated using the same localized wording YouTube displays for the button. -->
-  <string name="morphe_hide_shorts_remix_button_title">Tartiblash tugmasini yashirish</string>
-  <string name="morphe_hide_shorts_sound_button_title">Ijodkor do\'konini yashirish</string>
-  <string name="morphe_hide_shorts_info_panel_title">End ekrandagi taklif qiluvchi videolarni yashirish</string>
-  <string name="morphe_hide_shorts_channel_bar_title">Vaqt belgisi</string>
   <string name="morphe_hide_shorts_video_title_title">Video muqovasini yashirish</string>
-  <string name="morphe_hide_shorts_sound_metadata_label_title">Tovush metadata yorlig\'ini yashirish</string>
-  <string name="morphe_hide_shorts_full_video_link_label_title">Video havolasi yorlig\'ini yashirish</string>
-  <string name="morphe_disable_shorts_double_tap_to_like_title">Tarixda yashirish</string>
-  <string name="morphe_hide_shorts_navigation_bar_title">Navigatsiya panelini yashirish</string>
   <!-- layout.hide.endscreensuggestedvideo.hideEndScreenSuggestedVideoPatch -->
   <string name="morphe_hide_end_screen_suggested_video_title">End ekrandagi taklif qilinuvchi videolarni yashirish</string>
   <string name="morphe_hide_end_screen_suggested_video_summary">"Videoning tugashidan keyin paydo bo'ladigan taklif qilinadigan video qoplamasini yashiradi
@@ -838,6 +831,9 @@ Sozlamalar → Oynatish (yoki Avtoijro) → Keyingi videoni avtomatik ravishda i
   <!-- layout.panels.popup.disablePlayerPopupPanelsPatch -->
   <string name="morphe_disable_player_popup_panels_title">Pleer panelini oʻchirish</string>
   <string name="morphe_disable_player_popup_panels_summary">Pleer panellarini avtomatik ochilishini oʻchirish</string>
+  <!-- layout.playlistautoplay.disablePlaylistAutoplayPatch -->
+  <string name="morphe_disable_playlist_autoplay_title">Pleylist avtomatik ijrosini o\'chirish</string>
+  <string name="morphe_disable_playlist_autoplay_summary">Pleylistlarning avtomatik ravishda keyingi videoga o\'tishini oldini oladi</string>
   <!-- layout.player.fullscreen.exitFullscreenPatch -->
   <string name="morphe_exit_fullscreen_title">Sharhni yashirish</string>
   <string name="morphe_exit_fullscreen_entry_1">O\'chirilgan</string>
@@ -846,21 +842,33 @@ Sozlamalar → Oynatish (yoki Avtoijro) → Keyingi videoni avtomatik ravishda i
   <string name="morphe_exit_fullscreen_entry_4">Portret va landshaft</string>
   <!-- layout.player.fullscreen.disableFullscreenGesturesPatch -->
   <string name="morphe_disable_fullscreen_gestures_title">To\'liq ekran gestlari</string>
-  <string name="morphe_disable_fullscreen_gestures_summary">O\'yinchi gestlari to\'liq ekran rejimiga kirish yoki chiqish uchun</string>
+  <string name="morphe_disable_fullscreen_gestures_summary">To\'liq ekran rejimidagi pleyer imo-ishoralari</string>
   <string name="morphe_disable_fullscreen_pulled_up_gesture_title">Portret uchun yuqoriga surish gestini o\'chirish</string>
   <string name="morphe_disable_fullscreen_sliding_down_gesture_title">Portret uchun pastga surish gestini o\'chirish</string>
   <string name="morphe_disable_fullscreen_dragged_down_gesture_title">Manzarali uchun pastga surish gestini o\'chirish</string>
+  <string name="morphe_disable_fullscreen_zoom_gesture_title">Siqish orqali kattalashtirish imo-ishorasini o\'chirish</string>
   <!-- layout.player.fullscreen.openVideosFullscreenPatch -->
   <string name="morphe_open_videos_fullscreen_title">Videolarni to\'liq ekran rejimida ochish</string>
   <string name="morphe_open_videos_fullscreen_entry_1">O\'chirilgan</string>
   <string name="morphe_open_videos_fullscreen_entry_2">Portret</string>
   <string name="morphe_open_videos_fullscreen_entry_3">Manzarali</string>
+  <!-- layout.player.fullscreen.stretchVideoPatch -->
+  <string name="morphe_fullscreen_video_scale_title">To‘liq ekran video o‘lchami</string>
+  <string name="morphe_fullscreen_video_scale_entry_default">Standart</string>
+  <string name="morphe_fullscreen_video_scale_entry_stretch">Cho‘zish (ekranni to‘ldirish)</string>
+  <string name="morphe_fullscreen_video_scale_entry_zoom">Kattalashtirish (kesib to‘ldirish)</string>
+  <string name="morphe_fullscreen_video_scale_button_title">Video o‘lchami tugmasini ko‘rsatish</string>
+  <string name="morphe_fullscreen_video_scale_button_summary">Bosilganda Default, Stretch va Zoom o‘rtasida almashadi</string>
+  <!-- layout.player.buttons.muteVideoButtonPatch -->
+  <string name="morphe_mute_video_button_title">Ovozsiz tugmani ko\'rsat</string>
   <!-- layout.player.overlay.customPlayerOverlayOpacityPatch -->
   <string name="morphe_player_overlay_opacity_title">Pleyer qoplamasining shaffofligi</string>
   <string name="morphe_player_overlay_opacity_summary">Pleyerdagi qoplama shaffofligini sozlash (0 shaffof, 100 toʻliq qorongʻi)</string>
-  <string name="morphe_player_overlay_opacity_invalid_toast">Pleyer qoplamasining shaffofligi 0–100 oraligʻida boʻlishi kerak.</string>
   <!-- layout.searchbar.wideSearchbarPatch -->
-  <string name="morphe_wide_searchbar_title">Kengaytirilgan qidiruv paneli</string>
+  <string name="morphe_searchbar_type_title">Qidiruv paneli</string>
+  <string name="morphe_searchbar_type_entry_disabled">O\'chirilgan</string>
+  <string name="morphe_searchbar_type_entry_wide">Keng</string>
+  <string name="morphe_searchbar_type_entry_extra_wide">O\'ta keng</string>
   <!-- layout.sponsorblock.sponsorBlockPatch -->
   <!-- layout.formfactor.changeFormFactorPatch -->
   <string name="morphe_change_form_factor_title">Qurilma tuzilishi</string>
@@ -868,20 +876,6 @@ Sozlamalar → Oynatish (yoki Avtoijro) → Keyingi videoni avtomatik ravishda i
   <string name="morphe_change_form_factor_entry_2">Telefon</string>
   <string name="morphe_change_form_factor_entry_3">Planshet</string>
   <string name="morphe_change_form_factor_entry_4">Avtomobil</string>
-  <string name="morphe_change_form_factor_user_dialog_message">"O'zgarishlar:
-
-Tablet tartibi
-• Jamoatchilik postlari yashirilgan
-• Oziqlanishda ijro etish sozlamasi mavjud emas
-• Shortsda Remiks tugmasi va Sound tugmasi mavjud emas
-• Eski video harakatlar paneli qulflanmagan
-
-Avtomobil tartibi
-• Oziqlanish mavzular bo'yicha va kanallar bo'yicha tashkil etilgan
-• Oziqlanishda ijro etish sozlamasi mavjud emas
-• Shortsda Remiks tugmasi va Sound tugmasi mavjud emas
-• Shorts odatiy o'yinchida ochiladi
-• Eski video harakatlar paneli qulflanmagan"</string>
   <string name="morphe_tablet_layout_in_player_title">O\'yinchi ichida tablet tartibini yoqish</string>
   <!-- "Restore old video action bar" must be translated the same as morphe_restore_old_video_action_bar_title -->
   <string name="morphe_tablet_layout_in_player_summary">"Eski o'yinchi tartibini tiklash
@@ -897,8 +891,8 @@ Cheklov: Agar 'Eski video harakatlar panelini tiklash' o'chirilgan bo'lsa, 'Ko'p
   <!-- layout.music.overrideYouTubeMusicButtonsPatch -->
   <string name="morphe_override_youtube_music_buttons_title">YouTube Music tugmalarini almashtirish</string>
   <string name="morphe_override_youtube_music_buttons_summary">Sizning afzal ko\'rgan musiqa ilovangizni standart YouTube Music ilovasi o\'rniga ochadi</string>
-  <string name="morphe_music_package_name_title">Musiqa ilovasi paketi nomi</string>
-  <string name="morphe_music_package_name_summary">O\'rnatilgan musiqa ilovangizning paket nomi</string>
+  <string name="morphe_custom_music_package_name_title">Musiqa ilovasining paket nomi</string>
+  <string name="morphe_custom_music_package_name_summary">O\'rnatilgan musiqa ilovangizning paket nomi</string>
   <!-- layout.startpage.changeStartPagePatch -->
   <string name="morphe_change_start_page_title">\'Saqlash\' tugmasini yashirish</string>
   <string name="morphe_change_start_page_entry_default">Standart</string>
@@ -948,16 +942,10 @@ Cheklov: Agar 'Eski video harakatlar panelini tiklash' o'chirilgan bo'lsa, 'Ko'p
   <string name="morphe_miniplayer_disable_resuming_summary">YouTube Premium xususiyati bo\'lgan mini-pleyerning qayta tiklanishini o\'chirish</string>
   <string name="morphe_miniplayer_screen_title">Mini pleyer</string>
   <string name="morphe_miniplayer_screen_summary">Kichraytirilgan video pleerni ko\'rinishi va xulq-atvorini sozlash</string>
-  <string name="morphe_miniplayer_not_available_summary">YouTube barcha qo\'shimcha mini-pleyerlarni olib tashladi. Mini-pleyer turini o\'zgartirish uchun YouTube 21.28.207 yoki undan oldingi versiyasini qo\'llang</string>
   <string name="morphe_miniplayer_type_title">Mini pleyer turi</string>
   <string name="morphe_miniplayer_type_entry_0">O\'chirilgan</string>
   <string name="morphe_miniplayer_type_entry_1">Standart</string>
   <string name="morphe_miniplayer_type_entry_2">Minimal</string>
-  <string name="morphe_miniplayer_type_entry_3">Planshet</string>
-  <string name="morphe_miniplayer_type_entry_4">Zamonaviy 1</string>
-  <string name="morphe_miniplayer_type_entry_5">Zamonaviy 2</string>
-  <string name="morphe_miniplayer_type_entry_6">Zamonaviy 3</string>
-  <string name="morphe_miniplayer_type_entry_7">Zamonaviy 4</string>
   <string name="morphe_miniplayer_disable_rounded_corners_title">Dumaloq burchaklarni o\'chirish</string>
   <string name="morphe_miniplayer_disable_drag_and_drop_title">Surib yurishni o\'chirish</string>
   <string name="morphe_miniplayer_disable_drag_and_drop_summary">Kichraytirilgan pleerni ekranning turli burchaklariga sudrab o\'tkazishning oldini olish</string>
@@ -973,8 +961,23 @@ Cheklov: Agar 'Eski video harakatlar panelini tiklash' o'chirilgan bo'lsa, 'Ko'p
   <string name="morphe_miniplayer_width_dip_invalid_toast">Sekbar panelining kengligi %1$s va %2$s orasida bo\'lishi kerak</string>
   <string name="morphe_miniplayer_opacity_title">Qoplama shaffofligi</string>
   <string name="morphe_miniplayer_opacity_summary">Shaffoflik darajasini sozlang (0 shaffof, 100 to\'liq qorong\'i)</string>
-  <string name="morphe_miniplayer_opacity_invalid_toast">Mini pleyer qoplamasining shaffofligi 0-100 orasida bo\'lishi kerak</string>
+  <!-- misc.fix.fixBackToExitGesturePatch -->
+  <string name="morphe_back_button_always_exits_feed_title">Orqaga tugmasi lentadan chiqadi</string>
+  <string name="morphe_back_button_always_exits_feed_summary">Orqaga qaytarish tugmasini bosganda lenta tepasiga qaytarish o\'rniga har doim ilovadan chiqib ketiladi</string>
   <!-- layout.theme.themePatch -->
+  <string name="morphe_theme_color_light_title">Yorug\' mavzu foni</string>
+  <string name="morphe_theme_color_light_entry_2">Oq</string>
+  <string name="morphe_theme_color_light_entry_3">Material You (Oq)</string>
+  <string name="morphe_theme_color_light_entry_9">Ochiq pushti</string>
+  <string name="morphe_theme_color_light_entry_10">Ochiq ko\'k</string>
+  <string name="morphe_theme_color_light_entry_11">Ochiq yashil</string>
+  <string name="morphe_theme_color_light_entry_12">Ochiq sariq</string>
+  <string name="morphe_theme_color_light_entry_13">Ochiq to\'q sariq</string>
+  <string name="morphe_theme_color_light_entry_14">Ochiq qizil</string>
+  <string name="morphe_theme_color_light_custom_title">Maxsus ochiq fon</string>
+  <string name="morphe_theme_color_light_custom_summary">Ochiq mavzu fon rangini o\'rnating</string>
+  <string name="morphe_theme_color_change_foreground_title">Oldingi plan rangini o\'zgartirish</string>
+  <string name="morphe_theme_color_change_foreground_summary">Matn va piktogrammalar uchun mavzu rangidan foydalaning.″,</string>
   <string name="morphe_gradient_loading_screen_title">Rangli gradientni yoqish</string>
   <string name="morphe_gradient_loading_screen_summary">Yüklenme ekranda to\'liq rang o\'rniga gradient fonini ko\'rsatish</string>
   <string name="morphe_splash_screen_animation_style_title">Ekran animatsiyasi uslubi</string>
@@ -992,7 +995,7 @@ Cheklov: Agar 'Eski video harakatlar panelini tiklash' o'chirilgan bo'lsa, 'Ko'p
   <string name="morphe_header_logo_title">Bosh logotip</string>
   <string name="morphe_header_logo_entry_1">Standart</string>
   <string name="morphe_header_logo_entry_2">Oddiy</string>
-  <!-- Translations should match the language used in 'morphe_custom_branding_icon_entry_3'. -->
+  <!-- Translations should match the language used in 'morphe_custom_branding_icon_entry_7'. -->
   <string name="morphe_header_logo_entry_5">Maxsus</string>
   <!-- layout.thumbnails.bypassImageRegionRestrictionsPatch -->
   <string name="morphe_bypass_image_region_restrictions_title">Tasvir chegarasiga cheklovni ko\'tarish</string>
@@ -1064,12 +1067,6 @@ Batafsil ma'lumot olish uchun DeArrow.ajay.app ni oching."</string>
   <!-- video.quality.rememberVideoQualityPatch -->
   <!-- Translations should match the language used in 'morphe_custom_playback_speeds_auto'. -->
   <string name="morphe_video_quality_default_entry_1">Harakatdan o\'rinchik</string>
-  <string name="morphe_override_initial_video_quality_title">Boshlang\'ich video sifatini o\'zgartirish</string>
-  <!-- 'Force AVC (H.264) codec' should be the same translation used for 'morphe_force_avc_codec_title'. -->
-  <!-- 'Spoof video streams' should be the same translation used for 'morphe_spoof_video_streams_screen_title'. -->
-  <string name="morphe_override_initial_video_quality_summary">"Videoning boshlanishidan so'ng standart video sifati darhol qo'llanilmaydigan muammoni tuzatadi
-
-Cheklov: Agar 'Video oqimlarini soxtalashtirish' 'Android VR' ga o'rnatilgan bo'lsa va 'AVC (H.264) kodekini majburlash' yoqilgan bo'lsa, ba'zi qurilmalarda ijro ishlamasligi mumkin"</string>
   <string name="morphe_remember_video_quality_last_selected_title">Video sifatini eslash</string>
   <string name="morphe_remember_video_quality_last_selected_summary">Manua l sifat tanlovingizni kelajakdagi barcha videolarga qo\'llang</string>
   <string name="morphe_remember_video_quality_last_selected_toast_title">Sifat o\'zgarishi haqidagi bildirishnomalar</string>
@@ -1109,8 +1106,17 @@ Cheklov: Agar 'Video oqimlarini soxtalashtirish' 'Android VR' ga o'rnatilgan bo'
   <string name="morphe_remember_playback_speed_toast">Standart oʻqish tezligi: %s ga oʻzgartirildi</string>
   <string name="morphe_disable_playback_speed_music_title">Musiqa uchun tezlikni o\'chirish</string>
   <string name="morphe_disable_playback_speed_music_summary">Musiqa videolari doimo 1.0x tezlikda ijro etilsin</string>
+  <string name="morphe_enable_playback_audio_pitch_controls_title">Audio pitch boshqaruvini yoqish</string>
+  <string name="morphe_playback_audio_pitch_default_title">Standart qaytuvchi audio pitch</string>
+  <string name="morphe_remember_playback_audio_pitch_toast">Standart audio pitch quyidagiga o\'zgartirildi: %s</string>
+  <string name="morphe_playback_audio_time_stretching_title">Audio vaqtni cho\'zish</string>
+  <string name="morphe_playback_audio_time_stretching_summary">Tezlik va pitchni mustaqil ravishda sozlash imkonini beradi, audio artefaktlarga olib kelishi mumkin</string>
+  <!-- video.livestream.rememberLiveStreamPositionPatch -->
   <!-- video.codecs.disableVideoCodecsPatch -->
   <string name="morphe_disable_hdr_video_title">HDR videoni o\'chirish</string>
+  <string name="morphe_force_hdr_video_title">HDR videoni majburlash</string>
+  <string name="morphe_force_hdr_video_summary">Ilovani ushbu qurilmani HDR qobiliyatli deb tan olishga majbur qiladi</string>
+  <string name="morphe_force_hdr_video_user_dialog_message">"Agar HDR dekodlash ishlasa, lekin YouTube HDR taklif qilmasa, masalan, HLG ni yashiradigan ba'zi HyperOS qurilmalarida, buni ishlating.\n\nCheklovlar:\n• Agar displey haqiqatan ham HDR ko'rsata olmasa, ranglar noto'g'ri ko'rinishi mumkin\n• Agar dekoder HDR bilan ishlay olmasa, ijro etish muvaffaqiyatsiz bo'lishi mumkin\n• HDR hali ham video oqimlarini soxtalashtiruvchi mijozga bog'liq"</string>
   <string name="morphe_force_avc_codec_title">AVC (H.264) kodekni majburlash</string>
   <string name="morphe_force_avc_codec_user_dialog_message">"Foydalanishning afzalliklari:
 
@@ -1148,6 +1154,7 @@ AV1 bilan video o'ynashda lag yoki to'silishlar yuzaga kelishi mumkin."</string>
   <string name="morphe_spoof_video_streams_about_js">• Agar kod yozish muvaffaqiyatsizlikka uchrasa, o\'ynash muvaffaqiyatsizlikka uchraydi</string>
   <!-- "Force original audio" should match the language used in 'morphe_force_original_audio_title'. -->
   <string name="morphe_spoof_video_streams_about_no_force_original_audio">• Asl ovozni majburlash mavjud emas</string>
+  <string name="morphe_spoof_video_streams_about_sign_in_to_vr_required">• Android VR-ga kirish talab qilinadi</string>
   <!-- Quality refers to video quality -->
   <string name="morphe_spoof_video_streams_about_720p_max">• Sifat 720p bilan cheklanishi mumkin</string>
   <string name="morphe_spoof_video_streams_player_js_variant_title">Pleyer JavaScript varianti</string>

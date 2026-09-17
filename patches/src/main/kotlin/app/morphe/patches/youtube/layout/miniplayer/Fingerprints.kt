@@ -10,7 +10,6 @@
 package app.morphe.patches.youtube.layout.miniplayer
 
 import app.morphe.patcher.Fingerprint
-import app.morphe.patcher.InstructionLocation
 import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
 import app.morphe.patcher.InstructionLocation.MatchAfterWithin
 import app.morphe.patcher.OpcodesFilter
@@ -22,8 +21,8 @@ import app.morphe.patcher.methodCall
 import app.morphe.patcher.newInstance
 import app.morphe.patcher.opcode
 import app.morphe.patcher.string
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 
@@ -175,7 +174,14 @@ internal object MiniplayerHorizontalRepositionFingerprint : Fingerprint(
     classFingerprint = MiniplayerRectDragFieldsNameFingerprint,
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
     returnType = "V",
-    parameters = listOf("Landroid/graphics/Rect;")
+    parameters = listOf("Landroid/graphics/Rect;"),
+    filters = listOf(
+        fieldAccess(
+            opcode = Opcode.IGET,
+            definingClass = "Landroid/graphics/Rect;",
+            name = "left"
+        )
+    )
 )
 
 internal object MiniplayerOffscreenRectValidatorFingerprint : Fingerprint (
@@ -379,5 +385,32 @@ internal object ShowMiniplayerCommandFingerprint: Fingerprint(
         ),
         literal(164817L),
         literal(121253L)
+    )
+)
+
+internal object MiniplayerControlsFingerprint : Fingerprint(
+    name = "<init>",
+    filters = listOf(
+        resourceLiteral(ResourceType.ID, "controls_layout"),
+        checkCast("Landroid/view/ViewGroup;", location = MatchAfterWithin(5))
+    )
+)
+
+internal object MiniplayerControlsVisibilityFingerprint : Fingerprint(
+    classFingerprint = MiniplayerControlsFingerprint,
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+    returnType = "V",
+    parameters = listOf("L"),
+    filters = listOf(
+        methodCall(
+            opcode = Opcode.INVOKE_VIRTUAL,
+            smali = $$"Landroid/view/ViewGroup;->getLayoutParams()Landroid/view/ViewGroup$LayoutParams;"
+        ),
+        literal(8),
+        methodCall(
+            opcode = Opcode.INVOKE_VIRTUAL,
+            smali = "Landroid/view/ViewGroup;->setVisibility(I)V",
+            location = MatchAfterImmediately()
+        )
     )
 )

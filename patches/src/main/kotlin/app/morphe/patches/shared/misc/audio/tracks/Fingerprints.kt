@@ -16,8 +16,8 @@ import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.literal
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.string
-import app.morphe.patches.all.misc.resources.ResourceType
-import app.morphe.patches.all.misc.resources.resourceLiteral
+import app.morphe.patcher.resource.ResourceType
+import app.morphe.patcher.resourceLiteral
 import app.morphe.patches.shared.CurrentAudioVideoFormatToStringFingerprint
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
@@ -145,17 +145,6 @@ internal fun getSetVideoQualityListFingerprint(
         classDef.fields.find { it.type == playerControllerClass } != null
     }
 ) {}
-
-internal object FormatStreamModelToStringFingerprint : Fingerprint(
-    name = "toString",
-    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
-    returnType = "Ljava/lang/String;",
-    strings = listOf(
-        // Strings are partial matches.
-        "isDefaultAudioTrack=",
-        "audioTrackId="
-    )
-)
 
 /**
  * ~ YT 21.25

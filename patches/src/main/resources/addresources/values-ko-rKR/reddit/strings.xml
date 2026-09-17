@@ -16,8 +16,8 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="reddit_privacy_policy">Reddit 개인정보 처리방침</string>
+  <string name="morphe_google_signin_not_available_toast">Google 로그인을 사용할 수 없습니다. 이메일로 로그인하세요</string>
   <string name="morphe_screen_ads_title">광고</string>
   <string name="morphe_hide_post_ads_title">피드 광고 숨기기</string>
   <string name="morphe_hide_comment_ads_title">댓글 광고 숨기기</string>
@@ -68,4 +68,8 @@ Second \"item\" text"</string>
   <string name="morphe_open_links_directly_summary">앱 내에서 외부 링크를 열 경우에 URL 리다이렉션을 거치지 않고 연결됩니다</string>
   <string name="morphe_open_links_externally_title">외부 브라우저 사용하기</string>
   <string name="morphe_open_links_externally_summary">앱 내에서 외부 링크를 열 경우에 내부 브라우저 대신 외부 브라우저를 사용합니다</string>
+  <string name="morphe_app_icon_title">앱 아이콘</string>
+  <string name="morphe_app_icon_choose_title">앱 아이콘 선택</string>
+  <string name="morphe_app_icon_default">기본값</string>
+  <string name="morphe_app_icon_unknown">알 수 없음</string>
 </resources>

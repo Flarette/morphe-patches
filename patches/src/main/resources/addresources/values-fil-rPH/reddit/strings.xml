@@ -16,8 +16,8 @@ Second \"item\" text"</string>
 
 -->
 <resources>
-  <!-- Overrides built in setting menu with Morphe settings. -->
   <string name="reddit_privacy_policy">Patakaran sa privacy ng Reddit</string>
+  <string name="morphe_google_signin_not_available_toast">Hindi available ang Google login. Gamitin ang email upang mag-login</string>
   <string name="morphe_screen_ads_title">Patalastas</string>
   <string name="morphe_hide_post_ads_title">Itago ang mga patalastas sa feed</string>
   <string name="morphe_hide_comment_ads_title">Itago ang mga patalastas sa komento</string>
@@ -68,4 +68,8 @@ Second \"item\" text"</string>
   <string name="morphe_open_links_directly_summary">Nilalampasan ang mga URL ng paglipat kapag nagbubukas ng mga panlabas na link</string>
   <string name="morphe_open_links_externally_title">Buksan ang mga link sa labas</string>
   <string name="morphe_open_links_externally_summary">Binubuksan ang mga link sa iyong browser sa halip na sa in-app browser</string>
+  <string name="morphe_app_icon_title">Icon ng aplikasyon</string>
+  <string name="morphe_app_icon_choose_title">Pumili ng icon ng app</string>
+  <string name="morphe_app_icon_default">Awtomatiko</string>
+  <string name="morphe_app_icon_unknown">Hindi Alam</string>
 </resources>

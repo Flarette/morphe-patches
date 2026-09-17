@@ -21,6 +21,10 @@ Second \"item\" text"</string>
   <string name="morphe_header_logo_title">Logotip glave</string>
   <string name="morphe_header_logo_entry_1">Privzeto</string>
   <string name="morphe_header_logo_entry_3">Prilagojeno</string>
+  <!-- misc.album.albumMusicVideoPatch -->
+  <string name="morphe_music_play_album_songs_title">Predvajaj skladbe albuma</string>
+  <!-- 'Spoof video streams' should match the language used in 'morphe_spoof_video_streams_screen_title' -->
+  <string name="morphe_music_play_album_songs_summary">Predvajaj zvočne različice skladb albuma namesto glasbenega videa. Zahteva \'Ponaredi video tokove\'.</string>
   <!-- interaction.downloads.downloadsPatch -->
   <string name="morphe_external_downloader_screen_summary">Prenesite videe, podkaste ali pesmi z aplikacijami za prenašanje tretje osebe</string>
   <!-- 'Download' should be translated using the same localized wording YouTube displays for the button. -->
@@ -145,6 +149,8 @@ YouTube Music 8.x – prehod deluje samo v 9.x in novejših različicah."</strin
   <string name="morphe_music_hide_action_bar_title">Skrij vrstico z ukazi</string>
   <string name="morphe_music_hide_like_dislike_button_title">Skrij gumba \'Všeč mi\' in \'Ni mi všeč\'</string>
   <string name="morphe_music_hide_comments_button_title">Skrij gumb \'Komentarji\'</string>
+  <!-- 'Live chat replay' should be translated using the same localized wording YouTube Music displays for the button. -->
+  <string name="morphe_music_hide_live_chat_replay_button_title">Skrij gumb \'Ponovni prikaz klepeta\'</string>
   <!-- 'Lyrics' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_lyrics_button_title">Skrij gumb \'Besedila\'</string>
   <!-- 'Share' should be translated using the same localized wording YouTube Music displays for the button. -->
@@ -154,7 +160,7 @@ YouTube Music 8.x – prehod deluje samo v 9.x in novejših različicah."</strin
   <!-- 'Download' should be translated using the same localized wording YouTube Music displays for the button. -->
   <string name="morphe_music_hide_download_button_title">Skrij gumb Prenosa</string>
   <!-- 'Start radio' should be translated using the same localized wording YouTube Music displays for the button. -->
-  <string name="morphe_music_hide_radio_button_title">Skrij gumb Začni radio</string>
+  <string name="morphe_music_hide_radio_button_title">Skrij gumb \'Zaženi radio\'</string>
   <!-- flyoutmenu.components.hideFlyoutMenuComponentsPatch -->
   <string name="morphe_music_hide_flyout_menu_components_screen_title">Izpovedni meni</string>
   <string name="morphe_music_hide_flyout_menu_components_screen_summary">Izberite, kateri elementi se bodo prikazali v menijih predvajalnika in vrste čakalnice</string>
@@ -291,6 +297,8 @@ YouTube Music 8.x – prehod deluje samo v 9.x in novejših različicah."</strin
   <string name="morphe_music_scrobbling_custom_regex_summary">Vnesite poljuben regularen izraz za odstranjevanje dodatnega besedila iz naslovov pesmi, izvajalcev ali albumov. Primer: (?i)\\s*\\((clean|explicit)\\)</string>
   <string name="morphe_music_scrobbling_parse_title_title">Razčleni izvajalca in naslov skladbe iz naslova</string>
   <string name="morphe_music_scrobbling_parse_title_summary">Iz naslova videoposnetka izvlecite ime izvajalca in naslov skladbe z uporabo ločila \" - \". Uporabno za ponovno naložene vsebine, kjer se ime kanala lahko uporabi kot ime izvajalca.</string>
+  <string name="morphe_music_scrobbling_guess_album_title">Izpolni manjkajoči album</string>
+  <string name="morphe_music_scrobbling_guess_album_summary">Ko skladba nima albuma, ga poišči na Last.fm, da bo tvoj scrobble popoln.</string>
   <!-- 'scrobbling' must be kept untranslated -->
   <string name="morphe_music_scrobbling_about_title">O scrobblingu</string>
   <!-- 'scrobbling' must be kept untranslated -->
@@ -300,9 +308,9 @@ Za zagotovitev sinhronizacije med predvajanjem v ozadju poskrbite, da je uporaba
   <!-- layout.lyrics.lyricsPatch -->
   <string name="morphe_music_lyrics_enabled_title">Uporaba besedil tretje strani</string>
   <string name="morphe_music_lyrics_enabled_summary">Prikazuje besedila iz storitve tretje strani, in se vrne k vgrajenim besedilom, če jih ne najde.</string>
-  <string name="morphe_music_lyrics_source_title">Storitev besedil</string>
-  <!-- 'LRCLIB' and 'KuGou' are service names and must be kept untranslated -->
-  <string name="morphe_music_lyrics_source_entry_lrclib_then_kugou">LRCLIB, nato KuGou</string>
+  <string name="morphe_music_lyrics_section_about_title">O nas</string>
+  <!-- Shown under the preference; the actual priority list is rendered live by the custom preference. -->
+  <!-- 'LRCLIB', 'KuGou', 'NetEase', 'QQ', 'BiniLyrics', 'Unison' and 'AMLL' are service names and must be kept untranslated -->
   <string name="morphe_music_lyrics_tap_to_seek_title">Tapnite vrstico za premik</string>
   <string name="morphe_music_lyrics_tap_to_seek_summary">Tapnite vrstico, da preskočite na ta trenutek v pesmi.</string>
   <string name="morphe_music_lyrics_show_copy_button_title">Pokaži gumb Kopiraj</string>
@@ -310,22 +318,12 @@ Za zagotovitev sinhronizacije med predvajanjem v ozadju poskrbite, da je uporaba
   <string name="morphe_music_lyrics_text_size_title">Velikost besedila</string>
   <string name="morphe_music_lyrics_text_size_summary">Velikost besedila besedil.</string>
   <string name="morphe_music_lyrics_offset_ms_title">Časovni zamik</string>
-  <string name="morphe_music_lyrics_offset_ms_summary">Pomaknite sinhronizirana besedila naprej ali nazaj. Uporabite pozitivno vrednost, če besedila vodijo pred pesmijo.</string>
   <!-- Shown under the lyrics. The placeholder is a service name such as LRCLIB. -->
   <string name="morphe_music_lyrics_source_label">Vir: %s</string>
   <!-- Tappable label under the lyrics that turns the translation on. -->
-  <string name="morphe_music_lyrics_translate_show">Prevedi</string>
-  <string name="morphe_music_lyrics_translate_hide">Pokaži original</string>
   <string name="morphe_music_lyrics_translating">Prevajanje…</string>
   <string name="morphe_music_lyrics_translate_failed">Besedila ni bilo mogoče prevesti.</string>
-  <string name="morphe_music_lyrics_copy">Kopiraj</string>
   <string name="morphe_music_lyrics_copied">Kopirano v odložišče</string>
-  <string name="morphe_music_lyrics_about_title">O besedilih tretje strani</string>
-  <string name="morphe_music_lyrics_about_summary">"Besedila se iščejo po naslovu skladbe in izvajalcu, zato skladba z nenavadnimi metapodatki morda ne bo našla nič ali bo našla napačno različico.
-
-Sinhronizirana besedila sledijo predvajanju. Če se odmaknejo, prilagodite časovni zamik.
-
-Če ni najdeno besedil tretje strani, se prikažejo vgrajena besedila."</string>
   <!-- misc.spoof.appversion.spoofAppVersionPatch -->
   <string name="morphe_music_spoof_app_version_target_entry_8_23_51">8.23.51 - Onemogoči krepke ikone</string>
   <string name="morphe_music_spoof_app_version_target_entry_9_13_51">9.13.51 - Obnovi zavihke predvajalnika: Naslednje, Besedila in Povezano</string>
