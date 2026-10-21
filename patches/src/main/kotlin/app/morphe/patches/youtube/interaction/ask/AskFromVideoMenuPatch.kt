@@ -26,12 +26,13 @@ import app.morphe.patches.shared.misc.settings.preference.SwitchPreference
 import app.morphe.patches.youtube.layout.flyout.FeedFlyoutBufferObjectFingerprint
 import app.morphe.patches.youtube.layout.flyout.FullHistoryFlyoutBufferObjectFingerprint
 import app.morphe.patches.youtube.layout.flyout.flyoutPatch
+import app.morphe.patches.youtube.layout.hide.player.flyoutmenu.addPlayerFlyoutMenuPreferences
+import app.morphe.patches.youtube.layout.hide.player.flyoutmenu.playerFlyoutPreferences
 import app.morphe.patches.youtube.misc.auth.authHookPatch
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
 import app.morphe.patches.youtube.misc.litho.filter.lithoFilterPatch
 import app.morphe.patches.youtube.misc.playservice.is_21_15_or_greater
 import app.morphe.patches.youtube.misc.playservice.versionCheckPatch
-import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.misc.settings.settingsPatch
 import app.morphe.patches.youtube.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.morphe.util.findInstructionIndicesReversedOrThrow
@@ -75,6 +76,7 @@ val askFromVideoMenuPatch = bytecodePatch(
         lithoFilterPatch,
         versionCheckPatch,
         authHookPatch,
+        playerFlyoutPreferences
     )
 
     compatibleWith(COMPATIBILITY_YOUTUBE)
@@ -88,7 +90,7 @@ val askFromVideoMenuPatch = bytecodePatch(
             )
         }
 
-        PreferenceScreen.FEED.addPreferences(
+        addPlayerFlyoutMenuPreferences(
             SwitchPreference("morphe_ask_summarize_flyout_menu", summary = true)
         )
 

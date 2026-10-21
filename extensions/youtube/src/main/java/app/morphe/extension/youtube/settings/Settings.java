@@ -196,7 +196,7 @@ public class Settings extends SharedYouTubeSettings {
     public static final StringSetting AISLIST_SUBMIT_USERNAME = new StringSetting("morphe_aislist_submit_username", "", parent(AISLIST_SUBMIT_FLYOUT_MENU));
 
     // Ask from video menu
-    public static final BooleanSetting ASK_SUMMARIZE_FLYOUT_MENU = new BooleanSetting("morphe_ask_summarize_flyout_menu", TRUE);
+    public static final BooleanSetting ASK_SUMMARIZE_FLYOUT_MENU = new BooleanSetting("morphe_ask_summarize_flyout_menu", FALSE, "morphe_ask_summarize_flyout_menu_user_dialog_message");
     public static final StringSetting ASK_PANEL_TEMPLATE = new StringSetting("morphe_ask_panel_template", "", false, false);
 
     // DeArrow
