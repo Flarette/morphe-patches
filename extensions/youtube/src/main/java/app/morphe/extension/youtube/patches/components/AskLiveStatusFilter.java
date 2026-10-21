@@ -12,12 +12,12 @@ import android.util.Base64;
 import androidx.annotation.Nullable;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import app.morphe.extension.shared.Logger;
 import app.morphe.extension.shared.patches.components.BufferAsciiStrings;
+import app.morphe.extension.shared.patches.components.ByteArrayFilterGroup;
 import app.morphe.extension.shared.patches.components.ContextInterface;
 import app.morphe.extension.shared.patches.components.Filter;
 import app.morphe.extension.shared.patches.components.StringFilterGroup;
@@ -35,9 +35,10 @@ public final class AskLiveStatusFilter extends Filter {
     /**
      * Icons of the 'LIVE' thumbnail badge. Past streams have no badge.
      */
-    private static final List<byte[]> LIVE_BADGE_ICONS = List.of(
-            "yt_outline_live_black".getBytes(StandardCharsets.US_ASCII),
-            "yt_outline_experimental_live_black".getBytes(StandardCharsets.US_ASCII)
+    private final ByteArrayFilterGroup liveBadgeIcons = new ByteArrayFilterGroup(
+            null,
+            "yt_outline_live_black",
+            "yt_outline_experimental_live_black"
     );
 
     /**
@@ -74,7 +75,7 @@ public final class AskLiveStatusFilter extends Filter {
                               CharSequence path, byte[] buffer, BufferAsciiStrings asciiStrings,
                               StringFilterGroup matchedGroup, FilterContentType contentType, int contentIndex) {
         try {
-            if (hasLiveBadge(buffer) && countIconNames(asciiStrings.getStrings()) <= MAX_THUMBNAIL_ICONS) {
+            if (liveBadgeIcons.check(buffer).isFiltered() && countIconNames(asciiStrings.getStrings()) <= MAX_THUMBNAIL_ICONS) {
                 Matcher videoId = THUMBNAIL_VIDEO_ID.matcher(asciiStrings.getStrings());
                 if (videoId.find()) {
                     final String id = videoId.group(1);
@@ -96,15 +97,6 @@ public final class AskLiveStatusFilter extends Filter {
         return false;
     }
 
-    private static boolean hasLiveBadge(byte[] buffer) {
-        for (byte[] icon : LIVE_BADGE_ICONS) {
-            if (indexOf(buffer, icon) >= 0) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     /**
      * @return The number of icon names, up to one more than {@link #MAX_THUMBNAIL_ICONS}.
      */
@@ -121,13 +113,9 @@ public final class AskLiveStatusFilter extends Filter {
     private static String findReminderVideoId(String strings) {
         Matcher parameters = REMINDER_PARAMETERS.matcher(strings);
         while (parameters.find()) {
-            byte[] decoded;
-            try {
-                decoded = Base64.decode(parameters.group(),
-                        Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
-            } catch (IllegalArgumentException ex) {
-                continue;
-            }
+            // The pattern only matches valid base64.
+            byte[] decoded = Base64.decode(parameters.group(),
+                    Base64.URL_SAFE | Base64.NO_PADDING | Base64.NO_WRAP);
             // 0x0A 0x0B <video id> 0x10 <number> 0x20 <number>
             if (decoded.length == REMINDER_PARAMETERS_LENGTH
                     && decoded[0] == 0x0A && decoded[1] == VIDEO_ID_LENGTH
@@ -136,18 +124,5 @@ public final class AskLiveStatusFilter extends Filter {
             }
         }
         return null;
-    }
-
-    private static int indexOf(byte[] haystack, byte[] needle) {
-        outer:
-        for (int i = 0, last = haystack.length - needle.length; i <= last; i++) {
-            for (int j = 0; j < needle.length; j++) {
-                if (haystack[i + j] != needle[j]) {
-                    continue outer;
-                }
-            }
-            return i;
-        }
-        return -1;
     }
 }

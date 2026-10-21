@@ -615,21 +615,17 @@ final class AskPanelCommand {
      */
     @Nullable
     static List<Field> parse(byte[] data) {
-        try {
-            List<Field> fields = new ArrayList<>();
-            ProtoReader reader = new ProtoReader(data);
-            while (reader.next()) {
-                if (reader.field == 0) {
-                    return null;
-                }
-                fields.add(new Field(reader.field, reader.wireType,
-                        reader.wireType == WIRE_TYPE_VARINT ? reader.varint : 0,
-                        reader.value(), reader.raw()));
+        List<Field> fields = new ArrayList<>();
+        ProtoReader reader = new ProtoReader(data);
+        while (reader.next()) {
+            if (reader.field == 0) {
+                return null;
             }
-            return fields;
-        } catch (RuntimeException ex) {
-            return null;
+            fields.add(new Field(reader.field, reader.wireType,
+                    reader.wireType == WIRE_TYPE_VARINT ? reader.varint : 0,
+                    reader.value(), reader.raw()));
         }
+        return reader.isMalformed ? null : fields;
     }
 
     static final class Field {
@@ -797,13 +793,19 @@ final class AskPanelCommand {
                 : Base64.URL_SAFE) | Base64.NO_PADDING | Base64.NO_WRAP;
     }
 
+    /**
+     * @param base64 Characters of either base64 alphabet, without padding.
+     * @return The decoded bytes, or null if the text is not base64.
+     */
     @Nullable
     private static byte[] decodeBase64(String base64) {
-        try {
-            return Base64.decode(base64, base64Flags(base64));
-        } catch (IllegalArgumentException ex) {
+        final boolean hasUrlSafeCharacters = base64.indexOf('-') >= 0 || base64.indexOf('_') >= 0;
+        final boolean hasDefaultCharacters = base64.indexOf('+') >= 0 || base64.indexOf('/') >= 0;
+        // A single character after the last group of 4 encodes no full byte.
+        if (base64.length() % 4 == 1 || (hasUrlSafeCharacters && hasDefaultCharacters)) {
             return null;
         }
+        return Base64.decode(base64, base64Flags(base64));
     }
 
     private static String latin1(byte[] bytes) {
@@ -841,8 +843,16 @@ final class AskPanelCommand {
             this.data = data;
         }
 
+        /**
+         * If the data is not a message, which is found while reading it.
+         */
+        boolean isMalformed;
+
+        /**
+         * @return If a field was read. False at the end of the data, or if the data is not a message.
+         */
         boolean next() {
-            if (position >= data.length) {
+            if (position >= data.length || isMalformed) {
                 return false;
             }
 
@@ -861,22 +871,24 @@ final class AskPanelCommand {
                     position += 8;
                 }
                 case WIRE_TYPE_LENGTH_DELIMITED -> {
-                    final int length = (int) readVarint();
-                    if (length < 0) {
-                        throw new IllegalArgumentException("Negative length: " + field);
-                    }
+                    final long length = readVarint();
                     valueStart = position;
-                    position += length;
+                    if (length < 0 || length > data.length - position) {
+                        isMalformed = true;
+                    } else {
+                        position += (int) length;
+                    }
                 }
                 case WIRE_TYPE_FIXED32 -> {
                     valueStart = position;
                     position += 4;
                 }
-                default -> throw new IllegalArgumentException("Unsupported wire type: " + wireType);
+                default -> isMalformed = true;
             }
 
-            if (position > data.length) {
-                throw new IllegalArgumentException("Truncated field: " + field);
+            if (isMalformed || position > data.length) {
+                isMalformed = true;
+                return false;
             }
             valueEnd = position;
             return true;
@@ -892,14 +904,15 @@ final class AskPanelCommand {
 
         private long readVarint() {
             long result = 0;
-            for (int shift = 0; shift < 64; shift += 7) {
+            for (int shift = 0; shift < 64 && position < data.length; shift += 7) {
                 final byte b = data[position++];
                 result |= (long) (b & 0x7F) << shift;
                 if ((b & 0x80) == 0) {
                     return result;
                 }
             }
-            throw new IllegalArgumentException("Malformed varint");
+            isMalformed = true;
+            return 0;
         }
     }
 

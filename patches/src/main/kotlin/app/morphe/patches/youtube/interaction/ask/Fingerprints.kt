@@ -10,6 +10,8 @@ package app.morphe.patches.youtube.interaction.ask
 import app.morphe.patcher.Fingerprint
 import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
 import app.morphe.patcher.InstructionLocation.MatchAfterWithin
+import app.morphe.patcher.InstructionLocation.MatchFirst
+import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.newInstance
 import app.morphe.patcher.opcode
@@ -35,7 +37,7 @@ internal object RegisterEngagementPanelFingerprint : Fingerprint(
 /**
  * Describes a get_panel request, which loads an engagement panel or a turn of its chat,
  * such as a turn of the Ask chat.
- * The instruction before the "formData" string reads the form data of the request.
+ * The fourth match reads the continuation of the request, and the fifth reads its form data.
  */
 internal object GetPanelRequestDescriptionFingerprint : Fingerprint(
     accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
@@ -45,14 +47,15 @@ internal object GetPanelRequestDescriptionFingerprint : Fingerprint(
         string("params"),
         string("panelId"),
         string("continuation"),
-        string("formData"),
+        fieldAccess(opcode = Opcode.IGET_OBJECT, type = "Ljava/lang/String;", location = MatchAfterImmediately()),
+        fieldAccess(opcode = Opcode.IGET_OBJECT, location = MatchAfterWithin(1)),
+        string("formData", location = MatchAfterImmediately()),
         string("query")
     )
 )
 
 /**
  * Builds the message of a get_panel request.
- * The instruction before the match reads the continuation of the request.
  */
 internal object GetPanelRequestBuilderFingerprint : Fingerprint(
     classFingerprint = GetPanelRequestDescriptionFingerprint,
@@ -64,18 +67,68 @@ internal object GetPanelRequestBuilderFingerprint : Fingerprint(
 )
 
 /**
- * Reads the menu of the menu bottom sheet from its arguments. Its class creates the rows of the menu items
- * with a method that returns an Optional, unlike the older menu bottom sheets that read the same argument.
+ * Creates the menu bottom sheet with the menu in its arguments.
+ * The older menu bottom sheets that read the same argument have no such static factory.
  */
-internal object MenuBottomSheetFragmentFingerprint : Fingerprint(
+internal object MenuBottomSheetFragmentFactoryFingerprint : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC),
     filters = listOf(
         string("MENU_BOTTOM_SHEET_FRAGMENT_KEY")
-    ),
-    custom = { _, classDef ->
-        classDef.methods.any { method ->
-            method.parameterTypes.size == 1 && method.returnType.endsWith("/util/Optional;")
-        }
-    }
+    )
+)
+
+/**
+ * Creates the row of a menu item of the menu bottom sheet. The parameter is the menu item.
+ */
+internal object MenuBottomSheetCreateRowFingerprint : Fingerprint(
+    classFingerprint = MenuBottomSheetFragmentFactoryFingerprint,
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+    returnType = "Lj\$/util/Optional;",
+    parameters = listOf("L")
+)
+
+/**
+ * Handles a tap on a row of the menu bottom sheet.
+ * The cast is to the class of the rows of menu items, and the field read after it is the menu item of the row.
+ */
+internal object MenuBottomSheetRowTapFingerprint : Fingerprint(
+    classFingerprint = MenuBottomSheetFragmentFactoryFingerprint,
+    returnType = "V",
+    parameters = listOf("L"),
+    filters = listOf(
+        opcode(opcode = Opcode.INSTANCE_OF, location = MatchFirst()),
+        opcode(opcode = Opcode.IF_EQZ, location = MatchAfterImmediately()),
+        opcode(opcode = Opcode.CHECK_CAST, location = MatchAfterImmediately()),
+        opcode(opcode = Opcode.IGET_OBJECT, location = MatchAfterImmediately())
+    )
+)
+
+/**
+ * Creates the row of a menu item of the popup video menu. Matched against the popup class.
+ * The first match creates the tap handler of the row.
+ */
+internal object PopupMenuCreateRowFingerprint : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+    returnType = "Lj\$/util/Optional;",
+    parameters = listOf("L"),
+    filters = listOf(
+        opcode(opcode = Opcode.NEW_INSTANCE),
+        methodCall(
+            opcode = Opcode.INVOKE_DIRECT,
+            name = "<init>",
+            parameters = listOf("Ljava/lang/Object;", "I"),
+            location = MatchAfterImmediately()
+        )
+    )
+)
+
+/**
+ * Dismisses the popup video menu. Matched against the popup class.
+ */
+internal object PopupMenuDismissFingerprint : Fingerprint(
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+    returnType = "V",
+    parameters = listOf()
 )
 
 /**
@@ -94,20 +147,41 @@ internal object ElementsFrameworkUpdatesFingerprint : Fingerprint(
 
 /**
  * Binds a menu item to a row of the menu bottom sheet, which can be a reused row.
- * The matches from the second are the read of the constraints of the text container of the row,
+ * The matches from the second are the read of the text container of the row and of its constraints,
  * and the writes of the start constraints that a row without icons and detail text gets.
  */
 internal object MenuRowBindFingerprint : Fingerprint(
     returnType = "V",
     filters = listOf(
         resourceLiteral(ResourceType.DIMEN, "bottom_sheet_list_item_height"),
-        methodCall(smali = "Landroid/widget/LinearLayout;->getLayoutParams()Landroid/view/ViewGroup\$LayoutParams;"),
+        fieldAccess(opcode = Opcode.IGET_OBJECT, type = "Landroid/widget/LinearLayout;"),
+        opcode(opcode = Opcode.IF_EQZ, location = MatchAfterImmediately()),
+        methodCall(
+            smali = "Landroid/widget/LinearLayout;->getLayoutParams()Landroid/view/ViewGroup\$LayoutParams;",
+            location = MatchAfterImmediately()
+        ),
         opcode(opcode = Opcode.MOVE_RESULT_OBJECT, location = MatchAfterImmediately()),
         opcode(opcode = Opcode.CHECK_CAST, location = MatchAfterImmediately()),
         // Newer app versions check the icons after the cast.
         opcode(opcode = Opcode.IPUT, location = MatchAfterWithin(8)),
         opcode(opcode = Opcode.IPUT, location = MatchAfterImmediately())
     )
+)
+
+/**
+ * Reads the Elements updates from the framework updates of a response.
+ * The parameter is the framework updates.
+ */
+internal object ElementsFrameworkUpdatesReaderFingerprint : Fingerprint(
+    classFingerprint = ElementsFrameworkUpdatesFingerprint,
+    accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.STATIC, AccessFlags.FINAL),
+    returnType = "L",
+    parameters = listOf("L")
+)
+
+internal object ElementsResourceProcessorConstructorFingerprint : Fingerprint(
+    classFingerprint = ElementsFrameworkUpdatesFingerprint,
+    name = "<init>"
 )
 
 /**
@@ -125,6 +199,14 @@ internal object ElementsTapHandlerFingerprint : Fingerprint(
             parameters = listOf()
         )
     )
+)
+
+/**
+ * Creates the tap handler of an Elements component, with the command holder of the component.
+ */
+internal object ElementsTapHandlerConstructorFingerprint : Fingerprint(
+    classFingerprint = ElementsTapHandlerFingerprint,
+    name = "<init>"
 )
 
 /**

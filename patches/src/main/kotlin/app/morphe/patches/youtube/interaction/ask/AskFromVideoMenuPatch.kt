@@ -7,12 +7,17 @@
 
 package app.morphe.patches.youtube.interaction.ask
 
+import app.morphe.patcher.Fingerprint
+import app.morphe.patcher.InstructionLocation.MatchAfterImmediately
+import app.morphe.patcher.Match
+import app.morphe.patcher.checkCast
 import app.morphe.patcher.extensions.InstructionExtensions.addInstruction
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructions
 import app.morphe.patcher.extensions.InstructionExtensions.addInstructionsWithLabels
 import app.morphe.patcher.extensions.InstructionExtensions.getInstruction
+import app.morphe.patcher.fieldAccess
+import app.morphe.patcher.methodCall
 import app.morphe.patcher.patch.BytecodePatchContext
-import app.morphe.patcher.patch.PatchException
 import app.morphe.patcher.patch.bytecodePatch
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
@@ -30,17 +35,18 @@ import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.misc.settings.settingsPatch
 import app.morphe.patches.youtube.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.morphe.util.findInstructionIndicesReversedOrThrow
+import app.morphe.util.findMutableMethodOf
+import app.morphe.util.getReference
+import app.morphe.util.indexOfFirstInstructionOrThrow
+import app.morphe.util.indexOfFirstInstructionReversedOrThrow
+import app.morphe.util.registersUsed
 import app.morphe.util.setExtensionIsPatchIncluded
 import com.android.tools.smali.dexlib2.AccessFlags
 import com.android.tools.smali.dexlib2.Opcode
 import com.android.tools.smali.dexlib2.builder.MutableMethodImplementation
+import com.android.tools.smali.dexlib2.iface.ClassDef
 import com.android.tools.smali.dexlib2.iface.Method
 import com.android.tools.smali.dexlib2.iface.instruction.FiveRegisterInstruction
-import com.android.tools.smali.dexlib2.iface.instruction.Instruction
-import com.android.tools.smali.dexlib2.iface.instruction.OneRegisterInstruction
-import com.android.tools.smali.dexlib2.iface.instruction.ReferenceInstruction
-import com.android.tools.smali.dexlib2.iface.instruction.RegisterRangeInstruction
-import com.android.tools.smali.dexlib2.iface.instruction.TwoRegisterInstruction
 import com.android.tools.smali.dexlib2.iface.reference.FieldReference
 import com.android.tools.smali.dexlib2.iface.reference.MethodReference
 import com.android.tools.smali.dexlib2.iface.reference.TypeReference
@@ -59,7 +65,8 @@ private const val EXTENSION_REGISTRY_CLASS = "Lcom/google/protobuf/ExtensionRegi
 @Suppress("unused")
 val askFromVideoMenuPatch = bytecodePatch(
     name = "Ask from video menu",
-    description = "Adds a video menu entry that opens Ask for the video and summarizes the video.",
+    description = "Adds a video menu entry that opens Ask for the video and summarizes the video. " +
+            "This patch works with YouTube 21.16 and newer.",
 ) {
     dependsOn(
         sharedExtensionPatch,
@@ -105,9 +112,7 @@ val askFromVideoMenuPatch = bytecodePatch(
                             listOf(type, "[B", EXTENSION_REGISTRY_CLASS)
                 }
             }
-        val commandDefaultInstanceField = classDefBy(commandClass).fields.first { field ->
-            AccessFlags.STATIC.isSet(field.accessFlags) && field.type == commandClass
-        }
+        val protos = Protos(this, messageClass)
 
         LithoButtonCommandFingerprint.method.apply {
             val executorRegister = getInstruction<FiveRegisterInstruction>(executeCommandMatch.index).registerC
@@ -119,31 +124,17 @@ val askFromVideoMenuPatch = bytecodePatch(
 
         // The Ask panel of the opened video is registered from the watch page response.
         // The extension keeps it to build the Ask panel of other videos.
-        RegisterEngagementPanelFingerprint.method.addInstructions(
+        RegisterEngagementPanelFingerprint.method.addInstruction(
             0,
-            """
-                move-object/from16 v0, p1
-                invoke-virtual { v0 }, $messageClass->toByteArray()[B
-                move-result-object v0
-                invoke-static { v0 }, $EXTENSION_CLASS->onEngagementPanelRegistered([B)V
-            """
+            "invoke-static/range { p1 .. p1 }, $EXTENSION_CLASS->onEngagementPanelRegistered(Ljava/lang/Object;)V"
         )
 
         // When the summarize suggestion is not selected, the welcome request of the Ask panel is replaced
         // with the summarize request, and the playback position is removed from the requests of a panel
         // of another video.
-        val formDataField = GetPanelRequestDescriptionFingerprint.let {
-            val formDataStringIndex = it.instructionMatches[3].index
-            it.method.getInstruction<ReferenceInstruction>(formDataStringIndex - 1).reference as FieldReference
-        }
+        val continuationField = GetPanelRequestDescriptionFingerprint.instructionMatches[3].getFieldReference()
+        val formDataField = GetPanelRequestDescriptionFingerprint.instructionMatches[4].getFieldReference()
         GetPanelRequestBuilderFingerprint.method.apply {
-            val isEmptyIndex = GetPanelRequestBuilderFingerprint.instructionMatches.first().index
-            val continuationField = getInstruction<ReferenceInstruction>(isEmptyIndex - 1)
-                .reference as FieldReference
-            val formDataDefaultInstanceField = classDefBy(formDataField.type).fields.first { field ->
-                AccessFlags.STATIC.isSet(field.accessFlags) && field.type == formDataField.type
-            }
-
             addInstructionsWithLabels(
                 0,
                 """
@@ -152,17 +143,10 @@ val askFromVideoMenuPatch = bytecodePatch(
                     move-result-object v0
                     iput-object v0, p0, $continuationField
                     iget-object v1, p0, $formDataField
-                    if-eqz v1, :form_data_unchanged
-                    invoke-virtual { v1 }, $messageClass->toByteArray()[B
-                    move-result-object v1
-                    invoke-static { v0, v1 }, $EXTENSION_CLASS->getPanelFormData(Ljava/lang/String;[B)[B
+                    invoke-static { v0, v1 }, $EXTENSION_CLASS->getPanelFormData(Ljava/lang/String;Ljava/lang/Object;)[B
                     move-result-object v1
                     if-eqz v1, :form_data_unchanged
-                    sget-object v0, $formDataDefaultInstanceField
-                    invoke-static { }, $EXTENSION_REGISTRY_CLASS->getGeneratedRegistry()$EXTENSION_REGISTRY_CLASS
-                    move-result-object v2
-                    invoke-static { v0, v1, v2 }, $messageClass->parseFrom($messageClass[B$EXTENSION_REGISTRY_CLASS)$messageClass
-                    move-result-object v0
+                    ${protos.parse(formDataField.type, bytes = "v1", result = "v0", registry = "v2")}
                     check-cast v0, ${formDataField.type}
                     iput-object v0, p0, $formDataField
                     :form_data_unchanged
@@ -176,18 +160,12 @@ val askFromVideoMenuPatch = bytecodePatch(
         val tapHandlerMethod = ElementsTapHandlerFingerprint.method
         val tapCommandMethod = ElementsTapHandlerFingerprint.instructionMatches.last().getMethodCalled()
         val tapCommandHolderClass = tapCommandMethod.definingClass
-        // The tap handler class is not public, so it is called through its public interface.
-        val tapHandlerInterfaceMethod = classDefBy(tapHandlerMethod.definingClass).interfaces.firstNotNullOf { type ->
-            classDefBy(type).methods.firstOrNull { method ->
-                method.name == tapHandlerMethod.name && method.parameterTypes == tapHandlerMethod.parameterTypes
-            }
-        }
+        // The tap handler class is not public, so it is called through the interface it implements.
+        val tapHandlerInterface = classDefBy(tapHandlerMethod.definingClass).interfaces.single()
 
-        mutableClassDefBy(tapHandlerMethod.definingClass).methods.first { method ->
-            method.name == "<init>" && method.parameterTypes.any { it.toString() == tapCommandHolderClass }
-        }.apply {
+        ElementsTapHandlerConstructorFingerprint.method.apply {
             val holderRegister = "p" + (parameterTypes.indexOfFirst { it.toString() == tapCommandHolderClass } + 1)
-            val returnIndex = implementation!!.instructions.indexOfLast { it.opcode == Opcode.RETURN_VOID }
+            val returnIndex = indexOfFirstInstructionReversedOrThrow(Opcode.RETURN_VOID)
             val onCreated = "$EXTENSION_CLASS->onTapHandlerCreated(Ljava/lang/Object;Ljava/lang/Object;)V"
             // The parameters are past v15 if the constructor has many locals, which are free at its return.
             if (implementation!!.registerCount <= 16) {
@@ -217,32 +195,30 @@ val askFromVideoMenuPatch = bytecodePatch(
 
         replaceStub("runTapHandler", 2) {
             """
-                check-cast p0, ${tapHandlerInterfaceMethod.definingClass}
+                check-cast p0, $tapHandlerInterface
                 const/4 v0, 0x0
-                invoke-interface { p0, v0, v0, v0 }, ${tapHandlerInterfaceMethod.toReference()}
+                invoke-interface { p0, v0, v0, v0 }, $tapHandlerInterface->${tapHandlerMethod.name}(${tapHandlerMethod.parameterTypes.joinToString("")})V
                 return-void
             """
         }
 
-        addSummarizeItemToMenu(messageClass)?.let { reason ->
-            throw PatchException("Could not add the summarize item to the video menu list: $reason")
+        replaceStub("serializeMessage", 1) {
+            """
+                check-cast p0, $messageClass
+                invoke-virtual { p0 }, $messageClass->toByteArray()[B
+                move-result-object p0
+                return-object p0
+            """
         }
 
-        addElementsResourceLoading(messageClass)?.let { reason ->
-            Logger.getLogger(this::class.java.name).warning(
-                "Could not load the Ask chat templates, the Ask panel opened outside a watch page " +
-                        "can be empty until a watch page loads: $reason"
-            )
-        }
+        addSummarizeItemToMenu(protos)
+
+        addElementsResourceLoading(protos)
 
         // Parses the command and runs it with the command executor.
         replaceStub("executeCommand", 4) {
             """
-                sget-object v0, $commandDefaultInstanceField
-                invoke-static { }, $EXTENSION_REGISTRY_CLASS->getGeneratedRegistry()$EXTENSION_REGISTRY_CLASS
-                move-result-object v1
-                invoke-static { v0, p1, v1 }, $messageClass->parseFrom($messageClass[B$EXTENSION_REGISTRY_CLASS)$messageClass
-                move-result-object v0
+                ${protos.parse(commandClass, bytes = "p1", result = "v0", registry = "v1")}
                 check-cast v0, $commandClass
                 check-cast p0, $commandExecutorClass
                 new-instance v1, Ljava/util/HashMap;
@@ -255,54 +231,65 @@ val askFromVideoMenuPatch = bytecodePatch(
 }
 
 /**
+ * Parses the app's protobuf messages in smali.
+ *
+ * @param messageClass GeneratedMessageLite.
+ */
+private class Protos(private val context: BytecodePatchContext, private val messageClass: String) {
+    /**
+     * @return Smali that parses the bytes of a register as a message of the type into the result register.
+     *         The registry register is overwritten.
+     */
+    fun parse(type: String, bytes: String, result: String, registry: String) = """
+        sget-object $result, ${context.defaultInstanceField(type)}
+        invoke-static { }, $EXTENSION_REGISTRY_CLASS->getGeneratedRegistry()$EXTENSION_REGISTRY_CLASS
+        move-result-object $registry
+        invoke-static { $result, $bytes, $registry }, $messageClass->parseFrom($messageClass[B$EXTENSION_REGISTRY_CLASS)$messageClass
+        move-result-object $result
+    """
+}
+
+/**
+ * @return The static field that holds the default instance of a message type.
+ */
+private fun BytecodePatchContext.defaultInstanceField(type: String) = classDefBy(type).fields.first { field ->
+    AccessFlags.STATIC.isSet(field.accessFlags) && field.type == type
+}
+
+/**
  * Adds the summarize item to the menu of a video as one of the app's own items, so the menu bottom sheet
  * and the menu popup show it in their own list. The extension updates the row of the item and handles its tap.
- *
- * @return Null if the item is added, or the reason it is not.
  */
-private fun BytecodePatchContext.addSummarizeItemToMenu(messageClass: String): String? {
-    val menuFragmentClass = MenuBottomSheetFragmentFingerprint.classDefOrNull
-        ?: return "menu bottom sheet not found"
-    val createRowMethod = menuFragmentClass.methods.singleOrNull { method ->
-        method.parameterTypes.size == 1 && method.returnType.endsWith("/util/Optional;")
-    } ?: return "row creation method not found"
+private fun BytecodePatchContext.addSummarizeItemToMenu(protos: Protos) {
+    val menuFragmentClass = MenuBottomSheetFragmentFactoryFingerprint.classDef
+    // The factory takes the menu after the theme.
+    val menuClass = MenuBottomSheetFragmentFactoryFingerprint.method.parameterTypes[1].toString()
+    val createRowMethod = MenuBottomSheetCreateRowFingerprint.method
     val menuItemClass = createRowMethod.parameterTypes.first().toString()
-    val tapMethod = menuFragmentClass.methods.firstOrNull { method ->
-        method.returnType == "V" && method.parameterTypes.size == 1 &&
-                method.implementation?.instructions?.firstOrNull()?.opcode == Opcode.INSTANCE_OF &&
-                method.findFieldRead(menuItemClass) != null
-    } ?: return "row tap method not found"
-    val rowMenuItemField = tapMethod.findFieldRead(menuItemClass)!!
-    val menuRowsField = menuFragmentClass.fields.firstOrNull { field ->
-        !AccessFlags.STATIC.isSet(field.accessFlags) &&
-                generateSequence(field.type) { type -> classDefByOrNull(type)?.superclass }
-                    .any { type -> type == "Ljava/util/AbstractList;" }
-    } ?: return "rows field not found"
+    val rowTapMatch = MenuBottomSheetRowTapFingerprint.match()
+    val rowClass = rowTapMatch.instructionMatches[2].instruction.getReference<TypeReference>()!!.type
+    val rowMenuItemField = rowTapMatch.instructionMatches[3].getFieldReference()
 
-    // The menu of a video is shown either as a bottom sheet or as a popup, after an optional transform
-    // that returns a menu.
+    // The menu of a video is shown either as a bottom sheet or as a popup.
     val showMenuMethod = FeedFlyoutBufferObjectFingerprint.method
-    val showMenuInstructions = showMenuMethod.implementation!!.instructions.toList()
-    val menuClass = showMenuInstructions.firstNotNullOfOrNull { instruction ->
-        if (instruction.opcode != Opcode.INVOKE_INTERFACE) return@firstNotNullOfOrNull null
-        ((instruction as ReferenceInstruction).reference as MethodReference).takeIf { method ->
-            method.parameterTypes.size == 1 && method.parameterTypes.first().toString() == method.returnType &&
-                    !method.returnType.startsWith("Ljava/")
-        }?.returnType
-    } ?: return "menu transform not found"
-    val showBottomSheetIndex = showMenuInstructions.indexOfFirst { instruction ->
-        instruction.opcode == Opcode.INVOKE_VIRTUAL &&
-                ((instruction as ReferenceInstruction).reference as MethodReference).let { method ->
-                    method.returnType == "V" && method.parameterTypes.map { it.toString() } == listOf(menuClass)
-                }
-    }
-    if (showBottomSheetIndex < 0) return "bottom sheet call not found"
+    val showBottomSheetIndex = showMenuMethod.indexOfFirstInstructionOrThrow(
+        methodCall(opcode = Opcode.INVOKE_VIRTUAL, parameters = listOf(menuClass), returnType = "V")
+    )
 
-    val popupMenu = findPopupMenu(showMenuInstructions, menuClass, menuItemClass, rowMenuItemField.definingClass)
+    // Shows the menu next to the view of its button.
+    val showPopupIndex = showMenuMethod.indexOfFirstInstructionOrThrow(
+        methodCall(
+            opcodes = listOf(Opcode.INVOKE_VIRTUAL, Opcode.INVOKE_VIRTUAL_RANGE),
+            parameters = listOf(menuClass, "Landroid/view/View;", "Ljava/lang/Object;", "L"),
+            returnType = "V"
+        )
+    )
+    val showPopupMethod = showMenuMethod.getInstruction(showPopupIndex).getReference<MethodReference>()!!
+    val popupMenu = findPopupMenu(classDefBy(showPopupMethod.definingClass), menuItemClass, rowClass)
 
     // Adds the item to the menu before the call that shows the menu, and updates the rows of a popup after it.
     fun MutableMethod.addMenuItemBefore(index: Int, isPopup: Boolean) {
-        val (callerRegister, menuRegister) = getInstruction(index).getInvokeRegisters()
+        val (callerRegister, menuRegister) = getInstruction(index).registersUsed
         if (isPopup) {
             addInstruction(
                 index + 1,
@@ -323,34 +310,20 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(messageClass: String): S
     showMenuMethod.apply {
         // The popup is shown before or after the bottom sheet, depending on the app version,
         // so the later call is changed first.
-        listOfNotNull(showBottomSheetIndex, popupMenu?.showIndex).sortedDescending().forEach { index ->
-            addMenuItemBefore(index, index == popupMenu?.showIndex)
+        listOf(showBottomSheetIndex, showPopupIndex).sortedDescending().forEach { index ->
+            addMenuItemBefore(index, index == showPopupIndex)
         }
     }
 
     // Lists that are not built with Litho, such as the History page, show the popup from the menu button
     // with the same call.
-    if (popupMenu != null) {
-        val showReference =
-            ((showMenuInstructions[popupMenu.showIndex] as ReferenceInstruction).reference as MethodReference).toReference()
-        val menuButtonMethod = FullHistoryFlyoutBufferObjectFingerprint.method
-        val index = menuButtonMethod.implementation!!.instructions.indexOfFirst { instruction ->
-            instruction.opcode == Opcode.INVOKE_VIRTUAL &&
-                    ((instruction as ReferenceInstruction).reference as MethodReference).toReference() == showReference
-        }
-        if (index >= 0) {
-            menuButtonMethod.addMenuItemBefore(index, true)
-        } else {
-            Logger.getLogger(this::class.java.name).warning(
-                "Could not find the popup call of the menu button, " +
-                        "menus of lists without Litho, such as the History page, show no summarize item"
-            )
-        }
+    FullHistoryFlyoutBufferObjectFingerprint.method.apply {
+        addMenuItemBefore(indexOfFirstInstructionOrThrow(methodCall(reference = showPopupMethod)), true)
     }
 
-    val menus = listOfNotNull(
-        MenuRows(menuFragmentClass.type, createRowMethod, menuRowsField),
-        popupMenu?.let { MenuRows(it.type, it.createRowMethod, it.rowsField) }
+    val menus = listOf(
+        MenuRows(menuFragmentClass.type, createRowMethod, findRowsField(menuFragmentClass)),
+        MenuRows(popupMenu.type, popupMenu.createRowMethod, popupMenu.rowsField)
     )
     for (menu in menus) {
         mutableClassDefBy(menu.type).apply {
@@ -362,9 +335,7 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(messageClass: String): S
                 )
             }
 
-            methods.first {
-                it.name == menu.createRowMethod.name && it.parameterTypes == menu.createRowMethod.parameterTypes
-            }.addInstructions(
+            findMutableMethodOf(menu.createRowMethod).addInstructions(
                 0,
                 """
                     invoke-static/range { p0 .. p1 }, $EXTENSION_CLASS->onMenuRowCreated(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -376,11 +347,8 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(messageClass: String): S
     }
 
     // The bottom sheet handles the taps on its rows itself, and the popup with a tap handler of its rows.
-    val rowTapMethods = listOfNotNull(tapMethod, popupMenu?.rowTapMethod)
-    for (rowTapMethod in rowTapMethods) {
-        mutableClassDefBy(rowTapMethod.definingClass).methods.first {
-            it.name == rowTapMethod.name && it.parameterTypes == rowTapMethod.parameterTypes
-        }.addInstructionsWithLabels(
+    for (rowTapMethod in listOf(rowTapMatch.method, popupMenu.rowTapMethod)) {
+        mutableClassDefBy(rowTapMethod.definingClass).findMutableMethodOf(rowTapMethod).addInstructionsWithLabels(
             0,
             """
                 invoke-static/range { p1 .. p1 }, $EXTENSION_CLASS->onMenuRowTapped(Ljava/lang/Object;)Z
@@ -394,53 +362,36 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(messageClass: String): S
     }
 
     // A popup that shows the menu items as they are, such as on tablets, shows them with a presenter
-    // that handles their taps.
-    val itemTapMethods = popupMenu?.let { findMenuItemTapMethods(it, menuItemClass) }.orEmpty()
-    for ((itemTapMethod, itemField) in itemTapMethods) {
-        mutableClassDefBy(itemTapMethod.definingClass).methods.first {
-            it.name == itemTapMethod.name && it.parameterTypes == itemTapMethod.parameterTypes
-        }.addInstructionsWithLabels(
-            0,
-            """
-                move-object/from16 v0, p0
-                iget-object v0, v0, $itemField
-                invoke-static/range { v0 .. v0 }, $EXTENSION_CLASS->onMenuItemTapped(Ljava/lang/Object;)Z
-                move-result v0
-                if-eqz v0, :not_summarize_item
-                return-void
-                :not_summarize_item
-                nop
-            """
+    // that handles their taps. The presenter dismisses the popup and reads the menu item it shows.
+    val itemTapMatch = Fingerprint(
+        name = "onClick",
+        returnType = "V",
+        parameters = listOf("Landroid/view/View;"),
+        filters = listOf(
+            methodCall(reference = popupMenu.dismissMethod),
+            fieldAccess(opcode = Opcode.IGET_OBJECT, location = MatchAfterImmediately()),
+            checkCast(menuItemClass, location = MatchAfterImmediately())
         )
-    }
-
-    replaceStub("canTapMenuItems", 1) {
+    ).match()
+    val itemField = itemTapMatch.instructionMatches[1].getFieldReference()
+    itemTapMatch.method.addInstructionsWithLabels(
+        0,
         """
-            const/4 v0, ${if (itemTapMethods.isEmpty()) "0x0" else "0x1"}
-            return v0
+            move-object/from16 v0, p0
+            iget-object v0, v0, $itemField
+            invoke-static/range { v0 .. v0 }, $EXTENSION_CLASS->onMenuItemTapped(Ljava/lang/Object;)Z
+            move-result v0
+            if-eqz v0, :not_summarize_item
+            return-void
+            :not_summarize_item
+            nop
         """
-    }
-
-    replaceStub("serializeMessage", 1) {
-        """
-            check-cast p0, $messageClass
-            invoke-virtual { p0 }, $messageClass->toByteArray()[B
-            move-result-object p0
-            return-object p0
-        """
-    }
+    )
 
     for ((stub, type) in listOf("parseMenu" to menuClass, "parseMenuItem" to menuItemClass)) {
-        val defaultInstanceField = classDefBy(type).fields.first { field ->
-            AccessFlags.STATIC.isSet(field.accessFlags) && field.type == type
-        }
         replaceStub(stub, 3) {
             """
-                sget-object v0, $defaultInstanceField
-                invoke-static { }, $EXTENSION_REGISTRY_CLASS->getGeneratedRegistry()$EXTENSION_REGISTRY_CLASS
-                move-result-object v1
-                invoke-static { v0, p0, v1 }, $messageClass->parseFrom($messageClass[B$EXTENSION_REGISTRY_CLASS)$messageClass
-                move-result-object v0
+                ${protos.parse(type, bytes = "p0", result = "v0", registry = "v1")}
                 return-object v0
             """
         }
@@ -482,21 +433,14 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(messageClass: String): S
     }
 
     replaceStub("dismissPopupMenu", 2) {
-        if (popupMenu == null) {
-            """
-                const/4 v0, 0x0
-                return v0
-            """
-        } else {
-            """
-                instance-of v0, p0, ${popupMenu.type}
-                if-eqz v0, :not_popup_menu
-                check-cast p0, ${popupMenu.type}
-                invoke-virtual { p0 }, ${popupMenu.dismissMethod.toReference()}
-                :not_popup_menu
-                return v0
-            """
-        }
+        """
+            instance-of v0, p0, ${popupMenu.type}
+            if-eqz v0, :not_popup_menu
+            check-cast p0, ${popupMenu.type}
+            invoke-virtual { p0 }, ${popupMenu.dismissMethod.toReference()}
+            :not_popup_menu
+            return v0
+        """
     }
 
     replaceStub("isMenuItem", 1) {
@@ -508,9 +452,9 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(messageClass: String): S
 
     replaceStub("getRowMenuItem", 2) {
         """
-            instance-of v0, p0, ${rowMenuItemField.definingClass}
+            instance-of v0, p0, $rowClass
             if-eqz v0, :not_menu_item_row
-            check-cast p0, ${rowMenuItemField.definingClass}
+            check-cast p0, $rowClass
             iget-object p0, p0, $rowMenuItemField
             return-object p0
             :not_menu_item_row
@@ -519,13 +463,7 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(messageClass: String): S
         """
     }
 
-    if (!restoreMenuRowTextConstraints()) {
-        Logger.getLogger(this::class.java.name).warning(
-            "Could not restore the text constraints of reused menu rows, the summarize item can show its icon over its text"
-        )
-    }
-
-    return null
+    restoreMenuRowTextConstraints()
 }
 
 /**
@@ -538,10 +476,6 @@ private class MenuRows(val type: String, val createRowMethod: Method, val rowsFi
  * and handles the taps on the rows with its own methods.
  */
 private class PopupMenu(
-    /**
-     * The index of the call that shows the popup, in the method that shows the menu.
-     */
-    val showIndex: Int,
     val type: String,
     val createRowMethod: Method,
     val rowsField: FieldReference,
@@ -550,152 +484,62 @@ private class PopupMenu(
 )
 
 private fun BytecodePatchContext.findPopupMenu(
-    showMenuInstructions: List<Instruction>,
-    menuClass: String,
+    popupClass: ClassDef,
     menuItemClass: String,
     rowClass: String,
-): PopupMenu? {
-    fun notFound(reason: String): PopupMenu? {
-        Logger.getLogger(this::class.java.name).warning(
-            "Could not add the summarize item to the list of the popup video menu, " +
-                    "popup video menus show no summarize item: $reason"
-        )
-        return null
+): PopupMenu {
+    val createRowMatch = PopupMenuCreateRowFingerprint.match(popupClass)
+    val createRowMethod = createRowMatch.method
+    check(createRowMethod.parameterTypes.first().toString() == menuItemClass) {
+        "Unexpected popup row creation method: $createRowMethod"
     }
-
-    // Shows the menu next to the view of its button.
-    val showIndex = showMenuInstructions.indexOfFirst { instruction ->
-        (instruction.opcode == Opcode.INVOKE_VIRTUAL || instruction.opcode == Opcode.INVOKE_VIRTUAL_RANGE) &&
-                ((instruction as ReferenceInstruction).reference as MethodReference).let { method ->
-                    method.returnType == "V" &&
-                            method.parameterTypes.map { it.toString() }.take(2) == listOf(menuClass, "Landroid/view/View;")
-                }
-    }
-    if (showIndex < 0) return notFound("popup call not found")
-    val popupClass = classDefBy(
-        ((showMenuInstructions[showIndex] as ReferenceInstruction).reference as MethodReference).definingClass
-    )
-    if (!AccessFlags.PUBLIC.isSet(popupClass.accessFlags)) return notFound("popup class not public")
-
-    fun Method.isPublicInstanceMethod() =
-        AccessFlags.PUBLIC.isSet(accessFlags) && !AccessFlags.STATIC.isSet(accessFlags) && name != "<init>"
-
-    val createRowMethod = popupClass.methods.singleOrNull { method ->
-        method.isPublicInstanceMethod() && method.returnType.endsWith("/util/Optional;") &&
-                method.parameterTypes.map { it.toString() } == listOf(menuItemClass)
-    } ?: return notFound("popup row creation method not found")
-    val rowsField = popupClass.fields.singleOrNull { field ->
-        !AccessFlags.STATIC.isSet(field.accessFlags) &&
-                generateSequence(field.type) { type -> classDefByOrNull(type)?.superclass }
-                    .any { type -> type == "Ljava/util/AbstractList;" }
-    } ?: return notFound("popup rows field not found")
-    val dismissMethod = popupClass.methods.singleOrNull { method ->
-        method.isPublicInstanceMethod() && method.returnType == "V" && method.parameterTypes.isEmpty()
-    } ?: return notFound("popup dismiss method not found")
     // The popup creates the tap handler of each row with the row.
-    val rowTapMethod = createRowMethod.implementation!!.instructions.firstNotNullOfOrNull { instruction ->
-        if (instruction.opcode != Opcode.NEW_INSTANCE) return@firstNotNullOfOrNull null
-        val type = ((instruction as ReferenceInstruction).reference as TypeReference).type
-        classDefByOrNull(type)?.methods?.firstOrNull { method ->
-            // The hook of the tap needs a register besides the two of the parameters.
-            (method.implementation?.registerCount ?: 0) > 2 && method.returnType == "V" &&
-                    method.parameterTypes.map { it.toString() } == listOf(rowClass)
-        }
-    } ?: return notFound("popup row tap handler not found")
+    val rowTapMethod = Fingerprint(
+        definingClass = createRowMatch.instructionMatches.first().instruction.getReference<TypeReference>()!!.type,
+        returnType = "V",
+        parameters = listOf(rowClass)
+    ).method
 
-    return PopupMenu(showIndex, popupClass.type, createRowMethod, rowsField, dismissMethod, rowTapMethod)
+    return PopupMenu(
+        popupClass.type,
+        createRowMethod,
+        findRowsField(popupClass),
+        PopupMenuDismissFingerprint.match(popupClass).method,
+        rowTapMethod
+    )
 }
 
 /**
- * Finds the presenters that show the menu items of the popup as they are, by their tap methods,
- * which dismiss the popup and run the command of the tapped item.
- *
- * @return The tap methods, each with the field of the menu item that its presenter shows.
+ * @return The field of a menu with the list of its rows.
  */
-private fun BytecodePatchContext.findMenuItemTapMethods(
-    popupMenu: PopupMenu,
-    menuItemClass: String,
-): List<Pair<Method, FieldReference>> {
-    val dismissReference = popupMenu.dismissMethod.toReference()
-    val tapMethods = mutableListOf<Pair<Method, FieldReference>>()
-    classDefForEach { classDef ->
-        val tapMethod = classDef.methods.firstOrNull { method ->
-            method.name == "onClick" && method.returnType == "V" &&
-                    method.parameterTypes.map { it.toString() } == listOf("Landroid/view/View;") &&
-                    // The hook of the tap needs a register besides the two of the parameters.
-                    (method.implementation?.registerCount ?: 0) > 2
-        } ?: return@classDefForEach
-        val instructions = tapMethod.implementation!!.instructions.toList()
-        val dismissesPopup = instructions.any { instruction ->
-            instruction.opcode == Opcode.INVOKE_VIRTUAL &&
-                    ((instruction as ReferenceInstruction).reference as MethodReference).toReference() == dismissReference
-        }
-        if (!dismissesPopup) return@classDefForEach
-
-        // The presenter keeps the menu item it shows in a field of its own, and casts it when tapped.
-        val itemField = instructions.zipWithNext().firstNotNullOfOrNull { (read, cast) ->
-            if (read.opcode != Opcode.IGET_OBJECT || cast.opcode != Opcode.CHECK_CAST) return@firstNotNullOfOrNull null
-            ((read as ReferenceInstruction).reference as FieldReference).takeIf { field ->
-                field.definingClass == classDef.type &&
-                        (read as TwoRegisterInstruction).registerA == (cast as OneRegisterInstruction).registerA &&
-                        ((cast as ReferenceInstruction).reference as TypeReference).type == menuItemClass
-            }
-        } ?: return@classDefForEach
-        tapMethods.add(tapMethod to itemField)
-    }
-
-    if (tapMethods.isEmpty()) {
-        Logger.getLogger(this::class.java.name).warning(
-            "Could not find the tap handler of the menu items of the popup video menu, " +
-                    "popups that show the menu items as they are show the summarize item as a row"
-        )
-    }
-    return tapMethods
-}
-
-/**
- * @return The registers of the arguments of an invoke instruction, the first is the caller of a virtual method.
- */
-private fun Instruction.getInvokeRegisters(): List<Int> = when (this) {
-    is RegisterRangeInstruction -> (startRegister until startRegister + registerCount).toList()
-    is FiveRegisterInstruction -> listOf(registerC, registerD, registerE, registerF, registerG).take(registerCount)
-    else -> throw IllegalArgumentException("Not an invoke instruction: $opcode")
+private fun BytecodePatchContext.findRowsField(menuClass: ClassDef) = menuClass.fields.single { field ->
+    !AccessFlags.STATIC.isSet(field.accessFlags) &&
+            generateSequence(field.type) { type -> classDefByOrNull(type)?.superclass }
+                .any { type -> type == "Ljava/util/AbstractList;" }
 }
 
 /**
  * The Ask chat shows nothing until a watch page response attaches its Elements templates.
  * Lets the extension load the Elements resources of a watch page it fetches,
  * with the processor that loads them from the app's own responses.
- *
- * @return Null if the extension can load them, or the reason it cannot.
  */
-private fun BytecodePatchContext.addElementsResourceLoading(messageClass: String): String? {
-    val loadMethod = ElementsFrameworkUpdatesFingerprint.methodOrNull
-        ?: return "framework updates processor not found"
-    val processorClass = loadMethod.definingClass
-    // The framework updates are a message, unlike the other parameter.
-    val frameworkUpdatesClass = loadMethod.parameterTypes.map { it.toString() }.firstOrNull { type ->
-        classDefByOrNull(type)?.fields?.any { field ->
-            AccessFlags.STATIC.isSet(field.accessFlags) && field.type == type
-        } == true
-    } ?: return "framework updates class not found"
+private fun BytecodePatchContext.addElementsResourceLoading(protos: Protos) {
+    val processorClass = ElementsFrameworkUpdatesFingerprint.classDef
+    val frameworkUpdatesClass = ElementsFrameworkUpdatesReaderFingerprint.method.parameterTypes.first().toString()
     // Takes the account of the response, which the processor does not use for Elements resources.
-    val processMethod = classDefBy(processorClass).methods.singleOrNull { method ->
-        AccessFlags.PUBLIC.isSet(method.accessFlags) && method.returnType == "V" &&
-                method.parameterTypes.map { it.toString() }.let { types ->
-                    types.size == 2 && types[1] == frameworkUpdatesClass
-                }
-    } ?: return "framework updates processing method not found"
-    val usedResourcesField = classDefBy(processorClass).fields.singleOrNull { field ->
+    val processMethod = Fingerprint(
+        definingClass = processorClass.type,
+        accessFlags = listOf(AccessFlags.PUBLIC, AccessFlags.FINAL),
+        returnType = "V",
+        parameters = listOf("L", frameworkUpdatesClass)
+    ).method
+    val usedResourcesField = processorClass.fields.single { field ->
         !AccessFlags.STATIC.isSet(field.accessFlags) && field.type == "Ljava/util/Set;"
-    } ?: return "used resources field not found"
-    val frameworkUpdatesDefaultInstanceField = classDefBy(frameworkUpdatesClass).fields.first { field ->
-        AccessFlags.STATIC.isSet(field.accessFlags) && field.type == frameworkUpdatesClass
     }
 
-    mutableClassDefBy(processorClass).methods.filter { it.name == "<init>" }.forEach { constructor ->
-        constructor.findInstructionIndicesReversedOrThrow(Opcode.RETURN_VOID).forEach { index ->
-            constructor.addInstruction(
+    ElementsResourceProcessorConstructorFingerprint.method.apply {
+        findInstructionIndicesReversedOrThrow(Opcode.RETURN_VOID).forEach { index ->
+            addInstruction(
                 index,
                 "invoke-static/range { p0 .. p0 }, $EXTENSION_CLASS->onElementsResourceProcessorCreated(Ljava/lang/Object;)V"
             )
@@ -704,18 +548,14 @@ private fun BytecodePatchContext.addElementsResourceLoading(messageClass: String
 
     replaceStub("parseFrameworkUpdates", 3) {
         """
-            sget-object v0, $frameworkUpdatesDefaultInstanceField
-            invoke-static { }, $EXTENSION_REGISTRY_CLASS->getGeneratedRegistry()$EXTENSION_REGISTRY_CLASS
-            move-result-object v1
-            invoke-static { v0, p0, v1 }, $messageClass->parseFrom($messageClass[B$EXTENSION_REGISTRY_CLASS)$messageClass
-            move-result-object v0
+            ${protos.parse(frameworkUpdatesClass, bytes = "p0", result = "v0", registry = "v1")}
             return-object v0
         """
     }
 
     replaceStub("processFrameworkUpdates", 3) {
         """
-            check-cast p0, $processorClass
+            check-cast p0, ${processorClass.type}
             check-cast p1, $frameworkUpdatesClass
             const/4 v0, 0x0
             invoke-virtual { p0, v0, p1 }, ${processMethod.toReference()}
@@ -725,13 +565,11 @@ private fun BytecodePatchContext.addElementsResourceLoading(messageClass: String
 
     replaceStub("getUsedElementsResources", 1) {
         """
-            check-cast p0, $processorClass
-            iget-object p0, p0, $processorClass->${usedResourcesField.name}:Ljava/util/Set;
+            check-cast p0, ${processorClass.type}
+            iget-object p0, p0, $usedResourcesField
             return-object p0
         """
     }
-
-    return null
 }
 
 /**
@@ -740,46 +578,32 @@ private fun BytecodePatchContext.addElementsResourceLoading(messageClass: String
  * such as for the summarize item that replaces its loading item, which then shows its icon over its text.
  * Restores the start constraints of an inflated row before each bind.
  * Newer app versions restore them for rows with icons themselves, some only behind a flag.
- *
- * @return If the constraints are restored.
  */
-private fun BytecodePatchContext.restoreMenuRowTextConstraints(): Boolean {
-    val match = MenuRowBindFingerprint.matchOrNull() ?: return false
-    val getLayoutParamsIndex = match.instructionMatches[1].index
-    val textContainerField = match.method.implementation!!.instructions.take(getLayoutParamsIndex)
-        .lastOrNull { instruction ->
-            instruction.opcode == Opcode.IGET_OBJECT &&
-                    ((instruction as ReferenceInstruction).reference as FieldReference).type ==
-                    "Landroid/widget/LinearLayout;"
-        }?.let { (it as ReferenceInstruction).reference as FieldReference } ?: return false
-    val constraintsClass = ((match.instructionMatches[3].instruction as ReferenceInstruction).reference
-            as TypeReference).type
-    val startConstraintFields = match.instructionMatches.takeLast(2).map { it.getFieldAccessed() }
+private fun BytecodePatchContext.restoreMenuRowTextConstraints() {
+    MenuRowBindFingerprint.let {
+        val textContainerField = it.instructionMatches[1].getFieldReference()
+        val constraintsClass = it.instructionMatches[5].instruction.getReference<TypeReference>()!!.type
+        val startConstraintFields = it.instructionMatches.takeLast(2).map { match -> match.getFieldReference() }
 
-    // -1 is unset, as the layout of the row does not set them.
-    match.method.addInstructionsWithLabels(
-        0,
-        """
-            move-object/from16 v0, p0
-            iget-object v0, v0, $textContainerField
-            if-eqz v0, :no_text_container
-            invoke-virtual { v0 }, Landroid/widget/LinearLayout;->getLayoutParams()Landroid/view/ViewGroup${'$'}LayoutParams;
-            move-result-object v1
-            check-cast v1, $constraintsClass
-            const/4 v2, -0x1
-            iput v2, v1, ${startConstraintFields[0]}
-            iput v2, v1, ${startConstraintFields[1]}
-            invoke-virtual { v0, v1 }, Landroid/widget/LinearLayout;->setLayoutParams(Landroid/view/ViewGroup${'$'}LayoutParams;)V
-            :no_text_container
-            nop
-        """
-    )
-    return true
-}
-
-private fun Method.findFieldRead(type: String) = implementation?.instructions?.firstNotNullOfOrNull { instruction ->
-    if (instruction.opcode != Opcode.IGET_OBJECT) return@firstNotNullOfOrNull null
-    ((instruction as ReferenceInstruction).reference as FieldReference).takeIf { it.type == type }
+        // -1 is unset, as the layout of the row does not set them.
+        it.method.addInstructionsWithLabels(
+            0,
+            """
+                move-object/from16 v0, p0
+                iget-object v0, v0, $textContainerField
+                if-eqz v0, :no_text_container
+                invoke-virtual { v0 }, Landroid/widget/LinearLayout;->getLayoutParams()Landroid/view/ViewGroup${'$'}LayoutParams;
+                move-result-object v1
+                check-cast v1, $constraintsClass
+                const/4 v2, -0x1
+                iput v2, v1, ${startConstraintFields[0]}
+                iput v2, v1, ${startConstraintFields[1]}
+                invoke-virtual { v0, v1 }, Landroid/widget/LinearLayout;->setLayoutParams(Landroid/view/ViewGroup${'$'}LayoutParams;)V
+                :no_text_container
+                nop
+            """
+        )
+    }
 }
 
 /**
@@ -808,3 +632,8 @@ private fun BytecodePatchContext.replaceStub(name: String, registerCount: Int, s
 
 private fun MethodReference.toReference() =
     "$definingClass->$name(${parameterTypes.joinToString("")})$returnType"
+
+/**
+ * @return The field that the matched instruction accesses, which can be declared in a superclass.
+ */
+private fun Match.InstructionMatch.getFieldReference() = instruction.getReference<FieldReference>()!!

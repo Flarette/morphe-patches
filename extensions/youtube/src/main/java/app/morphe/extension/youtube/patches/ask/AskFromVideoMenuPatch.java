@@ -129,10 +129,13 @@ public final class AskFromVideoMenuPatch {
      * Injection point.
      * Called before the app registers an engagement panel.
      */
-    public static void onEngagementPanelRegistered(byte[] panel) {
+    public static void onEngagementPanelRegistered(Object engagementPanel) {
         try {
-            if (Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() && !isExecutingOwnCommand
-                    && AskPanelCommand.isAskPanel(panel)) {
+            if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() || isExecutingOwnCommand) {
+                return;
+            }
+            byte[] panel = serializeMessage(engagementPanel);
+            if (AskPanelCommand.isAskPanel(panel)) {
                 AskPanelCommand.saveTemplate(panel);
             }
         } catch (Exception ex) {
@@ -148,6 +151,9 @@ public final class AskFromVideoMenuPatch {
      */
     public static String onGetPanelRequest(@Nullable String continuation) {
         try {
+            if (pendingWelcomeToken == null) {
+                return continuation;
+            }
             final String summarizeToken;
             synchronized (pendingLock) {
                 final String welcomeToken = pendingWelcomeToken;
@@ -178,9 +184,9 @@ public final class AskFromVideoMenuPatch {
      * @return The form data to send, or null to send the form data unchanged.
      */
     @Nullable
-    public static byte[] getPanelFormData(@Nullable String continuation, byte[] formData) {
+    public static byte[] getPanelFormData(@Nullable String continuation, @Nullable Object formData) {
         try {
-            if (continuation == null) {
+            if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() || continuation == null || formData == null) {
                 return null;
             }
             // Ask sends the playback position, which is the position of another video
@@ -190,7 +196,7 @@ public final class AskFromVideoMenuPatch {
                     || videoId.equals(VideoInformation.getPlayerResponseVideoId())) {
                 return null;
             }
-            byte[] withoutPlayerOffset = AskPanelCommand.removePlayerOffset(formData);
+            byte[] withoutPlayerOffset = AskPanelCommand.removePlayerOffset(serializeMessage(formData));
             if (withoutPlayerOffset != null) {
                 Logger.printDebug(() -> "Removing the playback position from the Ask request of video: " + videoId);
             }
@@ -209,7 +215,7 @@ public final class AskFromVideoMenuPatch {
      */
     public static Object addMenuItem(Object menu) {
         try {
-            if (!isPatchIncluded() || !Settings.ASK_SUMMARIZE_FLYOUT_MENU.get()) {
+            if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get()) {
                 return menu;
             }
             final String videoId = FlyoutUtils.getFlyoutVideoId();
@@ -297,6 +303,9 @@ public final class AskFromVideoMenuPatch {
      */
     public static Object onMenuRowCreated(Object menu, Object menuItem) {
         try {
+            if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get()) {
+                return menuItem;
+            }
             byte[] item = serializeMessage(menuItem);
             final String videoId = AskMenuItem.getVideoId(item);
             if (videoId == null) {
@@ -365,7 +374,7 @@ public final class AskFromVideoMenuPatch {
      * @return If the row is the summarize item, which the app then does not handle.
      */
     public static boolean onMenuRowTapped(Object row) {
-        return onMenuItemTapped(getRowMenuItem(row));
+        return Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() && onMenuItemTapped(getRowMenuItem(row));
     }
 
     /**
@@ -377,7 +386,7 @@ public final class AskFromVideoMenuPatch {
      */
     public static boolean onMenuItemTapped(@Nullable Object menuItem) {
         try {
-            if (menuItem == null || !isMenuItem(menuItem)) {
+            if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() || menuItem == null || !isMenuItem(menuItem)) {
                 return false;
             }
             byte[] item = serializeMessage(menuItem);
