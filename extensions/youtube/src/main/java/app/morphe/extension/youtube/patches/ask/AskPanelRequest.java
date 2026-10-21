@@ -34,7 +34,7 @@ import app.morphe.extension.shared.requests.Route;
  * The watch page has the Ask panel only for a signed-in account in a country with Ask,
  * and only for some videos.
  * The watch page also supplies the Elements templates of the Ask chat, which are loaded when the summarize
- * item is tapped in an app session that has not loaded them, see {@code AskFromVideoMenuPatch.openAskPanel}.
+ * item is tapped in an app session that has not loaded them, see {@code AskFlyoutMenuPatch.openAskPanel}.
  */
 final class AskPanelRequest {
     private static final String YT_API_URL = "https://youtubei.googleapis.com/youtubei/v1/";

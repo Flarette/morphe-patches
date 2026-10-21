@@ -56,7 +56,7 @@ import com.android.tools.smali.dexlib2.immutable.ImmutableMethodParameter
 import java.util.logging.Logger
 
 private const val EXTENSION_CLASS =
-    "Lapp/morphe/extension/youtube/patches/ask/AskFromVideoMenuPatch;"
+    "Lapp/morphe/extension/youtube/patches/ask/AskFlyoutMenuPatch;"
 
 private const val EXTENSION_FILTER_CLASS =
     "Lapp/morphe/extension/youtube/patches/components/AskLiveStatusFilter;"
@@ -64,8 +64,8 @@ private const val EXTENSION_FILTER_CLASS =
 private const val EXTENSION_REGISTRY_CLASS = "Lcom/google/protobuf/ExtensionRegistryLite;"
 
 @Suppress("unused")
-val askFromVideoMenuPatch = bytecodePatch(
-    name = "Ask from video menu",
+val askFlyoutMenuPatch = bytecodePatch(
+    name = "Ask flyout menu",
     description = "Adds a video menu entry that opens Ask for the video and summarizes the video. " +
             "This patch works with YouTube 21.16 and newer.",
 ) {
@@ -86,7 +86,7 @@ val askFromVideoMenuPatch = bytecodePatch(
         // and 20.51 creates the rows of the video menu differently.
         if (!is_21_15_or_greater) {
             return@execute Logger.getLogger(this::class.java.name).warning(
-                "'Ask from video menu' requires YouTube 21.16+"
+                "'Ask flyout menu' requires YouTube 21.16+"
             )
         }
 

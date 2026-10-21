@@ -34,7 +34,7 @@ import app.morphe.extension.youtube.settings.Settings;
  * with the request of the suggestion instead, so the answer shows without the selected suggestion.
  */
 @SuppressWarnings("unused")
-public final class AskFromVideoMenuPatch {
+public final class AskFlyoutMenuPatch {
 
     /**
      * Wait for the menu to close before showing the panel.
@@ -99,7 +99,7 @@ public final class AskFromVideoMenuPatch {
      */
     private static WeakReference<Object> menuRef = new WeakReference<>(null);
 
-    private AskFromVideoMenuPatch() {
+    private AskFlyoutMenuPatch() {
     }
 
     public static boolean isPatchIncluded() {

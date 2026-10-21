@@ -468,7 +468,7 @@ Reports are public and are reviewed before a channel is added to a list. Removal
     <string name="morphe_feed_watch_later_button_title">Show Watch later button on thumbnails</string>
     <string name="morphe_feed_watch_later_button_summary">A Watch later button is shown on the thumbnails of feed videos. Tapping and holding it opens Save to playlist</string>
 
-    <!-- interaction.ask.askFromVideoMenuPatch -->
+    <!-- interaction.ask.askFlyoutMenuPatch -->
     <string name="morphe_ask_summarize_flyout_menu_title">Add summarize entry to video menu</string>
     <!-- 'Ask' should be translated using the same localized wording YouTube displays for the Ask button under a video. -->
     <string name="morphe_ask_summarize_flyout_menu_summary">Add an entry to the video menu that opens an video summary</string>
