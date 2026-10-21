@@ -19,6 +19,7 @@ import app.morphe.patcher.fieldAccess
 import app.morphe.patcher.methodCall
 import app.morphe.patcher.patch.BytecodePatchContext
 import app.morphe.patcher.patch.bytecodePatch
+import app.morphe.patcher.util.proxy.mutableTypes.MutableClass
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod
 import app.morphe.patcher.util.proxy.mutableTypes.MutableMethod.Companion.toMutable
 import app.morphe.patches.shared.misc.litho.filter.addLithoFilter
@@ -61,13 +62,28 @@ private const val EXTENSION_CLASS =
 private const val EXTENSION_FILTER_CLASS =
     "Lapp/morphe/extension/youtube/patches/components/AskLiveStatusFilter;"
 
+private const val MESSAGE_ACCESS_INTERFACE =
+    $$"Lapp/morphe/extension/youtube/patches/ask/AskFlyoutMenuPatch$MessageAccess;"
+private const val MENU_ITEM_ACCESS_INTERFACE =
+    $$"Lapp/morphe/extension/youtube/patches/ask/AskFlyoutMenuPatch$MenuItemAccess;"
+private const val MENU_ACCESS_INTERFACE =
+    $$"Lapp/morphe/extension/youtube/patches/ask/AskFlyoutMenuPatch$MenuAccess;"
+private const val MENU_ROW_ACCESS_INTERFACE =
+    $$"Lapp/morphe/extension/youtube/patches/ask/AskFlyoutMenuPatch$MenuRowAccess;"
+private const val TAP_HANDLER_ACCESS_INTERFACE =
+    $$"Lapp/morphe/extension/youtube/patches/ask/AskFlyoutMenuPatch$TapHandlerAccess;"
+private const val COMMAND_EXECUTOR_ACCESS_INTERFACE =
+    $$"Lapp/morphe/extension/youtube/patches/ask/AskFlyoutMenuPatch$CommandExecutorAccess;"
+private const val ELEMENTS_RESOURCE_PROCESSOR_ACCESS_INTERFACE =
+    $$"Lapp/morphe/extension/youtube/patches/ask/AskFlyoutMenuPatch$ElementsResourceProcessorAccess;"
+
 private const val EXTENSION_REGISTRY_CLASS = "Lcom/google/protobuf/ExtensionRegistryLite;"
 
 @Suppress("unused")
 val askFlyoutMenuPatch = bytecodePatch(
     name = "Ask flyout menu",
     description = "Adds a video menu entry that opens Ask for the video and summarizes the video. " +
-            "This patch works with YouTube 21.16 and newer.",
+            "This patch works with YouTube 21.16.256 and newer.",
 ) {
     dependsOn(
         sharedExtensionPatch,
@@ -116,6 +132,29 @@ val askFlyoutMenuPatch = bytecodePatch(
             }
         val protos = Protos(this, messageClass)
 
+        mutableClassDefBy(messageClass).apply {
+            interfaces.add(MESSAGE_ACCESS_INTERFACE)
+            addBridge(
+                "patch_toByteArray", listOf(), "[B", 2,
+                """
+                    invoke-virtual { p0 }, $messageClass->toByteArray()[B
+                    move-result-object v0
+                    return-object v0
+                """
+            )
+            // Any message of a type can be the default instance to parse a message of that type.
+            addBridge(
+                "patch_parseSameType", listOf("[B"), "Ljava/lang/Object;", 3,
+                """
+                    invoke-static { }, $EXTENSION_REGISTRY_CLASS->getGeneratedRegistry()$EXTENSION_REGISTRY_CLASS
+                    move-result-object v0
+                    invoke-static { p0, p1, v0 }, $messageClass->parseFrom($messageClass[B$EXTENSION_REGISTRY_CLASS)$messageClass
+                    move-result-object v0
+                    return-object v0
+                """
+            )
+        }
+
         LithoButtonCommandFingerprint.method.apply {
             val executorRegister = getInstruction<FiveRegisterInstruction>(executeCommandMatch.index).registerC
             addInstruction(
@@ -136,98 +175,79 @@ val askFlyoutMenuPatch = bytecodePatch(
         // of another video.
         val continuationField = GetPanelRequestDescriptionFingerprint.instructionMatches[3].getFieldReference()
         val formDataField = GetPanelRequestDescriptionFingerprint.instructionMatches[4].getFieldReference()
-        GetPanelRequestBuilderFingerprint.method.apply {
-            addInstructionsWithLabels(
-                0,
-                """
-                    iget-object v0, p0, $continuationField
-                    invoke-static { v0 }, $EXTENSION_CLASS->onGetPanelRequest(Ljava/lang/String;)Ljava/lang/String;
-                    move-result-object v0
-                    iput-object v0, p0, $continuationField
-                    iget-object v1, p0, $formDataField
-                    invoke-static { v0, v1 }, $EXTENSION_CLASS->getPanelFormData(Ljava/lang/String;Ljava/lang/Object;)[B
-                    move-result-object v1
-                    if-eqz v1, :form_data_unchanged
-                    ${protos.parse(formDataField.type, bytes = "v1", result = "v0", registry = "v2")}
-                    check-cast v0, ${formDataField.type}
-                    iput-object v0, p0, $formDataField
-                    :form_data_unchanged
-                    nop
-                """
-            )
-        }
+        GetPanelRequestBuilderFingerprint.method.addInstructionsWithLabels(
+            0,
+            """
+                iget-object v0, p0, $continuationField
+                invoke-static { v0 }, $EXTENSION_CLASS->onGetPanelRequest(Ljava/lang/String;)Ljava/lang/String;
+                move-result-object v0
+                iput-object v0, p0, $continuationField
+                iget-object v1, p0, $formDataField
+                invoke-static { v0, v1 }, $EXTENSION_CLASS->getPanelFormData(Ljava/lang/String;Ljava/lang/Object;)[B
+                move-result-object v1
+                if-eqz v1, :form_data_unchanged
+                ${protos.parse(formDataField.type, bytes = "v1", result = "v0", registry = "v2")}
+                check-cast v0, ${formDataField.type}
+                iput-object v0, p0, $formDataField
+                :form_data_unchanged
+                nop
+            """
+        )
 
         // The extension runs the tap handler of the summarize suggestion of the opened panel,
         // so the panel shows the suggestion as selected and the answer as loading, as on a tap.
         val tapHandlerMethod = ElementsTapHandlerFingerprint.method
         val tapCommandMethod = ElementsTapHandlerFingerprint.instructionMatches.last().getMethodCalled()
-        val tapCommandHolderClass = tapCommandMethod.definingClass
-        // The tap handler class is not public, so it is called through the interface it implements.
-        val tapHandlerInterface = classDefBy(tapHandlerMethod.definingClass).interfaces.single()
 
         ElementsTapHandlerConstructorFingerprint.method.apply {
-            val holderRegister = "p" + (parameterTypes.indexOfFirst { it.toString() == tapCommandHolderClass } + 1)
-            val returnIndex = indexOfFirstInstructionReversedOrThrow(Opcode.RETURN_VOID)
-            val onCreated = "$EXTENSION_CLASS->onTapHandlerCreated(Ljava/lang/Object;Ljava/lang/Object;)V"
-            // The parameters are past v15 if the constructor has many locals, which are free at its return.
-            if (implementation!!.registerCount <= 16) {
-                addInstruction(returnIndex, "invoke-static { p0, $holderRegister }, $onCreated")
-            } else {
-                addInstructions(
-                    returnIndex,
-                    """
-                        move-object/from16 v0, p0
-                        move-object/from16 v1, $holderRegister
-                        invoke-static { v0, v1 }, $onCreated
-                    """
-                )
-            }
+            addInstruction(
+                indexOfFirstInstructionReversedOrThrow(Opcode.RETURN_VOID),
+                "invoke-static/range { p0 .. p0 }, $EXTENSION_CLASS->onTapHandlerCreated(Ljava/lang/Object;)V"
+            )
         }
 
-        replaceStub("getTapCommand", 2) {
-            """
-                check-cast p0, $tapCommandHolderClass
-                invoke-virtual { p0 }, $tapCommandMethod
-                move-result-object v0
-                invoke-virtual { v0 }, $messageClass->toByteArray()[B
-                move-result-object v0
-                return-object v0
-            """
-        }
+        mutableClassDefBy(tapHandlerMethod.definingClass).apply {
+            val commandHolderField = fields.single { it.type == tapCommandMethod.definingClass }
 
-        replaceStub("runTapHandler", 2) {
-            """
-                check-cast p0, $tapHandlerInterface
-                const/4 v0, 0x0
-                invoke-interface { p0, v0, v0, v0 }, $tapHandlerInterface->${tapHandlerMethod.name}(${tapHandlerMethod.parameterTypes.joinToString("")})V
-                return-void
-            """
-        }
-
-        replaceStub("serializeMessage", 1) {
-            """
-                check-cast p0, $messageClass
-                invoke-virtual { p0 }, $messageClass->toByteArray()[B
-                move-result-object p0
-                return-object p0
-            """
+            interfaces.add(TAP_HANDLER_ACCESS_INTERFACE)
+            addBridge(
+                "patch_getCommand", listOf(), "Ljava/lang/Object;", 2,
+                """
+                    iget-object v0, p0, $commandHolderField
+                    invoke-virtual { v0 }, $tapCommandMethod
+                    move-result-object v0
+                    return-object v0
+                """
+            )
+            addBridge(
+                "patch_tap", listOf(), "V", 2,
+                """
+                    const/4 v0, 0x0
+                    invoke-virtual { p0, v0, v0, v0 }, ${tapHandlerMethod.toReference()}
+                    return-void
+                """
+            )
         }
 
         addSummarizeItemToMenu(protos)
 
         addElementsResourceLoading(protos)
 
-        // Parses the command and runs it with the command executor.
-        replaceStub("executeCommand", 4) {
-            """
-                ${protos.parse(commandClass, bytes = "p1", result = "v0", registry = "v1")}
-                check-cast v0, $commandClass
-                check-cast p0, $commandExecutorClass
-                new-instance v1, Ljava/util/HashMap;
-                invoke-direct { v1 }, Ljava/util/HashMap;-><init>()V
-                invoke-interface { p0, v0, v1 }, $executeCommandMethod
-                return-void
-            """
+        // The command executor is an app interface, so its default method is inherited by every executor.
+        mutableClassDefBy(commandExecutorClass).apply {
+            interfaces.add(COMMAND_EXECUTOR_ACCESS_INTERFACE)
+            addBridge(
+                "patch_executeCommand", listOf("[B"), "V", 4,
+                """
+                    ${protos.parse(commandClass, bytes = "p1", result = "v0", registry = "v1")}
+                    check-cast v0, $commandClass
+                    new-instance v1, Ljava/util/HashMap;
+                    invoke-direct { v1 }, Ljava/util/HashMap;-><init>()V
+                    invoke-interface { p0, v0, v1 }, $executeCommandMethod
+                    return-void
+                """,
+                accessFlags = AccessFlags.PUBLIC.value
+            )
         }
     }
 }
@@ -323,19 +343,60 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(protos: Protos) {
         addMenuItemBefore(indexOfFirstInstructionOrThrow(methodCall(reference = showPopupMethod)), true)
     }
 
+    mutableClassDefBy(menuItemClass).interfaces.add(MENU_ITEM_ACCESS_INTERFACE)
+
+    mutableClassDefBy(rowClass).apply {
+        interfaces.add(MENU_ROW_ACCESS_INTERFACE)
+        addBridge(
+            "patch_getMenuItem", listOf(), "Ljava/lang/Object;", 2,
+            """
+                iget-object v0, p0, $rowMenuItemField
+                return-object v0
+            """
+        )
+    }
+
     val menus = listOf(
-        MenuRows(menuFragmentClass.type, createRowMethod, findRowsField(menuFragmentClass)),
-        MenuRows(popupMenu.type, popupMenu.createRowMethod, popupMenu.rowsField)
+        MenuRows(menuFragmentClass.type, createRowMethod, findRowsField(menuFragmentClass), null),
+        MenuRows(popupMenu.type, popupMenu.createRowMethod, popupMenu.rowsField, popupMenu.dismissMethod)
     )
     for (menu in menus) {
         mutableClassDefBy(menu.type).apply {
-            // The extension updates the rows of the item through the list of rows.
-            fields.first { it.name == menu.rowsField.name }.apply {
-                setAccessFlags(
-                    accessFlags and (AccessFlags.PRIVATE.value or AccessFlags.PROTECTED.value).inv() or
-                            AccessFlags.PUBLIC.value
-                )
-            }
+            interfaces.add(MENU_ACCESS_INTERFACE)
+            addBridge(
+                "patch_getRows", listOf(), "Ljava/util/List;", 2,
+                """
+                    iget-object v0, p0, ${menu.rowsField}
+                    return-object v0
+                """
+            )
+            addBridge(
+                "patch_createRow", listOf("Ljava/lang/Object;"), "Ljava/lang/Object;", 4,
+                """
+                    check-cast p1, $menuItemClass
+                    invoke-virtual { p0, p1 }, ${menu.createRowMethod.toReference()}
+                    move-result-object v0
+                    const/4 v1, 0x0
+                    invoke-virtual { v0, v1 }, ${menu.createRowMethod.returnType}->orElse(Ljava/lang/Object;)Ljava/lang/Object;
+                    move-result-object v0
+                    return-object v0
+                """
+            )
+            addBridge(
+                "patch_dismissPopup", listOf(), "Z", 2,
+                if (menu.dismissMethod == null) {
+                    """
+                        const/4 v0, 0x0
+                        return v0
+                    """
+                } else {
+                    """
+                        invoke-virtual { p0 }, ${menu.dismissMethod.toReference()}
+                        const/4 v0, 0x1
+                        return v0
+                    """
+                }
+            )
 
             findMutableMethodOf(menu.createRowMethod).addInstructions(
                 0,
@@ -390,88 +451,20 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(protos: Protos) {
         """
     )
 
-    for ((stub, type) in listOf("parseMenu" to menuClass, "parseMenuItem" to menuItemClass)) {
-        replaceStub(stub, 3) {
-            """
-                ${protos.parse(type, bytes = "p0", result = "v0", registry = "v1")}
-                return-object v0
-            """
-        }
-    }
-
-    // The menu is any of the menus that create rows, the code of the last one runs if the menu is none of the others.
-    fun forEachMenu(smali: (MenuRows) -> String) = menus.withIndex().joinToString("\n") { (index, menu) ->
-        val isLast = index == menus.lastIndex
-        """
-            ${if (isLast) "" else "instance-of v0, p0, ${menu.type}"}
-            ${if (isLast) "" else "if-eqz v0, :not_menu_$index"}
-            check-cast p0, ${menu.type}
-            ${smali(menu)}
-            ${if (isLast) "" else ":not_menu_$index"}
-        """
-    }
-
-    replaceStub("createMenuRow", 4) {
-        forEachMenu { menu ->
-            """
-                check-cast p1, $menuItemClass
-                invoke-virtual { p0, p1 }, ${menu.createRowMethod.toReference()}
-                move-result-object v0
-                const/4 v1, 0x0
-                invoke-virtual { v0, v1 }, ${menu.createRowMethod.returnType}->orElse(Ljava/lang/Object;)Ljava/lang/Object;
-                move-result-object v0
-                return-object v0
-            """
-        }
-    }
-
-    replaceStub("getMenuRows", 2) {
-        forEachMenu { menu ->
-            """
-                iget-object p0, p0, ${menu.rowsField}
-                return-object p0
-            """
-        }
-    }
-
-    replaceStub("dismissPopupMenu", 2) {
-        """
-            instance-of v0, p0, ${popupMenu.type}
-            if-eqz v0, :not_popup_menu
-            check-cast p0, ${popupMenu.type}
-            invoke-virtual { p0 }, ${popupMenu.dismissMethod.toReference()}
-            :not_popup_menu
-            return v0
-        """
-    }
-
-    replaceStub("isMenuItem", 1) {
-        """
-            instance-of p0, p0, $menuItemClass
-            return p0
-        """
-    }
-
-    replaceStub("getRowMenuItem", 2) {
-        """
-            instance-of v0, p0, $rowClass
-            if-eqz v0, :not_menu_item_row
-            check-cast p0, $rowClass
-            iget-object p0, p0, $rowMenuItemField
-            return-object p0
-            :not_menu_item_row
-            const/4 p0, 0x0
-            return-object p0
-        """
-    }
-
     restoreMenuRowTextConstraints()
 }
 
 /**
  * A menu that creates the rows of its menu items, either the bottom sheet or the popup.
+ *
+ * @param dismissMethod Dismisses the popup, or null for the bottom sheet.
  */
-private class MenuRows(val type: String, val createRowMethod: Method, val rowsField: FieldReference)
+private class MenuRows(
+    val type: String,
+    val createRowMethod: Method,
+    val rowsField: FieldReference,
+    val dismissMethod: Method?,
+)
 
 /**
  * The popup that shows the menu of a video, which creates the rows of the menu items
@@ -548,29 +541,25 @@ private fun BytecodePatchContext.addElementsResourceLoading(protos: Protos) {
         }
     }
 
-    replaceStub("parseFrameworkUpdates", 3) {
-        """
-            ${protos.parse(frameworkUpdatesClass, bytes = "p0", result = "v0", registry = "v1")}
-            return-object v0
-        """
-    }
-
-    replaceStub("processFrameworkUpdates", 3) {
-        """
-            check-cast p0, ${processorClass.type}
-            check-cast p1, $frameworkUpdatesClass
-            const/4 v0, 0x0
-            invoke-virtual { p0, v0, p1 }, ${processMethod.toReference()}
-            return-void
-        """
-    }
-
-    replaceStub("getUsedElementsResources", 1) {
-        """
-            check-cast p0, ${processorClass.type}
-            iget-object p0, p0, $usedResourcesField
-            return-object p0
-        """
+    mutableClassDefBy(processorClass.type).apply {
+        interfaces.add(ELEMENTS_RESOURCE_PROCESSOR_ACCESS_INTERFACE)
+        addBridge(
+            "patch_processFrameworkUpdates", listOf("[B"), "V", 4,
+            """
+                ${protos.parse(frameworkUpdatesClass, bytes = "p1", result = "v0", registry = "v1")}
+                check-cast v0, $frameworkUpdatesClass
+                const/4 v1, 0x0
+                invoke-virtual { p0, v1, v0 }, ${processMethod.toReference()}
+                return-void
+            """
+        )
+        addBridge(
+            "patch_getUsedResources", listOf(), "Ljava/util/Set;", 2,
+            """
+                iget-object v0, p0, $usedResourcesField
+                return-object v0
+            """
+        )
     }
 }
 
@@ -609,27 +598,32 @@ private fun BytecodePatchContext.restoreMenuRowTextConstraints() {
 }
 
 /**
- * Replaces the body of a stub method of the extension class, which can call obfuscated app code.
+ * Adds a public method to an app class, which implements a method of an extension interface added to the class.
+ *
+ * @param accessFlags The flags of the method. A default method of an interface cannot be final.
  */
-private fun BytecodePatchContext.replaceStub(name: String, registerCount: Int, smali: () -> String) {
-    mutableClassDefBy(EXTENSION_CLASS).apply {
-        val stub = methods.first { it.name == name }
-        methods.remove(stub)
-        methods.add(
-            ImmutableMethod(
-                type,
-                stub.name,
-                stub.parameters.map { ImmutableMethodParameter(it.type, null, null) },
-                stub.returnType,
-                stub.accessFlags,
-                null,
-                null,
-                MutableMethodImplementation(registerCount),
-            ).toMutable().apply {
-                addInstructionsWithLabels(0, smali())
-            }
-        )
-    }
+private fun MutableClass.addBridge(
+    name: String,
+    parameters: List<String>,
+    returnType: String,
+    registerCount: Int,
+    smali: String,
+    accessFlags: Int = AccessFlags.PUBLIC.value or AccessFlags.FINAL.value,
+) {
+    methods.add(
+        ImmutableMethod(
+            type,
+            name,
+            parameters.map { ImmutableMethodParameter(it, null, null) },
+            returnType,
+            accessFlags,
+            null,
+            null,
+            MutableMethodImplementation(registerCount),
+        ).toMutable().apply {
+            addInstructionsWithLabels(0, smali)
+        }
+    )
 }
 
 private fun MethodReference.toReference() =
