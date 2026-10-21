@@ -45,13 +45,13 @@ public final class AskFlyoutMenuPatch {
         /**
          * @return The bytes parsed as a message of the type of this message.
          */
-        Object patch_parseSameType(byte[] message);
+        MessageAccess patch_parseSameType(byte[] message);
     }
 
     /**
      * Added during patching to the menu item class.
      */
-    public interface MenuItemAccess {
+    public interface MenuItemAccess extends MessageAccess {
     }
 
     /**
@@ -67,7 +67,7 @@ public final class AskFlyoutMenuPatch {
          * @return The row of the menu item, as the menu creates it, or null if it shows no row.
          */
         @Nullable
-        Object patch_createRow(Object menuItem);
+        Object patch_createRow(MenuItemAccess menuItem);
 
         /**
          * Dismisses the menu if it is a popup, as the app dismisses it after a tap on one of its rows.
@@ -81,7 +81,7 @@ public final class AskFlyoutMenuPatch {
      * Added during patching to the rows of menu items.
      */
     public interface MenuRowAccess {
-        Object patch_getMenuItem();
+        MenuItemAccess patch_getMenuItem();
     }
 
     /**
@@ -91,7 +91,7 @@ public final class AskFlyoutMenuPatch {
         /**
          * @return The command that a tap runs.
          */
-        Object patch_getCommand();
+        MessageAccess patch_getCommand();
 
         /**
          * Runs the tap handler as a tap does, without a view or a touch.
@@ -124,7 +124,6 @@ public final class AskFlyoutMenuPatch {
         Set<?> patch_getUsedResources();
     }
 
-
     /**
      * Wait for the menu to close before showing the panel.
      */
@@ -141,12 +140,12 @@ public final class AskFlyoutMenuPatch {
      */
     private static final Object pendingLock = new Object();
 
-    private static WeakReference<Object> commandExecutorRef = new WeakReference<>(null);
+    private static WeakReference<CommandExecutorAccess> commandExecutorRef = new WeakReference<>(null);
 
     /**
      * Loads the Elements resources that responses attach, such as templates.
      */
-    private static WeakReference<Object> elementsResourceProcessorRef = new WeakReference<>(null);
+    private static WeakReference<ElementsResourceProcessorAccess> elementsResourceProcessorRef = new WeakReference<>(null);
 
     /**
      * The Elements template of the answers of the Ask chat. Only watch page responses attach it.
@@ -186,7 +185,7 @@ public final class AskFlyoutMenuPatch {
      * The menu bottom sheet or popup that shows the summarize item, to update the item once the live status
      * of its video is known, and to dismiss the popup.
      */
-    private static WeakReference<Object> menuRef = new WeakReference<>(null);
+    private static WeakReference<MenuAccess> menuRef = new WeakReference<>(null);
 
     private AskFlyoutMenuPatch() {
     }
@@ -199,7 +198,7 @@ public final class AskFlyoutMenuPatch {
      * Injection point.
      * Called before the app executes the command of a tapped button.
      */
-    public static void setCommandExecutor(Object commandExecutor) {
+    public static void setCommandExecutor(CommandExecutorAccess commandExecutor) {
         if (commandExecutorRef.get() != commandExecutor) {
             commandExecutorRef = new WeakReference<>(commandExecutor);
         }
@@ -209,7 +208,7 @@ public final class AskFlyoutMenuPatch {
      * Injection point.
      * Called when the app creates the processor of the Elements resources that responses attach.
      */
-    public static void onElementsResourceProcessorCreated(Object processor) {
+    public static void onElementsResourceProcessorCreated(ElementsResourceProcessorAccess processor) {
         elementsResourceProcessorRef = new WeakReference<>(processor);
         loadedChatTemplates = false;
     }
@@ -218,12 +217,12 @@ public final class AskFlyoutMenuPatch {
      * Injection point.
      * Called before the app registers an engagement panel.
      */
-    public static void onEngagementPanelRegistered(Object engagementPanel) {
+    public static void onEngagementPanelRegistered(MessageAccess engagementPanel) {
         try {
             if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() || isExecutingOwnCommand) {
                 return;
             }
-            byte[] panel = serializeMessage(engagementPanel);
+            byte[] panel = engagementPanel.patch_toByteArray();
             if (AskPanelCommand.isAskPanel(panel)) {
                 AskPanelCommand.saveTemplate(panel);
             }
@@ -273,7 +272,7 @@ public final class AskFlyoutMenuPatch {
      * @return The form data to send, or null to send the form data unchanged.
      */
     @Nullable
-    public static byte[] getPanelFormData(@Nullable String continuation, @Nullable Object formData) {
+    public static byte[] getPanelFormData(@Nullable String continuation, @Nullable MessageAccess formData) {
         try {
             if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() || continuation == null || formData == null) {
                 return null;
@@ -285,7 +284,7 @@ public final class AskFlyoutMenuPatch {
                     || videoId.equals(VideoInformation.getPlayerResponseVideoId())) {
                 return null;
             }
-            byte[] withoutPlayerOffset = AskPanelCommand.removePlayerOffset(serializeMessage(formData));
+            byte[] withoutPlayerOffset = AskPanelCommand.removePlayerOffset(formData.patch_toByteArray());
             if (withoutPlayerOffset != null) {
                 Logger.printDebug(() -> "Removing the playback position from the Ask request of video: " + videoId);
             }
@@ -302,7 +301,7 @@ public final class AskFlyoutMenuPatch {
      *
      * @return The menu with the summarize item, or the menu as is.
      */
-    public static Object addMenuItem(Object menu) {
+    public static Object addMenuItem(MessageAccess menu) {
         try {
             if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get()) {
                 return menu;
@@ -319,7 +318,7 @@ public final class AskFlyoutMenuPatch {
             }
 
             final boolean isLoading = !liveStatus.fetchIsDone();
-            byte[] withItem = AskMenuItem.addToMenu(serializeMessage(menu), videoId,
+            byte[] withItem = AskMenuItem.addToMenu(menu.patch_toByteArray(), videoId,
                     str("morphe_ask_summarize_title"), isLoading);
             if (withItem == null) {
                 Logger.printDebug(() -> "Not adding the summarize item to the menu of video: " + videoId);
@@ -329,7 +328,7 @@ public final class AskFlyoutMenuPatch {
             if (isLoading) {
                 liveStatus.whenDone(isLive -> updateMenuItem(videoId, isLive));
             }
-            return parseMessage(menu, withItem);
+            return menu.patch_parseSameType(withItem);
         } catch (Exception ex) {
             Logger.printException(() -> "addMenuItem failure", ex);
             return menu;
@@ -342,18 +341,18 @@ public final class AskFlyoutMenuPatch {
      * The popup can show the menu items as they are, without rows of its own, such as on tablets.
      * The summarize item then shows as text like the other items, with disabled text while it is loading.
      */
-    public static void onPopupMenuShown(Object popup) {
+    public static void onPopupMenuShown(MenuAccess popup) {
         try {
             if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get()) {
                 return;
             }
-            List<Object> rows = ((MenuAccess) popup).patch_getRows();
+
+            List<Object> rows = popup.patch_getRows();
             for (int i = 0, count = rows.size(); i < count; i++) {
-                Object row = rows.get(i);
-                if (!isMenuItem(row)) {
+                if (!(rows.get(i) instanceof MenuItemAccess menuItem)) {
                     continue;
                 }
-                byte[] item = serializeMessage(row);
+                byte[] item = menuItem.patch_toByteArray();
                 String videoId = AskMenuItem.getVideoId(item);
                 if (videoId == null) {
                     continue;
@@ -363,7 +362,7 @@ public final class AskFlyoutMenuPatch {
                 if (AskMenuItem.isLoading(item)) {
                     // The popup shows only the text of an item, and no loading state.
                     // Enabled once the live status is known, as on the other menus.
-                    rows.set(i, parseMessage(row, AskMenuItem.build(videoId,
+                    rows.set(i, menuItem.patch_parseSameType(AskMenuItem.build(videoId,
                             str("morphe_ask_summarize_title"), true, true)));
                 }
                 return;
@@ -379,12 +378,12 @@ public final class AskFlyoutMenuPatch {
      *
      * @return The menu item to show.
      */
-    public static Object onMenuRowCreated(Object menu, Object menuItem) {
+    public static Object onMenuRowCreated(MenuAccess menu, MenuItemAccess menuItem) {
         try {
             if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get()) {
                 return menuItem;
             }
-            byte[] item = serializeMessage(menuItem);
+            byte[] item = menuItem.patch_toByteArray();
             String videoId = AskMenuItem.getVideoId(item);
             if (videoId == null) {
                 return menuItem;
@@ -397,7 +396,7 @@ public final class AskFlyoutMenuPatch {
                     // Removed once the menu has its rows.
                     Utils.runOnMainThread(() -> updateMenuItem(videoId, true));
                 } else {
-                    return parseMessage(menuItem,
+                    return menuItem.patch_parseSameType(
                             AskMenuItem.build(videoId, str("morphe_ask_summarize_title"), false));
                 }
             }
@@ -412,20 +411,19 @@ public final class AskFlyoutMenuPatch {
      */
     private static void updateMenuItem(String videoId, boolean isLive) {
         try {
-            Object menu = menuRef.get();
+            MenuAccess menu = menuRef.get();
             if (menu == null) {
                 return;
             }
-            MenuAccess menuAccess = (MenuAccess) menu;
-            List<Object> rows = menuAccess.patch_getRows();
+            List<Object> rows = menu.patch_getRows();
             for (int i = 0, count = rows.size(); i < count; i++) {
                 Object row = rows.get(i);
                 // A popup can show the menu item as is.
-                Object menuItem = isMenuItem(row) ? row : getRowMenuItem(row);
+                MenuItemAccess menuItem = row instanceof MenuItemAccess rowItem ? rowItem : getRowMenuItem(row);
                 if (menuItem == null) {
                     continue;
                 }
-                byte[] item = serializeMessage(menuItem);
+                byte[] item = menuItem.patch_toByteArray();
                 if (!videoId.equals(AskMenuItem.getVideoId(item)) || !AskMenuItem.isLoading(item)) {
                     continue;
                 }
@@ -433,9 +431,9 @@ public final class AskFlyoutMenuPatch {
                 if (isLive) {
                     rows.remove(i);
                 } else {
-                    Object enabledItem = parseMessage(menuItem,
+                    MenuItemAccess enabledItem = (MenuItemAccess) menuItem.patch_parseSameType(
                             AskMenuItem.build(videoId, str("morphe_ask_summarize_title"), false));
-                    Object enabledRow = menuItem == row ? enabledItem : menuAccess.patch_createRow(enabledItem);
+                    Object enabledRow = menuItem == row ? enabledItem : menu.patch_createRow(enabledItem);
                     if (enabledRow != null) {
                         rows.set(i, enabledRow);
                     }
@@ -466,10 +464,10 @@ public final class AskFlyoutMenuPatch {
      */
     public static boolean onMenuItemTapped(@Nullable Object menuItem) {
         try {
-            if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() || menuItem == null || !isMenuItem(menuItem)) {
+            if (!Settings.ASK_SUMMARIZE_FLYOUT_MENU.get() || !(menuItem instanceof MenuItemAccess summarizeItem)) {
                 return false;
             }
-            byte[] item = serializeMessage(menuItem);
+            byte[] item = summarizeItem.patch_toByteArray();
             String videoId = AskMenuItem.getVideoId(item);
             if (videoId == null) {
                 return false;
@@ -479,8 +477,8 @@ public final class AskFlyoutMenuPatch {
                 return true;
             }
 
-            Object menu = menuRef.get();
-            if (menu == null || !((MenuAccess) menu).patch_dismissPopup()) {
+            MenuAccess menu = menuRef.get();
+            if (menu == null || !menu.patch_dismissPopup()) {
                 FlyoutUtils.dismissFlyout();
             }
             Utils.runOnMainThreadDelayed(() -> openAskPanel(videoId), SHOW_PANEL_DELAY_MS);
@@ -491,29 +489,11 @@ public final class AskFlyoutMenuPatch {
         }
     }
 
-    private static byte[] serializeMessage(Object message) {
-        return ((MessageAccess) message).patch_toByteArray();
-    }
-
-    /**
-     * @return The bytes parsed as a message of the same type as the message.
-     */
-    private static Object parseMessage(Object sameTypeMessage, byte[] message) {
-        return ((MessageAccess) sameTypeMessage).patch_parseSameType(message);
-    }
-
-    /**
-     * @return If the row of a menu is a menu item as is, which a popup can show instead of a row of its own.
-     */
-    private static boolean isMenuItem(Object row) {
-        return row instanceof MenuItemAccess;
-    }
-
     /**
      * @return The menu item of a row of the menu bottom sheet or popup, or null if the row has none.
      */
     @Nullable
-    private static Object getRowMenuItem(Object row) {
+    private static MenuItemAccess getRowMenuItem(Object row) {
         return row instanceof MenuRowAccess menuRow ? menuRow.patch_getMenuItem() : null;
     }
 
@@ -521,20 +501,20 @@ public final class AskFlyoutMenuPatch {
      * Injection point.
      * Called when a tap handler of an Elements component is created, such as of a suggestion of Ask.
      */
-    public static void onTapHandlerCreated(Object tapHandler) {
+    public static void onTapHandlerCreated(TapHandlerAccess tapHandler) {
         // A later Ask panel of the app can have a summarize suggestion with the same selection id.
         if (pendingSuggestionSelectionId < 0
                 || SystemClock.uptimeMillis() - pendingTime >= OPENED_PANEL_TIMEOUT_MS) {
             return;
         }
 
-        WeakReference<TapHandlerAccess> tapHandlerRef = new WeakReference<>((TapHandlerAccess) tapHandler);
+        WeakReference<TapHandlerAccess> tapHandlerRef = new WeakReference<>(tapHandler);
         Utils.runOnMainThread(() -> {
             try {
                 final long selectionId = pendingSuggestionSelectionId;
                 TapHandlerAccess handler = tapHandlerRef.get();
                 if (selectionId < 0 || handler == null || !AskPanelCommand.selectsSuggestion(
-                        serializeMessage(handler.patch_getCommand()), selectionId)) {
+                        handler.patch_getCommand().patch_toByteArray(), selectionId)) {
                     return;
                 }
 
@@ -606,11 +586,11 @@ public final class AskFlyoutMenuPatch {
         if (loadedChatTemplates) {
             return true;
         }
-        Object processor = elementsResourceProcessorRef.get();
+        ElementsResourceProcessorAccess processor = elementsResourceProcessorRef.get();
         if (processor == null) {
             return true;
         }
-        Set<?> usedResources = ((ElementsResourceProcessorAccess) processor).patch_getUsedResources();
+        Set<?> usedResources = processor.patch_getUsedResources();
         synchronized (usedResources) {
             for (Object resource : usedResources) {
                 if (resource instanceof String name && name.startsWith(CHAT_RESPONSE_TEMPLATE)) {
@@ -626,7 +606,7 @@ public final class AskFlyoutMenuPatch {
      */
     private static void loadElementsResources(byte[] response) {
         try {
-            Object processor = elementsResourceProcessorRef.get();
+            ElementsResourceProcessorAccess processor = elementsResourceProcessorRef.get();
             byte[] frameworkUpdates = AskPanelCommand.findFrameworkUpdates(response);
             if (processor == null || frameworkUpdates == null) {
                 Logger.printDebug(() -> "Not loading Elements resources, processor: " + (processor != null)
@@ -634,7 +614,7 @@ public final class AskFlyoutMenuPatch {
                 return;
             }
 
-            ((ElementsResourceProcessorAccess) processor).patch_processFrameworkUpdates(frameworkUpdates);
+            processor.patch_processFrameworkUpdates(frameworkUpdates);
             loadedChatTemplates = true;
             Logger.printDebug(() -> "Loaded the Elements resources of the response");
         } catch (Exception ex) {
@@ -644,7 +624,7 @@ public final class AskFlyoutMenuPatch {
 
     private static void showAskPanel(String videoId) {
         try {
-            Object commandExecutor = commandExecutorRef.get();
+            CommandExecutorAccess commandExecutor = commandExecutorRef.get();
             if (commandExecutor == null) {
                 Logger.printDebug(() -> "No command executor");
                 Utils.showToastLong(str("morphe_ask_summarize_failed"));
@@ -669,7 +649,7 @@ public final class AskFlyoutMenuPatch {
 
             isExecutingOwnCommand = true;
             try {
-                ((CommandExecutorAccess) commandExecutor).patch_executeCommand(panel.command);
+                commandExecutor.patch_executeCommand(panel.command);
             } finally {
                 isExecutingOwnCommand = false;
             }

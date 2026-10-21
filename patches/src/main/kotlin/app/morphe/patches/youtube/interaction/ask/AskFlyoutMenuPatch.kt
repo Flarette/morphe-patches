@@ -27,13 +27,12 @@ import app.morphe.patches.shared.misc.settings.preference.SwitchPreference
 import app.morphe.patches.youtube.layout.flyout.FeedFlyoutBufferObjectFingerprint
 import app.morphe.patches.youtube.layout.flyout.FullHistoryFlyoutBufferObjectFingerprint
 import app.morphe.patches.youtube.layout.flyout.flyoutPatch
-import app.morphe.patches.youtube.layout.hide.player.flyoutmenu.addPlayerFlyoutMenuPreferences
-import app.morphe.patches.youtube.layout.hide.player.flyoutmenu.playerFlyoutPreferences
 import app.morphe.patches.youtube.misc.auth.authHookPatch
 import app.morphe.patches.youtube.misc.extension.sharedExtensionPatch
 import app.morphe.patches.youtube.misc.litho.filter.lithoFilterPatch
 import app.morphe.patches.youtube.misc.playservice.is_21_15_or_greater
 import app.morphe.patches.youtube.misc.playservice.versionCheckPatch
+import app.morphe.patches.youtube.misc.settings.PreferenceScreen
 import app.morphe.patches.youtube.misc.settings.settingsPatch
 import app.morphe.patches.youtube.shared.Constants.COMPATIBILITY_YOUTUBE
 import app.morphe.util.findInstructionIndicesReversedOrThrow
@@ -91,8 +90,7 @@ val askFlyoutMenuPatch = bytecodePatch(
         flyoutPatch,
         lithoFilterPatch,
         versionCheckPatch,
-        authHookPatch,
-        playerFlyoutPreferences
+        authHookPatch
     )
 
     compatibleWith(COMPATIBILITY_YOUTUBE)
@@ -106,7 +104,7 @@ val askFlyoutMenuPatch = bytecodePatch(
             )
         }
 
-        addPlayerFlyoutMenuPreferences(
+        PreferenceScreen.FEED.addPreferences(
             SwitchPreference("morphe_ask_summarize_flyout_menu", summary = true)
         )
 
@@ -144,7 +142,7 @@ val askFlyoutMenuPatch = bytecodePatch(
             )
             // Any message of a type can be the default instance to parse a message of that type.
             addBridge(
-                "patch_parseSameType", listOf("[B"), "Ljava/lang/Object;", 3,
+                "patch_parseSameType", listOf("[B"), MESSAGE_ACCESS_INTERFACE, 3,
                 """
                     invoke-static { }, $EXTENSION_REGISTRY_CLASS->getGeneratedRegistry()$EXTENSION_REGISTRY_CLASS
                     move-result-object v0
@@ -159,7 +157,7 @@ val askFlyoutMenuPatch = bytecodePatch(
             val executorRegister = getInstruction<FiveRegisterInstruction>(executeCommandMatch.index).registerC
             addInstruction(
                 executeCommandMatch.index,
-                "invoke-static { v$executorRegister }, $EXTENSION_CLASS->setCommandExecutor(Ljava/lang/Object;)V"
+                "invoke-static { v$executorRegister }, $EXTENSION_CLASS->setCommandExecutor($COMMAND_EXECUTOR_ACCESS_INTERFACE)V"
             )
         }
 
@@ -167,7 +165,7 @@ val askFlyoutMenuPatch = bytecodePatch(
         // The extension keeps it to build the Ask panel of other videos.
         RegisterEngagementPanelFingerprint.method.addInstruction(
             0,
-            "invoke-static/range { p1 .. p1 }, $EXTENSION_CLASS->onEngagementPanelRegistered(Ljava/lang/Object;)V"
+            "invoke-static/range { p1 .. p1 }, $EXTENSION_CLASS->onEngagementPanelRegistered($MESSAGE_ACCESS_INTERFACE)V"
         )
 
         // When the summarize suggestion is not selected, the welcome request of the Ask panel is replaced
@@ -183,7 +181,7 @@ val askFlyoutMenuPatch = bytecodePatch(
                 move-result-object v0
                 iput-object v0, p0, $continuationField
                 iget-object v1, p0, $formDataField
-                invoke-static { v0, v1 }, $EXTENSION_CLASS->getPanelFormData(Ljava/lang/String;Ljava/lang/Object;)[B
+                invoke-static { v0, v1 }, $EXTENSION_CLASS->getPanelFormData(Ljava/lang/String;$MESSAGE_ACCESS_INTERFACE)[B
                 move-result-object v1
                 if-eqz v1, :form_data_unchanged
                 ${protos.parse(formDataField.type, bytes = "v1", result = "v0", registry = "v2")}
@@ -202,7 +200,7 @@ val askFlyoutMenuPatch = bytecodePatch(
         ElementsTapHandlerConstructorFingerprint.method.apply {
             addInstruction(
                 indexOfFirstInstructionReversedOrThrow(Opcode.RETURN_VOID),
-                "invoke-static/range { p0 .. p0 }, $EXTENSION_CLASS->onTapHandlerCreated(Ljava/lang/Object;)V"
+                "invoke-static/range { p0 .. p0 }, $EXTENSION_CLASS->onTapHandlerCreated($TAP_HANDLER_ACCESS_INTERFACE)V"
             )
         }
 
@@ -211,7 +209,7 @@ val askFlyoutMenuPatch = bytecodePatch(
 
             interfaces.add(TAP_HANDLER_ACCESS_INTERFACE)
             addBridge(
-                "patch_getCommand", listOf(), "Ljava/lang/Object;", 2,
+                "patch_getCommand", listOf(), MESSAGE_ACCESS_INTERFACE, 2,
                 """
                     iget-object v0, p0, $commandHolderField
                     invoke-virtual { v0 }, $tapCommandMethod
@@ -316,13 +314,13 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(protos: Protos) {
             addInstruction(
                 index + 1,
                 "invoke-static/range { v$callerRegister .. v$callerRegister }, " +
-                        "$EXTENSION_CLASS->onPopupMenuShown(Ljava/lang/Object;)V"
+                        "$EXTENSION_CLASS->onPopupMenuShown($MENU_ACCESS_INTERFACE)V"
             )
         }
         addInstructions(
             index,
             """
-                invoke-static/range { v$menuRegister .. v$menuRegister }, $EXTENSION_CLASS->addMenuItem(Ljava/lang/Object;)Ljava/lang/Object;
+                invoke-static/range { v$menuRegister .. v$menuRegister }, $EXTENSION_CLASS->addMenuItem($MESSAGE_ACCESS_INTERFACE)Ljava/lang/Object;
                 move-result-object v$menuRegister
                 check-cast v$menuRegister, $menuClass
             """
@@ -348,7 +346,7 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(protos: Protos) {
     mutableClassDefBy(rowClass).apply {
         interfaces.add(MENU_ROW_ACCESS_INTERFACE)
         addBridge(
-            "patch_getMenuItem", listOf(), "Ljava/lang/Object;", 2,
+            "patch_getMenuItem", listOf(), MENU_ITEM_ACCESS_INTERFACE, 2,
             """
                 iget-object v0, p0, $rowMenuItemField
                 return-object v0
@@ -371,7 +369,7 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(protos: Protos) {
                 """
             )
             addBridge(
-                "patch_createRow", listOf("Ljava/lang/Object;"), "Ljava/lang/Object;", 4,
+                "patch_createRow", listOf(MENU_ITEM_ACCESS_INTERFACE), "Ljava/lang/Object;", 4,
                 """
                     check-cast p1, $menuItemClass
                     invoke-virtual { p0, p1 }, ${menu.createRowMethod.toReference()}
@@ -401,7 +399,7 @@ private fun BytecodePatchContext.addSummarizeItemToMenu(protos: Protos) {
             findMutableMethodOf(menu.createRowMethod).addInstructions(
                 0,
                 """
-                    invoke-static/range { p0 .. p1 }, $EXTENSION_CLASS->onMenuRowCreated(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+                    invoke-static/range { p0 .. p1 }, $EXTENSION_CLASS->onMenuRowCreated($MENU_ACCESS_INTERFACE$MENU_ITEM_ACCESS_INTERFACE)Ljava/lang/Object;
                     move-result-object p1
                     check-cast p1, $menuItemClass
                 """
@@ -536,7 +534,7 @@ private fun BytecodePatchContext.addElementsResourceLoading(protos: Protos) {
         findInstructionIndicesReversedOrThrow(Opcode.RETURN_VOID).forEach { index ->
             addInstruction(
                 index,
-                "invoke-static/range { p0 .. p0 }, $EXTENSION_CLASS->onElementsResourceProcessorCreated(Ljava/lang/Object;)V"
+                "invoke-static/range { p0 .. p0 }, $EXTENSION_CLASS->onElementsResourceProcessorCreated($ELEMENTS_RESOURCE_PROCESSOR_ACCESS_INTERFACE)V"
             )
         }
     }
