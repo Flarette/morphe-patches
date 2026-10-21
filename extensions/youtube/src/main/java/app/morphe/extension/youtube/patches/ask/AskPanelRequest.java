@@ -13,9 +13,7 @@ import androidx.annotation.Nullable;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.nio.charset.StandardCharsets;
@@ -86,7 +84,7 @@ final class AskPanelRequest {
                 return null;
             }
 
-            byte[] watchPage = readAll(connection.getInputStream());
+            byte[] watchPage = Requester.parseBytes(connection);
             Logger.printDebug(() -> "Fetched watch page of video: " + videoId + " size: " + watchPage.length
                     + " took: " + (System.currentTimeMillis() - startTime) + "ms");
             return watchPage;
@@ -123,17 +121,5 @@ final class AskPanelRequest {
     private static String getUserAgent() {
         return String.format(Locale.US, "com.google.android.youtube/%s (Linux; U; Android %s; %s) gzip",
                 Utils.getAppVersionName(), Build.VERSION.RELEASE, Build.MODEL);
-    }
-
-    private static byte[] readAll(InputStream stream) throws IOException {
-        try (stream) {
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            byte[] buffer = new byte[16 * 1024];
-            int read;
-            while ((read = stream.read(buffer)) != -1) {
-                bytes.write(buffer, 0, read);
-            }
-            return bytes.toByteArray();
-        }
     }
 }
